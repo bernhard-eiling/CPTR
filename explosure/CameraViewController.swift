@@ -19,12 +19,25 @@ class CameraViewController: UIViewController {
     
     required init?(coder aCoder: NSCoder) {
         super.init(coder: aCoder)
-        backCameraDevice()
+        setupBackCamera()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+    }
+    
+    func setupBackCamera() {
+        let backCamera = backCameraDevice()
+        let captureDeviceInput : AVCaptureDeviceInput
+        do {
+            captureDeviceInput = try AVCaptureDeviceInput.init(device: backCamera)
+            if captureSession.canAddInput(captureDeviceInput) {
+                captureSession.addInput(captureDeviceInput)
+            }
+        } catch {
+            // logging missing
+        }
     }
     
     func backCameraDevice() -> AVCaptureDevice? {
