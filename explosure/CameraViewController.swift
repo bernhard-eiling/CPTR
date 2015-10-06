@@ -8,10 +8,14 @@
 
 import UIKit
 import AVFoundation
+import GLKit
 
-class CameraViewController: UIViewController {
+class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     let captureSession = AVCaptureSession()
+    var ciContext = CIContext()
+    let glContext = EAGLContext(API: .OpenGLES3)
+    var ciImage = CIImage()
     
     override init(nibName aNibName: String?, bundle aBundle: NSBundle?) {
         super.init(nibName: aNibName, bundle: aBundle)
@@ -24,7 +28,14 @@ class CameraViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupVideoView()
+    }
+    
+    func setupVideoView() {
         
+        ciContext = CIContext(EAGLContext: glContext)
+        let glView = GLKView(frame: self.view.bounds, context: glContext)
+        self.view.addSubview(glView);
     }
     
     func setupBackCamera() {
@@ -36,8 +47,23 @@ class CameraViewController: UIViewController {
                 captureSession.addInput(captureDeviceInput)
             }
         } catch {
-            // logging missing
+            NSLog("capture device could not be added to session");
         }
+    }
+    
+    func captureOutput(captureOutput: AVCaptureOutput!, didDropSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
+        let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
+        ciImage = CIImage(CVPixelBuffer: pixelBuffer!)
+        if glContext != EAGLContext.currentContext() {
+            EAGLContext.setCurrentContext(glContext)
+        }
+        
+    }
+    
+    func videoDataOutput() -> AVCaptureVideoDataOutput? {
+        let videoDataOutput = AVCaptureVideoDataOutput()
+        videoDataOutput.setSampleBufferDelegate(self, queue: dispatch_queue_create(nil, DISPATCH_QUEUE_SERIAL))
+        return videoDataOutput;
     }
     
     func backCameraDevice() -> AVCaptureDevice? {
