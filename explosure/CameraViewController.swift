@@ -60,8 +60,14 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     func setupVideoView() {
         ciContext = CIContext(EAGLContext: glContext)
-        glView = GLKView(frame: self.view.bounds, context: glContext)
-        view.addSubview(glView);
+        var viewFrame = view.frame
+        viewFrame.origin.x = (view.frame.size.width - view.frame.size.height) / 2
+        viewFrame.origin.y = (view.frame.size.height - view.frame.size.width) / 2
+        viewFrame.size.width = view.frame.size.height
+        viewFrame.size.height = view.frame.size.width
+        glView = GLKView(frame: viewFrame, context: glContext)
+        glView.transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))
+        view.addSubview(glView)
     }
     
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
@@ -74,6 +80,10 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         glView.bindDrawable()
         ciContext.drawImage(ciImage, inRect: ciImage.extent, fromRect: ciImage.extent)
         glView.display()
+    }
+    
+    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        
     }
     
     func backCameraDevice() -> AVCaptureDevice? {
