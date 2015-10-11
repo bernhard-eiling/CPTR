@@ -33,29 +33,28 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     func setupCaptureSession() {
-        let backCamera = backCameraDevice()
-        let captureDeviceInput : AVCaptureDeviceInput
+        var captureDeviceInput : AVCaptureDeviceInput
         do {
-            captureDeviceInput = try AVCaptureDeviceInput.init(device: backCamera)
-            if captureSession.canAddInput(captureDeviceInput) {
-                captureSession.addInput(captureDeviceInput)
+            if let backCamera = backCameraDevice() {
+                captureDeviceInput = try AVCaptureDeviceInput(device: backCamera)
+                if captureSession.canAddInput(captureDeviceInput) {
+                    captureSession.addInput(captureDeviceInput)
+                }
             }
         } catch {
             NSLog("capture device could not be added to session");
         }
         let videoDataOutput = AVCaptureVideoDataOutput()
-        videoDataOutput.setSampleBufferDelegate(self, queue: dispatch_queue_create("sample_buffer_queue", DISPATCH_QUEUE_SERIAL))
+        videoDataOutput.alwaysDiscardsLateVideoFrames = true
+        videoDataOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey: NSNumber(unsignedInt: kCVPixelFormatType_32BGRA)]
         if captureSession.canAddOutput(videoDataOutput) {
             captureSession.addOutput(videoDataOutput)
         }
-        let stillImageOutput = AVCaptureStillImageOutput()
-        if captureSession.canAddOutput(stillImageOutput) {
-            captureSession.addOutput(stillImageOutput)
-        }
-        captureSession.sessionPreset = AVCaptureSessionPresetPhoto
-        let sessionQueue = dispatch_queue_create("session_queue", DISPATCH_QUEUE_SERIAL)
+        captureSession.sessionPreset = AVCaptureSessionPresetHigh
+        videoDataOutput.setSampleBufferDelegate(self, queue: dispatch_queue_create("VideoDataOutputQueue", DISPATCH_QUEUE_SERIAL))
+        let sessionQueue = dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)
         dispatch_async(sessionQueue) { () -> Void in
-//            self.captureSession.startRunning()
+            self.captureSession.startRunning()
         }
     }
     
@@ -65,9 +64,10 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         view.addSubview(glView);
     }
     
-    func captureOutput(captureOutput: AVCaptureOutput!, didDropSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
-        let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
-        ciImage = CIImage(CVPixelBuffer: pixelBuffer!)
+    func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
+        if let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
+            ciImage = CIImage(CVPixelBuffer: pixelBuffer)
+        }
         if glContext != EAGLContext.currentContext() {
             EAGLContext.setCurrentContext(glContext)
         }
@@ -77,7 +77,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     func backCameraDevice() -> AVCaptureDevice? {
-        let captureDevices = AVCaptureDevice.devices()
+        let captureDevices = AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo)
         for captureDevice in captureDevices as! [AVCaptureDevice] {
             if captureDevice.position == .Back {
                 return captureDevice;
