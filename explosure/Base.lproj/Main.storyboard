@@ -15,8 +15,23 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DJm-Tz-Kyf" userLabel="GLK View" customClass="GLKView">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="DJm-Tz-Kyf" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="JTk-35-r6X"/>
+                            <constraint firstItem="DJm-Tz-Kyf" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="dQz-BQ-SnY"/>
+                            <constraint firstItem="DJm-Tz-Kyf" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="mWJ-d1-7hL"/>
+                            <constraint firstItem="DJm-Tz-Kyf" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" id="opu-c1-ApW"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="glView" destination="DJm-Tz-Kyf" id="6mo-jF-vrz"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

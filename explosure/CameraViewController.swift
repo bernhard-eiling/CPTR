@@ -16,7 +16,8 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     var ciContext = CIContext()
     let glContext = EAGLContext(API: .OpenGLES3)
     var ciImage = CIImage()
-    var glView = GLKView()
+    @IBOutlet weak var glView: GLKView!
+    let videoDataOutput = AVCaptureVideoDataOutput()
     
     override init(nibName aNibName: String?, bundle aBundle: NSBundle?) {
         super.init(nibName: aNibName, bundle: aBundle)
@@ -24,11 +25,17 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     required init?(coder aCoder: NSCoder) {
         super.init(coder: aCoder)
-        setupCaptureSession()
+        
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        setupCaptureSession()
         setupVideoView()
     }
     
@@ -44,13 +51,23 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         } catch {
             NSLog("capture device could not be added to session");
         }
-        let videoDataOutput = AVCaptureVideoDataOutput()
+        
         videoDataOutput.alwaysDiscardsLateVideoFrames = true
         videoDataOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey: NSNumber(unsignedInt: kCVPixelFormatType_32BGRA)]
         if captureSession.canAddOutput(videoDataOutput) {
             captureSession.addOutput(videoDataOutput)
         }
         captureSession.sessionPreset = AVCaptureSessionPresetHigh
+        let videoOutputConnection = videoDataOutput.connectionWithMediaType(AVMediaTypeVideo)
+        if videoOutputConnection.supportsVideoOrientation {
+            videoOutputConnection.videoOrientation = .Portrait
+        }
+        let stillImageOutput = AVCaptureStillImageOutput()
+        stillImageOutput.outputSettings = [AVVideoCodecKey: NSNumber(unsignedInt:kCMVideoCodecType_JPEG)]
+        if captureSession.canAddOutput(stillImageOutput) {
+            captureSession.addOutput(stillImageOutput)
+        }
+        
         videoDataOutput.setSampleBufferDelegate(self, queue: dispatch_queue_create("VideoDataOutputQueue", DISPATCH_QUEUE_SERIAL))
         let sessionQueue = dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)
         dispatch_async(sessionQueue) { () -> Void in
@@ -60,14 +77,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     func setupVideoView() {
         ciContext = CIContext(EAGLContext: glContext)
-        var viewFrame = view.frame
-        viewFrame.origin.x = (view.frame.size.width - view.frame.size.height) / 2
-        viewFrame.origin.y = (view.frame.size.height - view.frame.size.width) / 2
-        viewFrame.size.width = view.frame.size.height
-        viewFrame.size.height = view.frame.size.width
-        glView = GLKView(frame: viewFrame, context: glContext)
-        glView.transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))
-        view.addSubview(glView)
+        glView.context = glContext
     }
     
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
@@ -82,10 +92,6 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         glView.display()
     }
     
-    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-        
-    }
-    
     func backCameraDevice() -> AVCaptureDevice? {
         let captureDevices = AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo)
         for captureDevice in captureDevices as! [AVCaptureDevice] {
@@ -94,6 +100,10 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             }
         }
         return nil;
+    }
+    
+    override func shouldAutorotate() -> Bool {
+        return false
     }
 }
 	
