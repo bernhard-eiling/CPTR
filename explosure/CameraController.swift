@@ -17,6 +17,7 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
         didSet {
             if let glView = glView {
                 glView.context = glContext
+                glView.enableSetNeedsDisplay = false
             } else {
                 NSLog("wait for nib to init")
             }
@@ -27,11 +28,12 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
     private let glContext: EAGLContext
     private let ciContext: CIContext
     private let captureSession: AVCaptureSession
-    private var image: UIImage?
+    private var blendFilter: CIFilter
     
     override init() {
-        glContext = EAGLContext(API: .OpenGLES3)
+        glContext = EAGLContext(API: .OpenGLES2)
         ciContext = CIContext(EAGLContext: glContext)
+        blendFilter = CIFilter(name: "CISoftLightBlendMode")!
         captureSession = AVCaptureSession()
         super.init()
     }
@@ -63,13 +65,10 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
             if let stillImageOutput = self.stillImageOutput {
                 let stillImageConnection = stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)
                 stillImageOutput.captureStillImageAsynchronouslyFromConnection(stillImageConnection, completionHandler: { (imageDataSampleBuffer: CMSampleBuffer?, error: NSError?) -> Void in
-//                    var imageData: NSData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(imageDataSampleBuffer)
-//                    if let image = UIImage(data: imageData) {
-//                        self.image = image
-//                    }
-                    self.captureSession.stopRunning()
-                    if imageDataSampleBuffer != nil {
-                        self.drawVideoWithSampleBuffer(imageDataSampleBuffer)
+                    if let sampleBuffer = imageDataSampleBuffer {
+                        if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
+                            self.blendFilter.setValue(CIImage(CVPixelBuffer: imageBuffer), forKey: "inputBackgroundImage")
+                        }
                     }
                 })
             }
@@ -77,17 +76,18 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
     }
     
     func drawVideoWithSampleBuffer(sampleBuffer: CMSampleBuffer!) {
-        if let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
-            let ciImage = CIImage(CVPixelBuffer: pixelBuffer)
-            if let glView = self.glView {
-                glView.bindDrawable()
-                ciContext.drawImage(ciImage, inRect: ciImage.extent, fromRect: ciImage.extent)
-                glView.display()
+        if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
+            blendFilter.setValue(CIImage(CVPixelBuffer: imageBuffer), forKey: "inputImage")
+            if blendFilter.outputImage != nil && glView != nil {
+                glView!.bindDrawable()
+                ciContext.drawImage(blendFilter.outputImage!, inRect: blendFilter.outputImage!.extent, fromRect: blendFilter.outputImage!.extent)
+                glView!.display()
             } else {
                 NSLog("glView not set")
             }
         }
     }
+    
     
     func addCaptureDeviceInput() {
         var captureDeviceInput : AVCaptureDeviceInput
@@ -117,7 +117,7 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
     
     func addStillImageDataOutput() {
         stillImageOutput = AVCaptureStillImageOutput()
-        stillImageOutput!.outputSettings = [AVVideoCodecKey: AVVideoCodecJPEG]
+        stillImageOutput!.outputSettings = [kCVPixelBufferPixelFormatTypeKey: NSNumber(unsignedInt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
         if captureSession.canAddOutput(stillImageOutput) {
             captureSession.addOutput(stillImageOutput)
             return
