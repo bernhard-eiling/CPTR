@@ -26,7 +26,7 @@ class CameraViewController: UIViewController {
     }
 
     @IBAction func stillImageTapRecognizerTapped(sender: UITapGestureRecognizer) {
-        
+        cameraController.captureStillImage()
     }
 
     override func shouldAutorotate() -> Bool {
