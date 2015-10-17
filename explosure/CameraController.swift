@@ -42,8 +42,9 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
         captureSession.sessionPreset = AVCaptureSessionPresetHigh
         addCaptureDeviceInput()
         addStillImageDataOutput()
+        setStillImageOrientation(.Portrait)
         if let videoDataOutput = videoDataOutput() {
-            setVideoOrientationWithVideoDataOutput(videoDataOutput)
+            setVideoOrientation(.Portrait, videoDataOutput: videoDataOutput)
             videoDataOutput.setSampleBufferDelegate(self, queue: dispatch_queue_create("VideoDataOutputQueue", DISPATCH_QUEUE_SERIAL))
         }
         let sessionQueue = dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)
@@ -67,7 +68,10 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
                 stillImageOutput.captureStillImageAsynchronouslyFromConnection(stillImageConnection, completionHandler: { (imageDataSampleBuffer: CMSampleBuffer?, error: NSError?) -> Void in
                     if let sampleBuffer = imageDataSampleBuffer {
                         if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
-                            self.blendFilter.setValue(CIImage(CVPixelBuffer: imageBuffer), forKey: "inputBackgroundImage")
+                            var capturedImage = CIImage(CVPixelBuffer: imageBuffer)
+                            capturedImage = capturedImage.imageByApplyingTransform(CGAffineTransformMakeRotation(-CGFloat(M_PI / 2)))
+                            capturedImage = capturedImage.imageByApplyingTransform(CGAffineTransformMakeTranslation(0, 1920))
+                            self.blendFilter.setValue(capturedImage, forKey: "inputBackgroundImage")
                         }
                     }
                 })
@@ -80,7 +84,8 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
             blendFilter.setValue(CIImage(CVPixelBuffer: imageBuffer), forKey: "inputImage")
             if blendFilter.outputImage != nil && glView != nil {
                 glView!.bindDrawable()
-                ciContext.drawImage(blendFilter.outputImage!, inRect: blendFilter.outputImage!.extent, fromRect: blendFilter.outputImage!.extent)
+                let drawRect = CGRectMake(0, 0, glView!.frame.width * 2, glView!.frame.height * 2)
+                ciContext.drawImage(blendFilter.outputImage!, inRect: drawRect, fromRect: blendFilter.outputImage!.extent)
                 glView!.display()
             } else {
                 NSLog("glView not set")
@@ -125,10 +130,17 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
         NSLog("could not add StillImageDataOutput to session")
     }
     
-    func setVideoOrientationWithVideoDataOutput(videoDataOutput: AVCaptureVideoDataOutput) {
+    func setVideoOrientation(orientation: AVCaptureVideoOrientation, videoDataOutput: AVCaptureVideoDataOutput) {
         let videoOutputConnection = videoDataOutput.connectionWithMediaType(AVMediaTypeVideo)
         if videoOutputConnection.supportsVideoOrientation {
-            videoOutputConnection.videoOrientation = .Portrait
+            videoOutputConnection.videoOrientation = orientation
+        }
+    }
+    
+    func setStillImageOrientation(orientation: AVCaptureVideoOrientation) {
+        let stillImageOutputConenction = stillImageOutput!.connectionWithMediaType(AVMediaTypeVideo)
+        if stillImageOutputConenction.supportsVideoOrientation {
+            stillImageOutputConenction.videoOrientation = orientation
         }
     }
     
