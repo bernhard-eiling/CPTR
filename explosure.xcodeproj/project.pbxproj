@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6F4B19ED1BD2A161005CDB55 /* PhotoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4B19EC1BD2A161005CDB55 /* PhotoController.swift */; settings = {ASSET_TAGS = (); }; };
 		6F8B73991BC07526008E41A4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F8B73981BC07526008E41A4 /* AppDelegate.swift */; };
 		6F8B739B1BC07526008E41A4 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F8B739A1BC07526008E41A4 /* CameraViewController.swift */; };
 		6F8B739E1BC07526008E41A4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F8B739C1BC07526008E41A4 /* Main.storyboard */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6F4B19EC1BD2A161005CDB55 /* PhotoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PhotoController.swift; path = ../../PhotoController.swift; sourceTree = "<group>"; };
 		6F8B73951BC07526008E41A4 /* explosure.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = explosure.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F8B73981BC07526008E41A4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6F8B739A1BC07526008E41A4 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
@@ -59,6 +61,7 @@
 				6F8B73981BC07526008E41A4 /* AppDelegate.swift */,
 				6F8B739A1BC07526008E41A4 /* CameraViewController.swift */,
 				6FDF9AF31BCC007A00265263 /* CameraController.swift */,
+				6F4B19EC1BD2A161005CDB55 /* PhotoController.swift */,
 				6F8B739C1BC07526008E41A4 /* Main.storyboard */,
 				6F8B739F1BC07526008E41A4 /* Assets.xcassets */,
 				6F8B73A11BC07526008E41A4 /* LaunchScreen.storyboard */,
@@ -140,6 +143,7 @@
 			files = (
 				6FDF9AF41BCC007A00265263 /* CameraController.swift in Sources */,
 				6F8B739B1BC07526008E41A4 /* CameraViewController.swift in Sources */,
+				6F4B19ED1BD2A161005CDB55 /* PhotoController.swift in Sources */,
 				6F8B73991BC07526008E41A4 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

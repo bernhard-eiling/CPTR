@@ -26,7 +26,11 @@ class CameraViewController: UIViewController {
     }
 
     @IBAction func stillImageTapRecognizerTapped(sender: UITapGestureRecognizer) {
-        cameraController.captureStillImage()
+        if (cameraController.hasBackgroundImage()) {
+            cameraController.saveBlendedImage()
+        } else {
+            cameraController.captureBackgroundImage()
+        }
     }
 
     override func shouldAutorotate() -> Bool {

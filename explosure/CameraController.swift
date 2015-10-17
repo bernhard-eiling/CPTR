@@ -24,6 +24,7 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
         }
     }
     
+    private let photoController: PhotoController
     private var stillImageOutput: AVCaptureStillImageOutput?
     private let glContext: EAGLContext
     private let ciContext: CIContext
@@ -35,6 +36,7 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
         ciContext = CIContext(EAGLContext: glContext)
         blendFilter = CIFilter(name: "CISoftLightBlendMode")!
         captureSession = AVCaptureSession()
+        photoController = PhotoController()
         super.init()
     }
     
@@ -60,7 +62,7 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
         drawVideoWithSampleBuffer(sampleBuffer)
     }
     
-    func captureStillImage() {
+    func captureBackgroundImage() {
         let sessionQueue = dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)
         dispatch_async(sessionQueue) { () -> Void in
             if let stillImageOutput = self.stillImageOutput {
@@ -79,6 +81,12 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
         }
     }
     
+    func saveBlendedImage() {
+        let saveImage = UIImage(CIImage: self.blendFilter.outputImage!)
+        self.photoController.saveImageToPhotoLibrary(saveImage)
+        self.blendFilter.setValue(nil, forKey: "inputBackgroundImage")
+    }
+    
     func drawVideoWithSampleBuffer(sampleBuffer: CMSampleBuffer!) {
         if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
             blendFilter.setValue(CIImage(CVPixelBuffer: imageBuffer), forKey: "inputImage")
@@ -93,6 +101,10 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
         }
     }
     
+    func hasBackgroundImage() -> Bool {
+        let backgroundImage = blendFilter.valueForKey("inputBackgroundImage")
+        return backgroundImage != nil
+    }
     
     func addCaptureDeviceInput() {
         var captureDeviceInput : AVCaptureDeviceInput
