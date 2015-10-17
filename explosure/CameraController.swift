@@ -84,7 +84,8 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
             blendFilter.setValue(CIImage(CVPixelBuffer: imageBuffer), forKey: "inputImage")
             if blendFilter.outputImage != nil && glView != nil {
                 glView!.bindDrawable()
-                ciContext.drawImage(blendFilter.outputImage!, inRect: blendFilter.outputImage!.extent, fromRect: blendFilter.outputImage!.extent)
+                let drawRect = CGRectMake(0, 0, glView!.frame.width * 2, glView!.frame.height * 2)
+                ciContext.drawImage(blendFilter.outputImage!, inRect: drawRect, fromRect: blendFilter.outputImage!.extent)
                 glView!.display()
             } else {
                 NSLog("glView not set")
