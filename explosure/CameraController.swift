@@ -82,8 +82,9 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
     }
     
     func saveBlendedImage() {
-        let saveImage = UIImage(CIImage: self.blendFilter.outputImage!)
-        self.photoController.saveImageToPhotoLibrary(saveImage)
+        let ciImage = self.blendFilter.outputImage!
+        let cgImage = ciContext.createCGImage(ciImage, fromRect: ciImage.extent) // necessary for converting image into a bitmap format
+        self.photoController.saveImageToPhotoLibrary(cgImage)
         self.blendFilter.setValue(nil, forKey: "inputBackgroundImage")
     }
     
