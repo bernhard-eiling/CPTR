@@ -11,8 +11,7 @@ import AVFoundation
 import GLKit
 
 class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
-    
-    
+
     var glView: GLKView? {
         didSet {
             if let glView = glView {
@@ -41,7 +40,7 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
     }
     
     func setupCaptureSession() {
-        captureSession.sessionPreset = AVCaptureSessionPresetHigh
+        captureSession.sessionPreset = AVCaptureSessionPresetPhoto
         addCaptureDeviceInput()
         addStillImageDataOutput()
         setStillImageOrientation(.Portrait)
@@ -62,34 +61,34 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
         drawVideoWithSampleBuffer(sampleBuffer)
     }
     
-    func captureBackgroundImage() {
+    func captureImage() {
         let sessionQueue = dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)
         dispatch_async(sessionQueue) { () -> Void in
             if let stillImageOutput = self.stillImageOutput {
                 let stillImageConnection = stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)
                 stillImageOutput.captureStillImageAsynchronouslyFromConnection(stillImageConnection, completionHandler: { (imageDataSampleBuffer: CMSampleBuffer?, error: NSError?) -> Void in
-                    if let sampleBuffer = imageDataSampleBuffer {
-                        if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
-                            var capturedImage = CIImage(CVPixelBuffer: imageBuffer)
-                            capturedImage = capturedImage.imageByApplyingTransform(CGAffineTransformMakeRotation(-CGFloat(M_PI / 2)))
-                            capturedImage = capturedImage.imageByApplyingTransform(CGAffineTransformMakeTranslation(0, 1920))
-                            self.blendFilter.setValue(capturedImage, forKey: "inputBackgroundImage")
-                        }
+                    if let ciImage = self.ciImageFromImageBuffer(imageDataSampleBuffer) {
+                      self.photoController.addPhoto(self.ciContext.createCGImage(ciImage, fromRect: ciImage.extent))
                     }
                 })
             }
         }
     }
     
-    func saveBlendedImage() {
-        let ciImage = self.blendFilter.outputImage!
-        let cgImage = ciContext.createCGImage(ciImage, fromRect: ciImage.extent) // necessary for converting image into a bitmap format
-        self.photoController.saveImageToPhotoLibrary(cgImage)
-        self.blendFilter.setValue(nil, forKey: "inputBackgroundImage")
+    func ciImageFromImageBuffer(imageSampleBuffer: CMSampleBuffer?) -> CIImage? {
+        if let sampleBuffer = imageSampleBuffer {
+            if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
+                let ciImage = CIImage(CVPixelBuffer: imageBuffer)
+                return ciImage
+            }
+        }
+        NSLog("Could not convert image buffer to CIImage")
+        return nil
     }
-    
+
     func drawVideoWithSampleBuffer(sampleBuffer: CMSampleBuffer!) {
         if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
+            let ciImage = CIImage(CVPixelBuffer: imageBuffer)
             blendFilter.setValue(CIImage(CVPixelBuffer: imageBuffer), forKey: "inputImage")
             if blendFilter.outputImage != nil && glView != nil {
                 glView!.bindDrawable()
@@ -100,11 +99,6 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
                 NSLog("glView not set")
             }
         }
-    }
-    
-    func hasBackgroundImage() -> Bool {
-        let backgroundImage = blendFilter.valueForKey("inputBackgroundImage")
-        return backgroundImage != nil
     }
     
     func addCaptureDeviceInput() {
@@ -120,7 +114,7 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
             NSLog("capture device could not be added to session");
         }
     }
-    
+
     func videoDataOutput() -> AVCaptureVideoDataOutput? {
         let videoDataOutput = AVCaptureVideoDataOutput()
         videoDataOutput.alwaysDiscardsLateVideoFrames = true
