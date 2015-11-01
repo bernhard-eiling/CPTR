@@ -9,12 +9,17 @@
 import Foundation
 import Photos
 
+protocol PhotoControllerDelegate {
+    func photoDidBlend(blendedPhoto: CGImage)
+}
+
 class PhotoController: NSObject {
     
     private let photoCapaciy = 2
     private var photoCounter = 0
     private var blendedPhoto: CGImage?
-
+    var delegate: PhotoControllerDelegate?
+    
     private func saveImageToPhotoLibraryIfCapacityReached() {
         if (photoCounter < photoCapaciy) {
             return
@@ -27,6 +32,7 @@ class PhotoController: NSObject {
                     NSLog("could not save image to photo library")
                 } else {
                     self.photoCounter = 0
+                    NSLog("image saved to photo library")
                 }
         }
     }
@@ -41,14 +47,23 @@ class PhotoController: NSObject {
     }
     
     func blendPhoto(photo: CGImage) {
-        UIGraphicsBeginImageContext(sizeOfCGImage(photo))
-        let context: CGContext? = UIGraphicsGetCurrentContext()
-        CGContextDrawImage(context, rectOfCGImage(blendedPhoto!), blendedPhoto)
-        CGContextSetBlendMode(context, .Normal)
-        CGContextSetAlpha(context, 0.5)
-        CGContextDrawImage(context, rectOfCGImage(photo), photo)
-        blendedPhoto = CGBitmapContextCreateImage(context)
-        photoCounter++
+        let sessionQueue = dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)
+        dispatch_async(sessionQueue) { () -> Void in
+            UIGraphicsBeginImageContext(self.sizeOfCGImage(photo))
+            let context: CGContext? = UIGraphicsGetCurrentContext()
+            CGContextDrawImage(context, self.rectOfCGImage(self.blendedPhoto!), self.blendedPhoto)
+            CGContextSetBlendMode(context, .Normal)
+            CGContextSetAlpha(context, 0.5)
+            CGContextDrawImage(context, self.rectOfCGImage(photo), photo)
+            self.blendedPhoto = CGBitmapContextCreateImage(context)
+            UIGraphicsEndImageContext();
+            
+            self.photoCounter++
+
+            self.delegate?.photoDidBlend(self.blendedPhoto!)
+        }
+        
+        
     }
     
     func sizeOfCGImage(image: CGImage) -> CGSize {

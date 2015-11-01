@@ -10,8 +10,8 @@ import Foundation
 import AVFoundation
 import GLKit
 
-class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
-
+class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, PhotoControllerDelegate {
+    
     var glView: GLKView? {
         didSet {
             if let glView = glView {
@@ -30,6 +30,8 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
     private let captureSession: AVCaptureSession
     private var blendFilter: CIFilter
     
+    private var blendedPhoto: CGImage?
+    
     override init() {
         glContext = EAGLContext(API: .OpenGLES2)
         ciContext = CIContext(EAGLContext: glContext)
@@ -40,6 +42,7 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
     }
     
     func setupCaptureSession() {
+        photoController.delegate = self
         captureSession.sessionPreset = AVCaptureSessionPresetPhoto
         addCaptureDeviceInput()
         addStillImageDataOutput()
@@ -68,7 +71,7 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
                 let stillImageConnection = stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)
                 stillImageOutput.captureStillImageAsynchronouslyFromConnection(stillImageConnection, completionHandler: { (imageDataSampleBuffer: CMSampleBuffer?, error: NSError?) -> Void in
                     if let ciImage = self.ciImageFromImageBuffer(imageDataSampleBuffer) {
-                      self.photoController.addPhoto(self.ciContext.createCGImage(ciImage, fromRect: ciImage.extent))
+                        self.photoController.addPhoto(self.ciContext.createCGImage(ciImage, fromRect: ciImage.extent))
                     }
                 })
             }
@@ -85,20 +88,32 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
         NSLog("Could not convert image buffer to CIImage")
         return nil
     }
-
+    
     func drawVideoWithSampleBuffer(sampleBuffer: CMSampleBuffer!) {
         if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
-            let ciImage = CIImage(CVPixelBuffer: imageBuffer)
             blendFilter.setValue(CIImage(CVPixelBuffer: imageBuffer), forKey: "inputImage")
             if blendFilter.outputImage != nil && glView != nil {
                 glView!.bindDrawable()
-                let drawRect = CGRectMake(0, 0, glView!.frame.width * 2, glView!.frame.height * 2)
+                let drawRect = CGRectMake(0, 0, blendFilter.outputImage!.extent.width, blendFilter.outputImage!.extent.height)
                 ciContext.drawImage(blendFilter.outputImage!, inRect: drawRect, fromRect: blendFilter.outputImage!.extent)
                 glView!.display()
-            } else {
-                NSLog("glView not set")
             }
         }
+    }
+    
+    func photoDidBlend(blendedPhoto: CGImage) {
+        let drawSize = CGSize(width: 640.0, height: 852.0)
+        UIGraphicsBeginImageContext(drawSize)
+        
+        let context: CGContext? = UIGraphicsGetCurrentContext()
+        
+        CGContextTranslateCTM(context, 640, 0)
+        CGContextRotateCTM(context, CGFloat(M_PI_2))
+        CGContextDrawImage(context, CGRect(origin: CGPointZero, size: CGSize(width: 852.0, height: 640.0)), blendedPhoto)
+        
+        let ciImage = CIImage(CGImage: CGBitmapContextCreateImage(context)!)
+        self.blendFilter.setValue(ciImage, forKey: "inputBackgroundImage")
+        UIGraphicsEndImageContext();
     }
     
     func addCaptureDeviceInput() {
@@ -114,7 +129,7 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
             NSLog("capture device could not be added to session");
         }
     }
-
+    
     func videoDataOutput() -> AVCaptureVideoDataOutput? {
         let videoDataOutput = AVCaptureVideoDataOutput()
         videoDataOutput.alwaysDiscardsLateVideoFrames = true
