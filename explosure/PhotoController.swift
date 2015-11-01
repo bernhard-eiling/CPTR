@@ -10,20 +10,17 @@ import Foundation
 import Photos
 
 protocol PhotoControllerDelegate {
-    func photoDidBlend(blendedPhoto: CGImage)
+    func blendedPhotoDidChange(blendedPhoto: CGImage?)
 }
 
 class PhotoController: NSObject {
     
-    private let photoCapaciy = 2
+    private let photoCapaciy = 3
     private var photoCounter = 0
     private var blendedPhoto: CGImage?
     var delegate: PhotoControllerDelegate?
     
-    private func saveImageToPhotoLibraryIfCapacityReached() {
-        if (photoCounter < photoCapaciy) {
-            return
-        }
+    private func saveImageToPhotoLibrary() {
         PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
             let uiImage = UIImage(CGImage: self.blendedPhoto!)
             PHAssetCreationRequest.creationRequestForAssetFromImage(uiImage)
@@ -32,21 +29,29 @@ class PhotoController: NSObject {
                     NSLog("could not save image to photo library")
                 } else {
                     self.photoCounter = 0
+                    self.blendedPhoto = nil
+                    self.delegate?.blendedPhotoDidChange(self.blendedPhoto)
                     NSLog("image saved to photo library")
                 }
         }
     }
     
     func addPhoto(photo: CGImage) {
+        if (photoCounter >= photoCapaciy) {
+            NSLog("photo capacity reached")
+            return
+        }
+        self.photoCounter++
+        NSLog ("photo count: %i", photoCounter)
         if blendedPhoto != nil {
             blendPhoto(photo)
-            saveImageToPhotoLibraryIfCapacityReached()
         } else {
             blendedPhoto = photo
+            self.delegate?.blendedPhotoDidChange(self.blendedPhoto)
         }
     }
     
-    func blendPhoto(photo: CGImage) {
+    private func blendPhoto(photo: CGImage) {
         let sessionQueue = dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)
         dispatch_async(sessionQueue) { () -> Void in
             UIGraphicsBeginImageContext(self.sizeOfCGImage(photo))
@@ -57,10 +62,10 @@ class PhotoController: NSObject {
             CGContextDrawImage(context, self.rectOfCGImage(photo), photo)
             self.blendedPhoto = CGBitmapContextCreateImage(context)
             UIGraphicsEndImageContext();
-            
-            self.photoCounter++
-
-            self.delegate?.photoDidBlend(self.blendedPhoto!)
+            self.delegate?.blendedPhotoDidChange(self.blendedPhoto)
+            if (self.photoCounter >= self.photoCapaciy) {
+                self.saveImageToPhotoLibrary()
+            }
         }
         
         

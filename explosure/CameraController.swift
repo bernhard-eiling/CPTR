@@ -101,19 +101,20 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate,
         }
     }
     
-    func photoDidBlend(blendedPhoto: CGImage) {
-        let drawSize = CGSize(width: 640.0, height: 852.0)
-        UIGraphicsBeginImageContext(drawSize)
-        
-        let context: CGContext? = UIGraphicsGetCurrentContext()
-        
-        CGContextTranslateCTM(context, 640, 0)
-        CGContextRotateCTM(context, CGFloat(M_PI_2))
-        CGContextDrawImage(context, CGRect(origin: CGPointZero, size: CGSize(width: 852.0, height: 640.0)), blendedPhoto)
-        
-        let ciImage = CIImage(CGImage: CGBitmapContextCreateImage(context)!)
-        self.blendFilter.setValue(ciImage, forKey: "inputBackgroundImage")
-        UIGraphicsEndImageContext();
+    func blendedPhotoDidChange(blendedPhoto: CGImage?) {
+        if let backgroundPhoto = blendedPhoto {
+            let drawSize = CGSize(width: 640.0, height: 852.0)
+            UIGraphicsBeginImageContext(drawSize)
+            let context: CGContext? = UIGraphicsGetCurrentContext()
+            CGContextTranslateCTM(context, 640, 0)
+            CGContextRotateCTM(context, CGFloat(M_PI_2))
+            CGContextDrawImage(context, CGRect(origin: CGPointZero, size: CGSize(width: 852.0, height: 640.0)), backgroundPhoto)
+            let ciImage = CIImage(CGImage: CGBitmapContextCreateImage(context)!)
+            self.blendFilter.setValue(ciImage, forKey: "inputBackgroundImage")
+            UIGraphicsEndImageContext();
+        } else {
+            self.blendFilter.setValue(nil, forKey: "inputBackgroundImage")
+        }
     }
     
     func addCaptureDeviceInput() {
