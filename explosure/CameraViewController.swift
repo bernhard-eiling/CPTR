@@ -15,12 +15,17 @@ class CameraViewController: UIViewController, PhotoControllerDelegate {
     @IBOutlet weak var glView: GLKView?
     let cameraController: CameraController
     
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
     required init?(coder aCoder: NSCoder) {
         cameraController = CameraController()
         super.init(coder: aCoder)
     }
     
     override func viewDidLoad() {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "deviceOrientationDidChange", name: UIDeviceOrientationDidChangeNotification, object: nil)
         cameraController.setupCaptureSessionWithDelegate(self)
         cameraController.glView = glView
         super.viewDidLoad()
@@ -41,6 +46,15 @@ class CameraViewController: UIViewController, PhotoControllerDelegate {
                 }) { (Bool) -> Void in
                     self.photoSavedWrapperView.hidden = true
             }
+        }
+    }
+    
+    func deviceOrientationDidChange() {
+        if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation)) {
+            
+        }
+        if(UIDeviceOrientationIsPortrait(UIDevice.currentDevice().orientation)) {
+            
         }
     }
     
