@@ -41,8 +41,9 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate,
         super.init()
     }
     
-    func setupCaptureSession() {
-        photoController.delegate = self
+    func setupCaptureSessionWithDelegate(delegate: PhotoControllerDelegate) {
+        photoController.cameraControllerDelegate = self
+        photoController.cameraViewControllerDelegate = delegate
         captureSession.sessionPreset = AVCaptureSessionPresetPhoto
         addCaptureDeviceInput()
         addStillImageDataOutput()

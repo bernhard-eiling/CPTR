@@ -9,16 +9,18 @@
 import Foundation
 import Photos
 
-protocol PhotoControllerDelegate {
-    func blendedPhotoDidChange(blendedPhoto: CGImage?)
+@objc protocol PhotoControllerDelegate {
+    optional func blendedPhotoDidChange(blendedPhoto: CGImage?)
+    optional func photoSavedToPhotoLibrary()
 }
 
 class PhotoController: NSObject {
     
-    private let photoCapaciy = 3
+    private let photoCapaciy = 2
     private var photoCounter = 0
     private var blendedPhoto: CGImage?
-    var delegate: PhotoControllerDelegate?
+    var cameraControllerDelegate: PhotoControllerDelegate?
+    var cameraViewControllerDelegate: PhotoControllerDelegate?
     
     private func saveImageToPhotoLibrary() {
         PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
@@ -30,7 +32,8 @@ class PhotoController: NSObject {
                 } else {
                     self.photoCounter = 0
                     self.blendedPhoto = nil
-                    self.delegate?.blendedPhotoDidChange(self.blendedPhoto)
+                    self.cameraControllerDelegate?.blendedPhotoDidChange?(self.blendedPhoto)
+                    self.cameraViewControllerDelegate?.photoSavedToPhotoLibrary?()
                     NSLog("image saved to photo library")
                 }
         }
@@ -47,7 +50,7 @@ class PhotoController: NSObject {
             blendPhoto(photo)
         } else {
             blendedPhoto = photo
-            self.delegate?.blendedPhotoDidChange(blendedPhoto)
+            self.cameraControllerDelegate?.blendedPhotoDidChange?(blendedPhoto)
         }
     }
     
@@ -66,7 +69,7 @@ class PhotoController: NSObject {
             self.blendedPhoto = CGBitmapContextCreateImage(context)
             UIGraphicsEndImageContext();
             
-            self.delegate?.blendedPhotoDidChange(self.blendedPhoto)
+            self.cameraControllerDelegate?.blendedPhotoDidChange?(self.blendedPhoto)
             if (self.photoCounter >= self.photoCapaciy) {
                 self.saveImageToPhotoLibrary()
             }

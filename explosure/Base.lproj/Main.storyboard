@@ -19,8 +19,36 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DJm-Tz-Kyf" userLabel="GLK View" customClass="GLKView">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <subviews>
+                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WQT-hL-sLR" userLabel="saved wrapper">
+                                        <rect key="frame" x="122" y="345.5" width="130" height="130"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SAVED" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="acf-7D-5Ox">
+                                                <rect key="frame" x="0.0" y="0.0" width="130" height="130"/>
+                                                <animations/>
+                                                <fontDescription key="fontDescription" name="BodoniSvtyTwoITCTT-Book" family="Bodoni 72" pointSize="22"/>
+                                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <animations/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstItem="acf-7D-5Ox" firstAttribute="centerY" secondItem="WQT-hL-sLR" secondAttribute="centerY" id="AGq-Hc-pcI"/>
+                                            <constraint firstAttribute="width" constant="130" id="LdY-fX-fBk"/>
+                                            <constraint firstItem="acf-7D-5Ox" firstAttribute="width" secondItem="WQT-hL-sLR" secondAttribute="width" id="VA9-mM-7oN"/>
+                                            <constraint firstAttribute="height" constant="130" id="bZg-d9-K6w"/>
+                                            <constraint firstItem="acf-7D-5Ox" firstAttribute="centerX" secondItem="WQT-hL-sLR" secondAttribute="centerX" id="laU-V1-QON"/>
+                                            <constraint firstItem="acf-7D-5Ox" firstAttribute="height" secondItem="WQT-hL-sLR" secondAttribute="height" id="pfS-0V-Ncb"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
                                 <animations/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="WQT-hL-sLR" firstAttribute="centerX" secondItem="DJm-Tz-Kyf" secondAttribute="centerX" id="8hx-SB-F0H"/>
+                                    <constraint firstItem="WQT-hL-sLR" firstAttribute="centerY" secondItem="DJm-Tz-Kyf" secondAttribute="centerY" constant="77" id="jg5-NP-szn"/>
+                                </constraints>
                             </view>
                         </subviews>
                         <animations/>
@@ -39,6 +67,7 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="glView" destination="DJm-Tz-Kyf" id="rJZ-b5-S42"/>
+                        <outlet property="photoSavedWrapperView" destination="WQT-hL-sLR" id="pDj-Lq-8oI"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
