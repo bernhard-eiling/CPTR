@@ -47,28 +47,30 @@ class PhotoController: NSObject {
             blendPhoto(photo)
         } else {
             blendedPhoto = photo
-            self.delegate?.blendedPhotoDidChange(self.blendedPhoto)
+            self.delegate?.blendedPhotoDidChange(blendedPhoto)
         }
     }
     
     private func blendPhoto(photo: CGImage) {
         let sessionQueue = dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)
         dispatch_async(sessionQueue) { () -> Void in
+            
             UIGraphicsBeginImageContext(self.sizeOfCGImage(photo))
             let context: CGContext? = UIGraphicsGetCurrentContext()
+            CGContextScaleCTM(context, 1.0, -1.0)
+            CGContextTranslateCTM(context, 0.0, -CGFloat(CGImageGetHeight(photo)))
             CGContextDrawImage(context, self.rectOfCGImage(self.blendedPhoto!), self.blendedPhoto)
             CGContextSetBlendMode(context, .Normal)
             CGContextSetAlpha(context, 0.5)
             CGContextDrawImage(context, self.rectOfCGImage(photo), photo)
             self.blendedPhoto = CGBitmapContextCreateImage(context)
             UIGraphicsEndImageContext();
+            
             self.delegate?.blendedPhotoDidChange(self.blendedPhoto)
             if (self.photoCounter >= self.photoCapaciy) {
                 self.saveImageToPhotoLibrary()
             }
         }
-        
-        
     }
     
     func sizeOfCGImage(image: CGImage) -> CGSize {

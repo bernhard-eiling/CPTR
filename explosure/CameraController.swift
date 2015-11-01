@@ -106,7 +106,7 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate,
             let drawSize = CGSize(width: 640.0, height: 852.0)
             UIGraphicsBeginImageContext(drawSize)
             let context: CGContext? = UIGraphicsGetCurrentContext()
-            CGContextTranslateCTM(context, 640, 0)
+            CGContextScaleCTM(context, -1.0, 1.0)
             CGContextRotateCTM(context, CGFloat(M_PI_2))
             CGContextDrawImage(context, CGRect(origin: CGPointZero, size: CGSize(width: 852.0, height: 640.0)), backgroundPhoto)
             let ciImage = CIImage(CGImage: CGBitmapContextCreateImage(context)!)

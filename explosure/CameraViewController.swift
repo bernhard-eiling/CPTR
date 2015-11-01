@@ -11,7 +11,7 @@ import GLKit
 
 class CameraViewController: UIViewController {
     
-    @IBOutlet weak var glView: GLKView!
+    @IBOutlet weak var glView: GLKView?
     let cameraController: CameraController
 
     required init?(coder aCoder: NSCoder) {
