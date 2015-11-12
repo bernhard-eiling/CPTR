@@ -16,6 +16,7 @@ import Photos
 
 class PhotoController: NSObject {
     
+    var isSavingPhoto: Bool
     private let photoCapaciy = 2
     private var photoCounter = 0
     private var blendedPhoto: CGImage?
@@ -24,12 +25,18 @@ class PhotoController: NSObject {
     var cameraViewControllerDelegate: PhotoControllerDelegate?
     var localIdentifier: String?
     
+    override init() {
+        isSavingPhoto = false
+        super.init()
+    }
+    
     private func saveImageToPhotoLibrary() {
         PHPhotoLibrary.sharedPhotoLibrary().performChanges({ [unowned self] () -> Void in
             self.rotatedUIImage = self.rotatedImageAccordingToDeviceOrientation(self.blendedPhoto!)
             let assetPlaceholder = PHAssetCreationRequest.creationRequestForAssetFromImage(self.rotatedUIImage!).placeholderForCreatedAsset
             self.localIdentifier = assetPlaceholder?.localIdentifier
             }) { [unowned self] (success, error) -> Void in
+                self.isSavingPhoto = false
                 if (!success) {
                     NSLog("could not save image to photo library")
                 } else {
@@ -39,9 +46,8 @@ class PhotoController: NSObject {
                     self.cameraViewControllerDelegate?.photoSavedToPhotoLibrary?(self.rotatedUIImage!)
                     NSLog("image saved to photo library")
                 }
-            
         }
-            
+        
     }
     
     func rotatedImageAccordingToDeviceOrientation(image: CGImage) -> UIImage {
@@ -69,6 +75,7 @@ class PhotoController: NSObject {
             blendPhoto(photo)
         } else {
             blendedPhoto = photo
+            isSavingPhoto = false
             self.cameraControllerDelegate?.blendedPhotoDidChange?(blendedPhoto)
         }
     }
