@@ -9,8 +9,8 @@
 import UIKit
 import GLKit
 
-class CameraViewController: UIViewController, PhotoControllerDelegate, UIDocumentInteractionControllerDelegate {
-    
+class CameraViewController: UIViewController, PhotoControllerDelegate {
+
     @IBOutlet weak var photoSavedWrapperView: UIView!
     @IBOutlet weak var glView: GLKView?
     let cameraController: CameraController
@@ -40,7 +40,7 @@ class CameraViewController: UIViewController, PhotoControllerDelegate, UIDocumen
     func photoSavedToPhotoLibrary(savedPhoto: UIImage) {
         dispatch_async(dispatch_get_main_queue()) {
             [unowned self] () -> Void in
-            self.sharePhoto(savedPhoto)
+            self.presentShareViewControllerWithPhoto(savedPhoto)
             self.photoSavedWrapperView.hidden = false
             self.photoSavedWrapperView.alpha = 1.0
             self.photoSavedWrapperView.transform = CGAffineTransformMakeScale(0.8, 0.8)
@@ -53,19 +53,11 @@ class CameraViewController: UIViewController, PhotoControllerDelegate, UIDocumen
         }
     }
     
-    func sharePhoto(photo: UIImage) {
-        let jpegImage = UIImageJPEGRepresentation(photo, 1.0)
-        let homePathString = NSTemporaryDirectory() + "/temp_photo.ig";
-        let homePathUrl = NSURL(fileURLWithPath: homePathString)
-        do {
-            try jpegImage!.writeToURL(homePathUrl, options: .DataWritingAtomic)
-        } catch {
-            NSLog("could not safe temp image")
+    func presentShareViewControllerWithPhoto(photo: UIImage) {
+        let shareViewController = ShareViewController(nibName: "ShareViewController", bundle: nil)
+        self.presentViewController(shareViewController, animated: true) { () -> Void in
+            shareViewController.sharePhoto(photo)
         }
-        documentInteractionController.URL = homePathUrl
-        documentInteractionController.UTI = "com.instagram.photo"
-        documentInteractionController.presentOpenInMenuFromRect(CGRectZero, inView: self.view, animated: true)
-        
     }
     
     func deviceOrientationDidChange() {

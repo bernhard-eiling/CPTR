@@ -14,6 +14,8 @@
 		6F8B73A01BC07526008E41A4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6F8B739F1BC07526008E41A4 /* Assets.xcassets */; };
 		6F8B73A31BC07526008E41A4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F8B73A11BC07526008E41A4 /* LaunchScreen.storyboard */; };
 		6FDF9AF41BCC007A00265263 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDF9AF31BCC007A00265263 /* CameraController.swift */; };
+		6FEF7D991BF546000090EFF3 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEF7D971BF546000090EFF3 /* ShareViewController.swift */; };
+		6FEF7D9A1BF546000090EFF3 /* ShareViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6FEF7D981BF546000090EFF3 /* ShareViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		6F8B73A21BC07526008E41A4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6F8B73A41BC07526008E41A4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6FDF9AF31BCC007A00265263 /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
+		6FEF7D971BF546000090EFF3 /* ShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		6FEF7D981BF546000090EFF3 /* ShareViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ShareViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +66,8 @@
 				6F8B739A1BC07526008E41A4 /* CameraViewController.swift */,
 				6FDF9AF31BCC007A00265263 /* CameraController.swift */,
 				6F212B921BE50FA8008FB4CE /* PhotoController.swift */,
+				6FEF7D971BF546000090EFF3 /* ShareViewController.swift */,
+				6FEF7D981BF546000090EFF3 /* ShareViewController.xib */,
 				6F8B739C1BC07526008E41A4 /* Main.storyboard */,
 				6F8B739F1BC07526008E41A4 /* Assets.xcassets */,
 				6F8B73A11BC07526008E41A4 /* LaunchScreen.storyboard */,
@@ -131,6 +137,7 @@
 			files = (
 				6F8B73A31BC07526008E41A4 /* LaunchScreen.storyboard in Resources */,
 				6F8B73A01BC07526008E41A4 /* Assets.xcassets in Resources */,
+				6FEF7D9A1BF546000090EFF3 /* ShareViewController.xib in Resources */,
 				6F8B739E1BC07526008E41A4 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -161,6 +168,7 @@
 			files = (
 				6FDF9AF41BCC007A00265263 /* CameraController.swift in Sources */,
 				6F8B739B1BC07526008E41A4 /* CameraViewController.swift in Sources */,
+				6FEF7D991BF546000090EFF3 /* ShareViewController.swift in Sources */,
 				6F212B931BE50FA8008FB4CE /* PhotoController.swift in Sources */,
 				6F8B73991BC07526008E41A4 /* AppDelegate.swift in Sources */,
 			);
