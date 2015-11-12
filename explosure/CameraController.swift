@@ -53,7 +53,8 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate,
             videoDataOutput.setSampleBufferDelegate(self, queue: dispatch_queue_create("VideoDataOutputQueue", DISPATCH_QUEUE_SERIAL))
         }
         let sessionQueue = dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)
-        dispatch_async(sessionQueue) { () -> Void in
+        dispatch_async(sessionQueue) {
+            [unowned self] () -> Void in
             self.captureSession.startRunning()
         }
     }
@@ -67,7 +68,8 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate,
     
     func captureImage() {
         let sessionQueue = dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)
-        dispatch_async(sessionQueue) { () -> Void in
+        dispatch_async(sessionQueue) {
+            [unowned self] () -> Void in
             if let stillImageOutput = self.stillImageOutput {
                 let stillImageConnection = stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)
                 stillImageOutput.captureStillImageAsynchronouslyFromConnection(stillImageConnection, completionHandler: { (imageDataSampleBuffer: CMSampleBuffer?, error: NSError?) -> Void in

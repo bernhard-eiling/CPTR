@@ -25,11 +25,11 @@ class PhotoController: NSObject {
     var localIdentifier: String?
     
     private func saveImageToPhotoLibrary() {
-        PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
+        PHPhotoLibrary.sharedPhotoLibrary().performChanges({ [unowned self] () -> Void in
             self.rotatedUIImage = self.rotatedImageAccordingToDeviceOrientation(self.blendedPhoto!)
             let assetPlaceholder = PHAssetCreationRequest.creationRequestForAssetFromImage(self.rotatedUIImage!).placeholderForCreatedAsset
             self.localIdentifier = assetPlaceholder?.localIdentifier
-            }) { (success, error) -> Void in
+            }) { [unowned self] (success, error) -> Void in
                 if (!success) {
                     NSLog("could not save image to photo library")
                 } else {
@@ -75,8 +75,7 @@ class PhotoController: NSObject {
     
     private func blendPhoto(photo: CGImage) {
         let sessionQueue = dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)
-        dispatch_async(sessionQueue) { () -> Void in
-            
+        dispatch_async(sessionQueue) { [unowned self] () -> Void in
             UIGraphicsBeginImageContext(self.sizeOfCGImage(photo))
             let context: CGContext? = UIGraphicsGetCurrentContext()
             CGContextScaleCTM(context, 1.0, -1.0)
