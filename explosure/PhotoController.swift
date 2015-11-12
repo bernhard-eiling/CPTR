@@ -11,21 +11,24 @@ import Photos
 
 @objc protocol PhotoControllerDelegate {
     optional func blendedPhotoDidChange(blendedPhoto: CGImage?)
-    optional func photoSavedToPhotoLibrary()
+    optional func photoSavedToPhotoLibrary(savedUIImage: UIImage)
 }
 
 class PhotoController: NSObject {
     
-    private let photoCapaciy = 3
+    private let photoCapaciy = 2
     private var photoCounter = 0
     private var blendedPhoto: CGImage?
+    private var rotatedUIImage: UIImage?
     var cameraControllerDelegate: PhotoControllerDelegate?
     var cameraViewControllerDelegate: PhotoControllerDelegate?
+    var localIdentifier: String?
     
     private func saveImageToPhotoLibrary() {
         PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
-            let rotatedImage = self.rotatedImageAccordingToDeviceOrientation(self.blendedPhoto!)
-            PHAssetCreationRequest.creationRequestForAssetFromImage(rotatedImage)
+            self.rotatedUIImage = self.rotatedImageAccordingToDeviceOrientation(self.blendedPhoto!)
+            let assetPlaceholder = PHAssetCreationRequest.creationRequestForAssetFromImage(self.rotatedUIImage!).placeholderForCreatedAsset
+            self.localIdentifier = assetPlaceholder?.localIdentifier
             }) { (success, error) -> Void in
                 if (!success) {
                     NSLog("could not save image to photo library")
@@ -33,10 +36,12 @@ class PhotoController: NSObject {
                     self.photoCounter = 0
                     self.blendedPhoto = nil
                     self.cameraControllerDelegate?.blendedPhotoDidChange?(self.blendedPhoto)
-                    self.cameraViewControllerDelegate?.photoSavedToPhotoLibrary?()
+                    self.cameraViewControllerDelegate?.photoSavedToPhotoLibrary?(self.rotatedUIImage!)
                     NSLog("image saved to photo library")
                 }
+            
         }
+            
     }
     
     func rotatedImageAccordingToDeviceOrientation(image: CGImage) -> UIImage {
