@@ -68,6 +68,7 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate,
     
     func captureImage() {
         if photoController.isSavingPhoto {
+            NSLog("photo is still being saved")
             return
         }
         photoController.isSavingPhoto = true

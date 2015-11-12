@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
         <!--Camera View Controller-->
@@ -18,10 +19,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DJm-Tz-Kyf" userLabel="GLK View" customClass="GLKView">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="500"/>
                                 <subviews>
                                     <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WQT-hL-sLR" userLabel="saved wrapper">
-                                        <rect key="frame" x="122" y="345.5" width="130" height="130"/>
+                                        <rect key="frame" x="122" y="262" width="130" height="130"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SAVED" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="acf-7D-5Ox">
                                                 <rect key="frame" x="0.0" y="0.0" width="130" height="130"/>
@@ -52,13 +53,13 @@
                             </view>
                         </subviews>
                         <animations/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
                         <constraints>
-                            <constraint firstItem="DJm-Tz-Kyf" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="JTk-35-r6X"/>
                             <constraint firstItem="DJm-Tz-Kyf" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="dQz-BQ-SnY"/>
+                            <constraint firstItem="DJm-Tz-Kyf" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="-20" id="k3X-Y1-Yg1"/>
                             <constraint firstItem="DJm-Tz-Kyf" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="mWJ-d1-7hL"/>
-                            <constraint firstItem="DJm-Tz-Kyf" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" id="opu-c1-ApW"/>
+                            <constraint firstItem="DJm-Tz-Kyf" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="4 / 3" id="opu-c1-ApW"/>
                         </constraints>
                         <connections>
                             <outletCollection property="gestureRecognizers" destination="Uzw-wH-or9" appends="YES" id="rfq-Zh-qfR"/>
