@@ -33,17 +33,18 @@ class PhotoController: NSObject {
     private func saveImageToPhotoLibrary() {
         PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
             self.rotatedUIImage = self.rotatedImageAccordingToDeviceOrientation(self.blendedPhoto!)
-            let assetPlaceholder = PHAssetCreationRequest.creationRequestForAssetFromImage(self.rotatedUIImage!).placeholderForCreatedAsset
-            self.localIdentifier = assetPlaceholder?.localIdentifier
+            PHAssetCreationRequest.creationRequestForAssetFromImage(self.rotatedUIImage!)
             }) { (success, error) -> Void in
                 self.isSavingPhoto = false
                 if (!success) {
                     NSLog("could not save image to photo library")
                 } else {
+                    self.cameraControllerDelegate?.blendedPhotoDidChange?(self.blendedPhoto)
+                    let notRotImage = UIImage(CGImage: self.blendedPhoto!)
+                    self.cameraControllerDelegate?.photoSavedToPhotoLibrary?(notRotImage)
+                    self.cameraViewControllerDelegate?.photoSavedToPhotoLibrary?(self.rotatedUIImage!)
                     self.photoCounter = 0
                     self.blendedPhoto = nil
-                    self.cameraControllerDelegate?.blendedPhotoDidChange?(self.blendedPhoto)
-                    self.cameraViewControllerDelegate?.photoSavedToPhotoLibrary?(self.rotatedUIImage!)
                     NSLog("image saved to photo library")
                 }
         }

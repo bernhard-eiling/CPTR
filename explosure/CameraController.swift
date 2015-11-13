@@ -23,6 +23,7 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate,
         }
     }
     
+    var savedPhoto: UIImage?
     private let photoController: PhotoController
     private var stillImageOutput: AVCaptureStillImageOutput?
     private let glContext: EAGLContext
@@ -96,6 +97,9 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate,
     }
     
     func drawVideoWithSampleBuffer(sampleBuffer: CMSampleBuffer!) {
+        if self.savedPhoto != nil {
+            return
+        }
         if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
             blendFilter.setValue(CIImage(CVPixelBuffer: imageBuffer), forKey: "inputImage")
             if blendFilter.outputImage != nil && glView != nil {
@@ -105,6 +109,10 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate,
                 glView!.display()
             }
         }
+    }
+    
+    func photoSavedToPhotoLibrary(savedPhoto: UIImage) {
+        self.savedPhoto = savedPhoto
     }
     
     func blendedPhotoDidChange(blendedPhoto: CGImage?) {
@@ -119,8 +127,12 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate,
             self.blendFilter.setValue(ciImage, forKey: "inputBackgroundImage")
             UIGraphicsEndImageContext();
         } else {
-            self.blendFilter.setValue(nil, forKey: "inputBackgroundImage")
+            resetCameraView()
         }
+    }
+    
+    func resetCameraView() {
+        self.blendFilter.setValue(nil, forKey: "inputBackgroundImage")
     }
 
     func addCaptureDeviceInput() {

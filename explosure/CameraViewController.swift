@@ -11,12 +11,13 @@ import GLKit
 
 class CameraViewController: UIViewController, PhotoControllerDelegate {
     
+    @IBOutlet weak var captureButton: UIButton!
     @IBOutlet var rotatableViews: [UIView]!
     @IBOutlet weak var photoSavedWrapperView: UIView!
     @IBOutlet weak var glView: GLKView?
     let cameraController: CameraController
     let documentInteractionController: UIDocumentInteractionController
-    var savedPhoto: UIImage?
+    @IBOutlet weak var stillImageView: UIImageView!
     
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
@@ -36,16 +37,24 @@ class CameraViewController: UIViewController, PhotoControllerDelegate {
     }
     
     @IBAction func captureButtonTapped() {
-        cameraController.captureImage()
+        if cameraController.savedPhoto != nil {
+            captureButton.titleLabel!.text = "CAP"
+            self.stillImageView.image = nil
+            cameraController.savedPhoto = nil
+            cameraController.resetCameraView()
+        } else {
+            cameraController.captureImage()
+        }
     }
     
     @IBAction func shareButtonTapped() {
-        self.presentShareViewController()
+        presentShareViewController()
     }
     
     func photoSavedToPhotoLibrary(savedPhoto: UIImage) {
         dispatch_async(dispatch_get_main_queue()) { () -> Void in
-            self.savedPhoto = savedPhoto
+            self.stillImageView.image = savedPhoto
+//            self.captureButton.titleLabel!.text = "DEL"
             self.photoSavedWrapperView.hidden = false
             self.photoSavedWrapperView.alpha = 1.0
             self.photoSavedWrapperView.transform = CGAffineTransformMakeScale(0.8, 0.8)
@@ -59,7 +68,7 @@ class CameraViewController: UIViewController, PhotoControllerDelegate {
     }
     
     func presentShareViewController() {
-        if let sharePhoto = self.savedPhoto {
+        if let sharePhoto = self.cameraController.savedPhoto {
             let shareViewController = ShareViewController(nibName: "ShareViewController", bundle: nil)
             self.presentViewController(shareViewController, animated: true) { () -> Void in
                 shareViewController.sharePhoto(sharePhoto)
