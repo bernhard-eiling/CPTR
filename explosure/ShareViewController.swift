@@ -39,7 +39,6 @@ class ShareViewController: UIViewController, UIDocumentInteractionControllerDele
         documentInteractionController.UTI = "com.instagram.photo"
         documentInteractionController.delegate = self
         documentInteractionController.presentOpenInMenuFromRect(CGRectZero, inView: self.view, animated: true)
-        
     }
     
     func documentInteractionControllerDidEndPreview(controller: UIDocumentInteractionController) {

@@ -10,7 +10,8 @@ import UIKit
 import GLKit
 
 class CameraViewController: UIViewController, PhotoControllerDelegate {
-
+    
+    @IBOutlet var rotatableViews: [UIView]!
     @IBOutlet weak var photoSavedWrapperView: UIView!
     @IBOutlet weak var glView: GLKView?
     let cameraController: CameraController
@@ -33,13 +34,12 @@ class CameraViewController: UIViewController, PhotoControllerDelegate {
         super.viewDidLoad()
     }
     
-    @IBAction func stillImageTapRecognizerTapped(sender: UITapGestureRecognizer) {
+    @IBAction func captureButtonTapped() {
         cameraController.captureImage()
     }
     
     func photoSavedToPhotoLibrary(savedPhoto: UIImage) {
-        dispatch_async(dispatch_get_main_queue()) {
-            [unowned self] () -> Void in
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
             self.presentShareViewControllerWithPhoto(savedPhoto)
             self.photoSavedWrapperView.hidden = false
             self.photoSavedWrapperView.alpha = 1.0
@@ -61,11 +61,29 @@ class CameraViewController: UIViewController, PhotoControllerDelegate {
     }
     
     func deviceOrientationDidChange() {
-        if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation)) {
-            
+        switch UIDevice.currentDevice().orientation {
+        case .Portrait:
+            rotateRotatableViewsWithTransform(CGAffineTransformIdentity)
+            break
+        case .LandscapeLeft:
+            rotateRotatableViewsWithTransform(CGAffineTransformMakeRotation(CGFloat(M_PI_2)))
+            break
+        case .LandscapeRight:
+            rotateRotatableViewsWithTransform(CGAffineTransformMakeRotation(-CGFloat(M_PI_2)))
+            break
+        case .PortraitUpsideDown:
+            rotateRotatableViewsWithTransform(CGAffineTransformMakeRotation(CGFloat(M_PI)))
+            break
+        default:
+            break
         }
-        if(UIDeviceOrientationIsPortrait(UIDevice.currentDevice().orientation)) {
-            
+    }
+    
+    func rotateRotatableViewsWithTransform(transform: CGAffineTransform) {
+        UIView.animateWithDuration(0.3) { () -> Void in
+            for rotatableView in self.rotatableViews {
+                rotatableView.transform = transform
+            }
         }
     }
     

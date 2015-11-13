@@ -4,6 +4,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
         <!--Camera View Controller-->
@@ -45,10 +46,91 @@
                                     </view>
                                 </subviews>
                                 <animations/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstItem="WQT-hL-sLR" firstAttribute="centerX" secondItem="DJm-Tz-Kyf" secondAttribute="centerX" id="8hx-SB-F0H"/>
                                     <constraint firstItem="WQT-hL-sLR" firstAttribute="centerY" secondItem="DJm-Tz-Kyf" secondAttribute="centerY" constant="77" id="jg5-NP-szn"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lov-Cd-6c0" userLabel="controls wrapper">
+                                <rect key="frame" x="0.0" y="500" width="375" height="167"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Mnh-Z5-Xw4" userLabel="SHA">
+                                        <rect key="frame" x="66" y="56" width="56" height="56"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p0z-4W-mBf" userLabel="SHA Button">
+                                                <rect key="frame" x="8" y="9" width="40" height="39"/>
+                                                <animations/>
+                                                <fontDescription key="fontDescription" name="BodoniSvtyTwoITCTT-Book" family="Bodoni 72" pointSize="22"/>
+                                                <state key="normal" title="SHA">
+                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                            </button>
+                                        </subviews>
+                                        <animations/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstItem="p0z-4W-mBf" firstAttribute="centerY" secondItem="Mnh-Z5-Xw4" secondAttribute="centerY" id="Nxl-kG-ht2"/>
+                                            <constraint firstItem="p0z-4W-mBf" firstAttribute="centerX" secondItem="Mnh-Z5-Xw4" secondAttribute="centerX" id="ZVP-yR-wZD"/>
+                                        </constraints>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2KK-mA-8Ab" userLabel="CAP">
+                                        <rect key="frame" x="159" y="56" width="56" height="56"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1hP-Q2-VMB" userLabel="cap Button">
+                                                <rect key="frame" x="9" y="9" width="39" height="39"/>
+                                                <animations/>
+                                                <fontDescription key="fontDescription" name="BodoniSvtyTwoITCTT-Book" family="Bodoni 72" pointSize="22"/>
+                                                <state key="normal" title="CAP">
+                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="captureButtonTapped" destination="BYZ-38-t0r" eventType="touchUpInside" id="u9R-Qw-w7e"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <animations/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstItem="1hP-Q2-VMB" firstAttribute="centerY" secondItem="2KK-mA-8Ab" secondAttribute="centerY" id="HTI-5C-aLd"/>
+                                            <constraint firstItem="1hP-Q2-VMB" firstAttribute="centerX" secondItem="2KK-mA-8Ab" secondAttribute="centerX" id="uzU-bI-snu"/>
+                                        </constraints>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IiJ-RR-8Oi" userLabel="BAL">
+                                        <rect key="frame" x="254" y="56" width="56" height="56"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mHF-RN-UWN" userLabel="BAL Button">
+                                                <rect key="frame" x="9" y="9" width="39" height="39"/>
+                                                <animations/>
+                                                <fontDescription key="fontDescription" name="BodoniSvtyTwoITCTT-Book" family="Bodoni 72" pointSize="22"/>
+                                                <state key="normal" title="BAL">
+                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                            </button>
+                                        </subviews>
+                                        <animations/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstItem="mHF-RN-UWN" firstAttribute="centerX" secondItem="IiJ-RR-8Oi" secondAttribute="centerX" id="P2H-zK-lCZ"/>
+                                            <constraint firstItem="mHF-RN-UWN" firstAttribute="centerY" secondItem="IiJ-RR-8Oi" secondAttribute="centerY" id="ZaH-va-W99"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <animations/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="IiJ-RR-8Oi" firstAttribute="centerY" secondItem="lov-Cd-6c0" secondAttribute="centerY" id="4zc-Cs-quw"/>
+                                    <constraint firstItem="2KK-mA-8Ab" firstAttribute="width" secondItem="lov-Cd-6c0" secondAttribute="height" multiplier="1/3" id="A3x-n2-Rfi"/>
+                                    <constraint firstItem="Mnh-Z5-Xw4" firstAttribute="centerY" secondItem="lov-Cd-6c0" secondAttribute="centerY" id="I0g-ME-ILF"/>
+                                    <constraint firstItem="IiJ-RR-8Oi" firstAttribute="width" secondItem="lov-Cd-6c0" secondAttribute="height" multiplier="1/3" id="KLs-T3-3qg"/>
+                                    <constraint firstItem="2KK-mA-8Ab" firstAttribute="height" secondItem="lov-Cd-6c0" secondAttribute="height" multiplier="1 /3" id="cNk-Ef-qcY"/>
+                                    <constraint firstItem="IiJ-RR-8Oi" firstAttribute="centerX" secondItem="lov-Cd-6c0" secondAttribute="centerX" multiplier="3/2" id="f8a-K6-Bgd"/>
+                                    <constraint firstItem="2KK-mA-8Ab" firstAttribute="centerY" secondItem="lov-Cd-6c0" secondAttribute="centerY" id="k6H-kb-j2J"/>
+                                    <constraint firstItem="Mnh-Z5-Xw4" firstAttribute="width" secondItem="lov-Cd-6c0" secondAttribute="height" multiplier="1/3" id="oAP-3Y-VVY"/>
+                                    <constraint firstItem="2KK-mA-8Ab" firstAttribute="centerX" secondItem="lov-Cd-6c0" secondAttribute="centerX" id="qdC-cd-QAy"/>
+                                    <constraint firstItem="Mnh-Z5-Xw4" firstAttribute="centerX" secondItem="lov-Cd-6c0" secondAttribute="centerX" multiplier="1/2" id="sVr-oY-clZ"/>
+                                    <constraint firstItem="Mnh-Z5-Xw4" firstAttribute="height" secondItem="lov-Cd-6c0" secondAttribute="height" multiplier="1/3" id="scG-JN-fSl"/>
+                                    <constraint firstItem="IiJ-RR-8Oi" firstAttribute="height" secondItem="lov-Cd-6c0" secondAttribute="height" multiplier="1/3" id="zt5-NK-Uj4"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -56,29 +138,29 @@
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
                         <constraints>
+                            <constraint firstItem="lov-Cd-6c0" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="9h4-FC-URl"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="lov-Cd-6c0" secondAttribute="bottom" id="I6a-9H-o6B"/>
+                            <constraint firstAttribute="trailing" secondItem="lov-Cd-6c0" secondAttribute="trailing" id="JYT-iQ-1So"/>
+                            <constraint firstItem="lov-Cd-6c0" firstAttribute="top" secondItem="DJm-Tz-Kyf" secondAttribute="bottom" id="WLp-sq-csn"/>
                             <constraint firstItem="DJm-Tz-Kyf" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="dQz-BQ-SnY"/>
                             <constraint firstItem="DJm-Tz-Kyf" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="-20" id="k3X-Y1-Yg1"/>
                             <constraint firstItem="DJm-Tz-Kyf" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="mWJ-d1-7hL"/>
                             <constraint firstItem="DJm-Tz-Kyf" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="4 / 3" id="opu-c1-ApW"/>
                         </constraints>
-                        <connections>
-                            <outletCollection property="gestureRecognizers" destination="Uzw-wH-or9" appends="YES" id="rfq-Zh-qfR"/>
-                        </connections>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="glView" destination="DJm-Tz-Kyf" id="rJZ-b5-S42"/>
                         <outlet property="photoSavedWrapperView" destination="WQT-hL-sLR" id="pDj-Lq-8oI"/>
+                        <outletCollection property="rotatableViews" destination="1hP-Q2-VMB" collectionClass="NSMutableArray" id="Tdf-0J-G0S"/>
+                        <outletCollection property="rotatableViews" destination="acf-7D-5Ox" collectionClass="NSMutableArray" id="IB5-CX-cgm"/>
+                        <outletCollection property="rotatableViews" destination="p0z-4W-mBf" collectionClass="NSMutableArray" id="UrY-vh-cb2"/>
+                        <outletCollection property="rotatableViews" destination="mHF-RN-UWN" collectionClass="NSMutableArray" id="NNj-3k-GCn"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
-                <tapGestureRecognizer id="Uzw-wH-or9">
-                    <connections>
-                        <action selector="stillImageTapRecognizerTapped:" destination="BYZ-38-t0r" id="3mE-Ex-O49"/>
-                        <outlet property="delegate" destination="DJm-Tz-Kyf" id="pE6-wB-RBj"/>
-                    </connections>
-                </tapGestureRecognizer>
             </objects>
+            <point key="canvasLocation" x="522.5" y="476.5"/>
         </scene>
     </scenes>
 </document>
