@@ -16,6 +16,7 @@ class CameraViewController: UIViewController, PhotoControllerDelegate {
     @IBOutlet weak var glView: GLKView?
     let cameraController: CameraController
     let documentInteractionController: UIDocumentInteractionController
+    var savedPhoto: UIImage?
     
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
@@ -38,9 +39,13 @@ class CameraViewController: UIViewController, PhotoControllerDelegate {
         cameraController.captureImage()
     }
     
+    @IBAction func shareButtonTapped() {
+        self.presentShareViewController()
+    }
+    
     func photoSavedToPhotoLibrary(savedPhoto: UIImage) {
         dispatch_async(dispatch_get_main_queue()) { () -> Void in
-            self.presentShareViewControllerWithPhoto(savedPhoto)
+            self.savedPhoto = savedPhoto
             self.photoSavedWrapperView.hidden = false
             self.photoSavedWrapperView.alpha = 1.0
             self.photoSavedWrapperView.transform = CGAffineTransformMakeScale(0.8, 0.8)
@@ -53,10 +58,12 @@ class CameraViewController: UIViewController, PhotoControllerDelegate {
         }
     }
     
-    func presentShareViewControllerWithPhoto(photo: UIImage) {
-        let shareViewController = ShareViewController(nibName: "ShareViewController", bundle: nil)
-        self.presentViewController(shareViewController, animated: true) { () -> Void in
-            shareViewController.sharePhoto(photo)
+    func presentShareViewController() {
+        if let sharePhoto = self.savedPhoto {
+            let shareViewController = ShareViewController(nibName: "ShareViewController", bundle: nil)
+            self.presentViewController(shareViewController, animated: true) { () -> Void in
+                shareViewController.sharePhoto(sharePhoto)
+            }
         }
     }
     
