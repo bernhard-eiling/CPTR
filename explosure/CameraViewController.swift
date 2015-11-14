@@ -51,10 +51,13 @@ class CameraViewController: UIViewController, PhotoControllerDelegate {
         presentShareViewController()
     }
     
+    @IBAction func focusGestureRecognizerTapped(sender: UITapGestureRecognizer) {
+        cameraController.focusCaptureDeviceWithPoint(sender.locationInView(self.glView))
+    }
+    
     func photoSavedToPhotoLibrary(savedPhoto: UIImage) {
         dispatch_async(dispatch_get_main_queue()) { () -> Void in
             self.stillImageView.image = savedPhoto
-//            self.captureButton.titleLabel!.text = "DEL"
             self.photoSavedWrapperView.hidden = false
             self.photoSavedWrapperView.alpha = 1.0
             self.photoSavedWrapperView.transform = CGAffineTransformMakeScale(0.8, 0.8)

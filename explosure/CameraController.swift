@@ -30,6 +30,7 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate,
     private let ciContext: CIContext
     private let captureSession: AVCaptureSession
     private var blendFilter: CIFilter
+    private var captureDevice: AVCaptureDevice?
     
     private var blendedPhoto: CGImage?
     
@@ -131,6 +132,23 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate,
         }
     }
     
+    func focusCaptureDeviceWithPoint(focusPoint: CGPoint) {
+        let normalizedFocusPoint = CGPoint(x: focusPoint.y / glView!.frame.size.height, y: 1.0 - (focusPoint.x / glView!.frame.size.width)) // coordinates switch is necessarry due to 90 degree rotation of camera
+        if let captureDevice = self.captureDevice {
+        do {
+            try captureDevice.lockForConfiguration()
+        } catch {
+            NSLog("focus capture device failed")
+            return
+        }
+        if captureDevice.focusPointOfInterestSupported {
+            captureDevice.focusPointOfInterest = normalizedFocusPoint
+            captureDevice.focusMode = .AutoFocus
+        }
+        captureDevice.unlockForConfiguration()
+        }
+    }
+    
     func resetCameraView() {
         self.blendFilter.setValue(nil, forKey: "inputBackgroundImage")
     }
@@ -138,8 +156,9 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate,
     func addCaptureDeviceInput() {
         var captureDeviceInput : AVCaptureDeviceInput
         do {
-            if let backCamera = backCameraDevice() {
-                captureDeviceInput = try AVCaptureDeviceInput(device: backCamera)
+            captureDevice = backCameraDevice()
+            if self.captureDevice != nil {
+                captureDeviceInput = try AVCaptureDeviceInput(device: captureDevice)
                 if captureSession.canAddInput(captureDeviceInput) {
                     captureSession.addInput(captureDeviceInput)
                 }
@@ -194,4 +213,5 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate,
         }
         return nil;
     }
+    
 }

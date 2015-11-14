@@ -47,13 +47,17 @@
                                 </subviews>
                                 <animations/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstItem="WQT-hL-sLR" firstAttribute="centerX" secondItem="DJm-Tz-Kyf" secondAttribute="centerX" id="8hx-SB-F0H"/>
                                     <constraint firstItem="WQT-hL-sLR" firstAttribute="centerY" secondItem="DJm-Tz-Kyf" secondAttribute="centerY" id="jg5-NP-szn"/>
                                 </constraints>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="l6C-R0-Fqx" appends="YES" id="vyG-n9-8jV"/>
+                                </connections>
                             </view>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="yP6-oY-3rV">
-                                <rect key="frame" x="-0.5" y="0.0" width="375" height="500"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yP6-oY-3rV">
+                                <rect key="frame" x="-1" y="0.0" width="376" height="500"/>
                                 <animations/>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lov-Cd-6c0" userLabel="controls wrapper">
@@ -178,6 +182,11 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="l6C-R0-Fqx">
+                    <connections>
+                        <action selector="focusGestureRecognizerTapped:" destination="BYZ-38-t0r" id="DnG-en-xly"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="522.5" y="476.5"/>
         </scene>
