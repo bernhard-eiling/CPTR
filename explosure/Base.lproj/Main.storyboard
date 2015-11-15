@@ -21,53 +21,47 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DJm-Tz-Kyf" userLabel="GLK View" customClass="GLKView">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="500"/>
-                                <subviews>
-                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WQT-hL-sLR" userLabel="saved wrapper">
-                                        <rect key="frame" x="122" y="185" width="130" height="130"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SAVED" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="acf-7D-5Ox">
-                                                <rect key="frame" x="0.0" y="0.0" width="130" height="130"/>
-                                                <animations/>
-                                                <fontDescription key="fontDescription" name="BodoniSvtyTwoITCTT-Book" family="Bodoni 72" pointSize="22"/>
-                                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                        </subviews>
-                                        <animations/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <constraints>
-                                            <constraint firstItem="acf-7D-5Ox" firstAttribute="centerY" secondItem="WQT-hL-sLR" secondAttribute="centerY" id="AGq-Hc-pcI"/>
-                                            <constraint firstAttribute="width" constant="130" id="LdY-fX-fBk"/>
-                                            <constraint firstItem="acf-7D-5Ox" firstAttribute="width" secondItem="WQT-hL-sLR" secondAttribute="width" id="VA9-mM-7oN"/>
-                                            <constraint firstAttribute="height" constant="130" id="bZg-d9-K6w"/>
-                                            <constraint firstItem="acf-7D-5Ox" firstAttribute="centerX" secondItem="WQT-hL-sLR" secondAttribute="centerX" id="laU-V1-QON"/>
-                                            <constraint firstItem="acf-7D-5Ox" firstAttribute="height" secondItem="WQT-hL-sLR" secondAttribute="height" id="pfS-0V-Ncb"/>
-                                        </constraints>
-                                    </view>
-                                </subviews>
                                 <animations/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 <gestureRecognizers/>
-                                <constraints>
-                                    <constraint firstItem="WQT-hL-sLR" firstAttribute="centerX" secondItem="DJm-Tz-Kyf" secondAttribute="centerX" id="8hx-SB-F0H"/>
-                                    <constraint firstItem="WQT-hL-sLR" firstAttribute="centerY" secondItem="DJm-Tz-Kyf" secondAttribute="centerY" id="jg5-NP-szn"/>
-                                </constraints>
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="l6C-R0-Fqx" appends="YES" id="vyG-n9-8jV"/>
                                 </connections>
                             </view>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yP6-oY-3rV">
-                                <rect key="frame" x="-1" y="0.0" width="376" height="500"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="yP6-oY-3rV">
+                                <rect key="frame" x="-0.5" y="0.0" width="375" height="500"/>
                                 <animations/>
                             </imageView>
+                            <view hidden="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WQT-hL-sLR" userLabel="saved wrapper">
+                                <rect key="frame" x="122" y="269" width="130" height="130"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SAVED" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="acf-7D-5Ox">
+                                        <rect key="frame" x="0.0" y="0.0" width="130" height="130"/>
+                                        <animations/>
+                                        <fontDescription key="fontDescription" name="BodoniSvtyTwoITCTT-Book" family="Bodoni 72" pointSize="22"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <animations/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="acf-7D-5Ox" firstAttribute="centerY" secondItem="WQT-hL-sLR" secondAttribute="centerY" id="AGq-Hc-pcI"/>
+                                    <constraint firstAttribute="width" constant="130" id="LdY-fX-fBk"/>
+                                    <constraint firstItem="acf-7D-5Ox" firstAttribute="width" secondItem="WQT-hL-sLR" secondAttribute="width" id="VA9-mM-7oN"/>
+                                    <constraint firstAttribute="height" constant="130" id="bZg-d9-K6w"/>
+                                    <constraint firstItem="acf-7D-5Ox" firstAttribute="centerX" secondItem="WQT-hL-sLR" secondAttribute="centerX" id="laU-V1-QON"/>
+                                    <constraint firstItem="acf-7D-5Ox" firstAttribute="height" secondItem="WQT-hL-sLR" secondAttribute="height" id="pfS-0V-Ncb"/>
+                                </constraints>
+                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lov-Cd-6c0" userLabel="controls wrapper">
                                 <rect key="frame" x="0.0" y="500" width="375" height="167"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Mnh-Z5-Xw4" userLabel="SHA">
                                         <rect key="frame" x="66" y="56" width="56" height="56"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p0z-4W-mBf" userLabel="SHA Button">
-                                                <rect key="frame" x="0.0" y="1" width="56" height="56"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p0z-4W-mBf" userLabel="SHA Button">
+                                                <rect key="frame" x="0.0" y="0.5" width="56" height="56"/>
                                                 <animations/>
                                                 <fontDescription key="fontDescription" name="BodoniSvtyTwoITCTT-Book" family="Bodoni 72" pointSize="22"/>
                                                 <state key="normal" title="SHA">
@@ -90,8 +84,8 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2KK-mA-8Ab" userLabel="CAP">
                                         <rect key="frame" x="159" y="56" width="56" height="56"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1hP-Q2-VMB" userLabel="cap Button">
-                                                <rect key="frame" x="1" y="1" width="56" height="56"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1hP-Q2-VMB" userLabel="cap Button">
+                                                <rect key="frame" x="0.5" y="0.5" width="56" height="56"/>
                                                 <animations/>
                                                 <fontDescription key="fontDescription" name="BodoniSvtyTwoITCTT-Book" family="Bodoni 72" pointSize="22"/>
                                                 <state key="normal" title="CAP">
@@ -112,10 +106,10 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IiJ-RR-8Oi" userLabel="BAL">
-                                        <rect key="frame" x="254" y="56" width="56" height="56"/>
+                                        <rect key="frame" x="253.5" y="56" width="56" height="56"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mHF-RN-UWN" userLabel="BAL Button">
-                                                <rect key="frame" x="1" y="1" width="56" height="56"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mHF-RN-UWN" userLabel="BAL Button">
+                                                <rect key="frame" x="0.5" y="0.5" width="56" height="56"/>
                                                 <animations/>
                                                 <fontDescription key="fontDescription" name="BodoniSvtyTwoITCTT-Book" family="Bodoni 72" pointSize="22"/>
                                                 <state key="normal" title="BAL">
@@ -163,10 +157,12 @@
                             <constraint firstItem="yP6-oY-3rV" firstAttribute="centerX" secondItem="DJm-Tz-Kyf" secondAttribute="centerX" id="Uho-5b-7dr"/>
                             <constraint firstItem="lov-Cd-6c0" firstAttribute="top" secondItem="DJm-Tz-Kyf" secondAttribute="bottom" id="WLp-sq-csn"/>
                             <constraint firstItem="DJm-Tz-Kyf" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="dQz-BQ-SnY"/>
+                            <constraint firstItem="WQT-hL-sLR" firstAttribute="centerY" secondItem="DJm-Tz-Kyf" secondAttribute="centerY" id="eey-yr-Qrz"/>
                             <constraint firstItem="DJm-Tz-Kyf" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="-20" id="k3X-Y1-Yg1"/>
                             <constraint firstItem="yP6-oY-3rV" firstAttribute="height" secondItem="DJm-Tz-Kyf" secondAttribute="height" id="mCf-Xa-bFx"/>
                             <constraint firstItem="DJm-Tz-Kyf" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="mWJ-d1-7hL"/>
                             <constraint firstItem="DJm-Tz-Kyf" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="4 / 3" id="opu-c1-ApW"/>
+                            <constraint firstItem="WQT-hL-sLR" firstAttribute="centerX" secondItem="DJm-Tz-Kyf" secondAttribute="centerX" id="sPr-AW-R94"/>
                         </constraints>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
@@ -176,9 +172,9 @@
                         <outlet property="photoSavedWrapperView" destination="WQT-hL-sLR" id="pDj-Lq-8oI"/>
                         <outlet property="stillImageView" destination="yP6-oY-3rV" id="JC9-rn-geE"/>
                         <outletCollection property="rotatableViews" destination="1hP-Q2-VMB" collectionClass="NSMutableArray" id="Tdf-0J-G0S"/>
-                        <outletCollection property="rotatableViews" destination="acf-7D-5Ox" collectionClass="NSMutableArray" id="IB5-CX-cgm"/>
                         <outletCollection property="rotatableViews" destination="p0z-4W-mBf" collectionClass="NSMutableArray" id="UrY-vh-cb2"/>
                         <outletCollection property="rotatableViews" destination="mHF-RN-UWN" collectionClass="NSMutableArray" id="NNj-3k-GCn"/>
+                        <outletCollection property="rotatableViews" destination="acf-7D-5Ox" collectionClass="NSMutableArray" id="IB5-CX-cgm"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

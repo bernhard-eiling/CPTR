@@ -39,10 +39,10 @@ class PhotoController: NSObject {
                 if (!success) {
                     NSLog("could not save image to photo library")
                 } else {
-                    self.cameraControllerDelegate?.blendedPhotoDidChange?(self.blendedPhoto)
                     let notRotImage = UIImage(CGImage: self.blendedPhoto!)
-                    self.cameraControllerDelegate?.photoSavedToPhotoLibrary?(notRotImage)
-                    self.cameraViewControllerDelegate?.photoSavedToPhotoLibrary?(self.rotatedUIImage!)
+                    self.cameraControllerDelegate?.blendedPhotoDidChange?(self.blendedPhoto)
+                    self.cameraControllerDelegate?.photoSavedToPhotoLibrary?(self.rotatedUIImage!)
+                    self.cameraViewControllerDelegate?.photoSavedToPhotoLibrary?(notRotImage)
                     self.photoCounter = 0
                     self.blendedPhoto = nil
                     NSLog("image saved to photo library")
@@ -51,7 +51,7 @@ class PhotoController: NSObject {
         
     }
     
-    func rotatedImageAccordingToDeviceOrientation(image: CGImage) -> UIImage {
+    func rotatedImageAccordingToDeviceOrientation(image: CGImage) -> UIImage { // does not actual pixel rotation?
         var imageOrientation: UIImageOrientation?
         if (UIDevice.currentDevice().orientation == .Portrait) {
             imageOrientation = .Right

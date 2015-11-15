@@ -79,11 +79,26 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate,
                 let stillImageConnection = stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)
                 stillImageOutput.captureStillImageAsynchronouslyFromConnection(stillImageConnection, completionHandler: { (imageDataSampleBuffer: CMSampleBuffer?, error: NSError?) -> Void in
                     if let ciImage = self.ciImageFromImageBuffer(imageDataSampleBuffer) {
-                        self.photoController.addPhoto(self.ciContext.createCGImage(ciImage, fromRect: ciImage.extent))
+                        let cgImage = self.ciContext.createCGImage(ciImage, fromRect: ciImage.extent)
+                        let cgImageSize = CGSize(width: CGImageGetWidth(cgImage), height: CGImageGetHeight(cgImage))
+                        let rotGgImage = self.rotateCGImage90Degrees(cgImage, toSize: cgImageSize)
+                        self.photoController.addPhoto(rotGgImage)
                     }
                 })
             }
         }
+    }
+    
+    func rotateCGImage90Degrees(cgImage: CGImage, toSize size:CGSize) -> CGImage {
+        UIGraphicsBeginImageContext(CGSize(width: size.height , height: size.width))
+        let context: CGContext? = UIGraphicsGetCurrentContext()
+        CGContextTranslateCTM(context, size.height / 2, size.width / 2)
+        CGContextRotateCTM(context, CGFloat(M_PI_2))
+        CGContextScaleCTM(context, 1.0, -1.0)
+        CGContextTranslateCTM(context, -size.width / 2, -size.height / 2)
+        CGContextDrawImage(context, CGRectMake(0, 0, size.width, size.height), cgImage)
+        UIGraphicsEndImageContext();
+        return CGBitmapContextCreateImage(context!)!
     }
     
     func ciImageFromImageBuffer(imageSampleBuffer: CMSampleBuffer?) -> CIImage? {
@@ -118,15 +133,14 @@ class CameraController : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate,
     
     func blendedPhotoDidChange(blendedPhoto: CGImage?) {
         if let backgroundPhoto = blendedPhoto {
-            let drawSize = CGSize(width: 640.0, height: 852.0)
-            UIGraphicsBeginImageContext(drawSize)
-            let context: CGContext? = UIGraphicsGetCurrentContext()
-            CGContextScaleCTM(context, -1.0, 1.0)
-            CGContextRotateCTM(context, CGFloat(M_PI_2))
-            CGContextDrawImage(context, CGRect(origin: CGPointZero, size: CGSize(width: 852.0, height: 640.0)), backgroundPhoto)
-            let ciImage = CIImage(CGImage: CGBitmapContextCreateImage(context)!)
+            let ciImage = CIImage(CGImage: backgroundPhoto)
+
+//            UIGraphicsBeginImageContext(CGSize(width: CGFloat(CGImageGetWidth(backgroundPhoto)), height: CGFloat(CGImageGetHeight(backgroundPhoto))))
+//            let context: CGContext? = UIGraphicsGetCurrentContext()
+//            CGContextDrawImage(context, CGRect(origin: CGPointZero, size: CGSize(width: CGFloat(CGImageGetWidth(backgroundPhoto)), height: CGFloat(CGImageGetHeight(backgroundPhoto)))), backgroundPhoto)
+//            let ciImage = CIImage(CGImage: CGBitmapContextCreateImage(context)!)
+//            UIGraphicsEndImageContext();
             self.blendFilter.setValue(ciImage, forKey: "inputBackgroundImage")
-            UIGraphicsEndImageContext();
         } else {
             resetCameraView()
         }
