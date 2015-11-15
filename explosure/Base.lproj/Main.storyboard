@@ -19,7 +19,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DJm-Tz-Kyf" userLabel="GLK View" customClass="GLKView">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DJm-Tz-Kyf" userLabel="GLK View wrapper">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="500"/>
                                 <animations/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
@@ -28,8 +28,8 @@
                                     <outletCollection property="gestureRecognizers" destination="l6C-R0-Fqx" appends="YES" id="vyG-n9-8jV"/>
                                 </connections>
                             </view>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="yP6-oY-3rV">
-                                <rect key="frame" x="-0.5" y="0.0" width="375" height="500"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yP6-oY-3rV">
+                                <rect key="frame" x="-1" y="0.0" width="376" height="500"/>
                                 <animations/>
                             </imageView>
                             <view hidden="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WQT-hL-sLR" userLabel="saved wrapper">
@@ -60,8 +60,8 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Mnh-Z5-Xw4" userLabel="SHA">
                                         <rect key="frame" x="66" y="56" width="56" height="56"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p0z-4W-mBf" userLabel="SHA Button">
-                                                <rect key="frame" x="0.0" y="0.5" width="56" height="56"/>
+                                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p0z-4W-mBf" userLabel="SHA Button">
+                                                <rect key="frame" x="0.0" y="1" width="56" height="56"/>
                                                 <animations/>
                                                 <fontDescription key="fontDescription" name="BodoniSvtyTwoITCTT-Book" family="Bodoni 72" pointSize="22"/>
                                                 <state key="normal" title="SHA">
@@ -84,8 +84,8 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2KK-mA-8Ab" userLabel="CAP">
                                         <rect key="frame" x="159" y="56" width="56" height="56"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1hP-Q2-VMB" userLabel="cap Button">
-                                                <rect key="frame" x="0.5" y="0.5" width="56" height="56"/>
+                                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1hP-Q2-VMB" userLabel="cap Button">
+                                                <rect key="frame" x="1" y="1" width="56" height="56"/>
                                                 <animations/>
                                                 <fontDescription key="fontDescription" name="BodoniSvtyTwoITCTT-Book" family="Bodoni 72" pointSize="22"/>
                                                 <state key="normal" title="CAP">
@@ -106,10 +106,10 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IiJ-RR-8Oi" userLabel="BAL">
-                                        <rect key="frame" x="253.5" y="56" width="56" height="56"/>
+                                        <rect key="frame" x="254" y="56" width="56" height="56"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mHF-RN-UWN" userLabel="BAL Button">
-                                                <rect key="frame" x="0.5" y="0.5" width="56" height="56"/>
+                                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mHF-RN-UWN" userLabel="BAL Button">
+                                                <rect key="frame" x="1" y="1" width="56" height="56"/>
                                                 <animations/>
                                                 <fontDescription key="fontDescription" name="BodoniSvtyTwoITCTT-Book" family="Bodoni 72" pointSize="22"/>
                                                 <state key="normal" title="BAL">
@@ -168,7 +168,7 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="captureButton" destination="1hP-Q2-VMB" id="WON-Qr-Lhl"/>
-                        <outlet property="glView" destination="DJm-Tz-Kyf" id="rJZ-b5-S42"/>
+                        <outlet property="glViewWrapper" destination="DJm-Tz-Kyf" id="WCd-kr-sUZ"/>
                         <outlet property="photoSavedWrapperView" destination="WQT-hL-sLR" id="pDj-Lq-8oI"/>
                         <outlet property="stillImageView" destination="yP6-oY-3rV" id="JC9-rn-geE"/>
                         <outletCollection property="rotatableViews" destination="1hP-Q2-VMB" collectionClass="NSMutableArray" id="Tdf-0J-G0S"/>

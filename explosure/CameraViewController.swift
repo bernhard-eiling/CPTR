@@ -7,43 +7,43 @@
 //
 
 import UIKit
-import GLKit
+import AVFoundation
 
-class CameraViewController: UIViewController, PhotoControllerDelegate {
+class CameraViewController: UIViewController, GLViewControllerDelegate {
     
     @IBOutlet weak var captureButton: UIButton!
     @IBOutlet var rotatableViews: [UIView]!
     @IBOutlet weak var photoSavedWrapperView: UIView!
-    @IBOutlet weak var glView: GLKView?
-    let cameraController: CameraController
+    @IBOutlet weak var glViewWrapper: UIView!
     let documentInteractionController: UIDocumentInteractionController
     @IBOutlet weak var stillImageView: UIImageView!
+    let glViewController: GLViewController
+    
     
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     required init?(coder aCoder: NSCoder) {
-        cameraController = CameraController()
         documentInteractionController = UIDocumentInteractionController()
+        glViewController = GLViewController(nibName: "GLViewController", bundle: nil)
         super.init(coder: aCoder)
     }
     
     override func viewDidLoad() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "deviceOrientationDidChange", name: UIDeviceOrientationDidChangeNotification, object: nil)
-        cameraController.setupCaptureSessionWithDelegate(self)
-        cameraController.glView = glView
+        addChildViewController(glViewController)
+        self.glViewWrapper.addSubview(glViewController.view)
+//        self.glViewWrapper.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
         super.viewDidLoad()
     }
     
     @IBAction func captureButtonTapped() {
-        if cameraController.savedPhoto != nil {
+        if glViewController.savedPhoto != nil {
             captureButton.titleLabel!.text = "CAP"
             self.stillImageView.image = nil
-            cameraController.savedPhoto = nil
-            cameraController.resetCameraView()
         } else {
-            cameraController.captureImage()
+            glViewController.captureImage()
         }
     }
     
@@ -52,7 +52,7 @@ class CameraViewController: UIViewController, PhotoControllerDelegate {
     }
     
     @IBAction func focusGestureRecognizerTapped(sender: UITapGestureRecognizer) {
-        cameraController.focusCaptureDeviceWithPoint(sender.locationInView(self.glView))
+        glViewController.focusCaptureDeviceWithPoint(sender.locationInView(self.glViewWrapper))
     }
     
     func photoSavedToPhotoLibrary(savedPhoto: UIImage) {
@@ -71,10 +71,10 @@ class CameraViewController: UIViewController, PhotoControllerDelegate {
     }
     
     func presentShareViewController() {
-        if let sharePhoto = self.cameraController.savedPhoto {
+        if let sharePhoto = glViewController.savedPhoto {
             let shareViewController = ShareViewController(nibName: "ShareViewController", bundle: nil)
             self.presentViewController(shareViewController, animated: true) { () -> Void in
-                shareViewController.sharePhoto(sharePhoto)
+                shareViewController.sharePhoto(UIImage(CGImage:sharePhoto))
             }
         }
     }
