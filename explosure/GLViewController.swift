@@ -16,8 +16,7 @@ protocol GLViewControllerDelegate {
 }
 
 class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
-    
-    
+
     var savedPhoto: CGImage?
     
     private var stillImageOutput: AVCaptureStillImageOutput?
@@ -61,6 +60,9 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         addCaptureDeviceInput()
         addStillImageDataOutput()
         setStillImageOrientation(.Portrait)
+        
+        glView.context = glContext
+        glView.enableSetNeedsDisplay = false
         
         if let videoDataOutput = videoDataOutput() {
             setVideoOrientation(.Portrait, videoDataOutput: videoDataOutput)
