@@ -15,7 +15,7 @@ protocol GLViewControllerDelegate {
     func photoSavedToPhotoLibrary(savedPhoto: UIImage)
 }
 
-class GLViewController: GLKViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
+class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     
     var savedPhoto: CGImage?
@@ -56,7 +56,7 @@ class GLViewController: GLKViewController, AVCaptureVideoDataOutputSampleBufferD
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view = glView
+//        self.view = glView
         captureSession.sessionPreset = AVCaptureSessionPresetPhoto
         addCaptureDeviceInput()
         addStillImageDataOutput()
@@ -97,6 +97,7 @@ class GLViewController: GLKViewController, AVCaptureVideoDataOutputSampleBufferD
             if blendFilter.outputImage != nil && view != nil {
                 glView.bindDrawable()
                 let drawRect = CGRectMake(0, 0, blendFilter.outputImage!.extent.width, blendFilter.outputImage!.extent.height)
+                let outputImage = blendFilter.outputImage!
                 ciContext.drawImage(blendFilter.outputImage!, inRect: drawRect, fromRect: blendFilter.outputImage!.extent)
                 glView.display()
             }

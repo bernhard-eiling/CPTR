@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6F14E2E51C42F70600A74D08 /* GLViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F14E2E41C42F70600A74D08 /* GLViewController.xib */; };
 		6F8B73991BC07526008E41A4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F8B73981BC07526008E41A4 /* AppDelegate.swift */; };
 		6F8B739B1BC07526008E41A4 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F8B739A1BC07526008E41A4 /* CameraViewController.swift */; };
 		6F8B739E1BC07526008E41A4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F8B739C1BC07526008E41A4 /* Main.storyboard */; };
@@ -15,10 +16,10 @@
 		6FEF7D991BF546000090EFF3 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEF7D971BF546000090EFF3 /* ShareViewController.swift */; };
 		6FEF7D9A1BF546000090EFF3 /* ShareViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6FEF7D981BF546000090EFF3 /* ShareViewController.xib */; };
 		6FEF7D9D1BF927040090EFF3 /* GLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEF7D9B1BF927040090EFF3 /* GLViewController.swift */; };
-		6FEF7D9E1BF927040090EFF3 /* GLViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6FEF7D9C1BF927040090EFF3 /* GLViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6F14E2E41C42F70600A74D08 /* GLViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GLViewController.xib; sourceTree = "<group>"; };
 		6F8B73951BC07526008E41A4 /* explosure.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = explosure.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F8B73981BC07526008E41A4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6F8B739A1BC07526008E41A4 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
@@ -29,7 +30,6 @@
 		6FEF7D971BF546000090EFF3 /* ShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		6FEF7D981BF546000090EFF3 /* ShareViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ShareViewController.xib; sourceTree = "<group>"; };
 		6FEF7D9B1BF927040090EFF3 /* GLViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GLViewController.swift; sourceTree = "<group>"; };
-		6FEF7D9C1BF927040090EFF3 /* GLViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GLViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,7 +65,7 @@
 				6F8B73981BC07526008E41A4 /* AppDelegate.swift */,
 				6F8B739A1BC07526008E41A4 /* CameraViewController.swift */,
 				6FEF7D9B1BF927040090EFF3 /* GLViewController.swift */,
-				6FEF7D9C1BF927040090EFF3 /* GLViewController.xib */,
+				6F14E2E41C42F70600A74D08 /* GLViewController.xib */,
 				6FEF7D971BF546000090EFF3 /* ShareViewController.swift */,
 				6FEF7D981BF546000090EFF3 /* ShareViewController.xib */,
 				6F8B739C1BC07526008E41A4 /* Main.storyboard */,
@@ -137,7 +137,7 @@
 			files = (
 				6F8B73A31BC07526008E41A4 /* LaunchScreen.storyboard in Resources */,
 				6F8B73A01BC07526008E41A4 /* Assets.xcassets in Resources */,
-				6FEF7D9E1BF927040090EFF3 /* GLViewController.xib in Resources */,
+				6F14E2E51C42F70600A74D08 /* GLViewController.xib in Resources */,
 				6FEF7D9A1BF546000090EFF3 /* ShareViewController.xib in Resources */,
 				6F8B739E1BC07526008E41A4 /* Main.storyboard in Resources */,
 			);

@@ -33,6 +33,7 @@ class CameraViewController: UIViewController, GLViewControllerDelegate {
     override func viewDidLoad() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "deviceOrientationDidChange", name: UIDeviceOrientationDidChangeNotification, object: nil)
         addChildViewController(glViewController)
+        glViewController.view.frame = view.frame
         self.glViewWrapper.addSubview(glViewController.view)
 //        self.glViewWrapper.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
         super.viewDidLoad()
