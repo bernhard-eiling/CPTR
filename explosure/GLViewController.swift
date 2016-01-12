@@ -55,7 +55,6 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
 
     override func viewDidLoad() {
         super.viewDidLoad()
-//        self.view = glView
         captureSession.sessionPreset = AVCaptureSessionPresetPhoto
         addCaptureDeviceInput()
         addStillImageDataOutput()
@@ -99,7 +98,6 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
             if blendFilter.outputImage != nil && view != nil {
                 glView.bindDrawable()
                 let drawRect = CGRectMake(0, 0, blendFilter.outputImage!.extent.width, blendFilter.outputImage!.extent.height)
-                let outputImage = blendFilter.outputImage!
                 ciContext.drawImage(blendFilter.outputImage!, inRect: drawRect, fromRect: blendFilter.outputImage!.extent)
                 glView.display()
             }
