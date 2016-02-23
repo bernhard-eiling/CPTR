@@ -24,7 +24,7 @@ class CameraViewController: UIViewController, GLViewControllerDelegate {
     }
     
     required init?(coder aCoder: NSCoder) {
-        glViewController = GLViewController(nibName: "GLViewController", bundle: nil)
+        glViewController = GLViewController()
         super.init(coder: aCoder)
     }
     
@@ -38,12 +38,13 @@ class CameraViewController: UIViewController, GLViewControllerDelegate {
     }
     
     @IBAction func captureButtonTapped() {
-        if glViewController.savedPhoto != nil {
-            captureButton.titleLabel!.text = "CAP"
-            self.stillImageView.image = nil
-        } else {
-            glViewController.captureImage()
-        }
+        glViewController.captureImage()
+//        if glViewController.savedPhoto != nil {
+//            captureButton.titleLabel!.text = "CAP"
+//            self.stillImageView.image = nil
+//        } else {
+//            
+//        }
     }
     
     @IBAction func shareButtonTapped() {

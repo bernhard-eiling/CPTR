@@ -35,7 +35,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     
     @IBOutlet var glView: GLKView!
     
-    required override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         blendFilter = CIFilter(name: "CISoftLightBlendMode")!
         glContext = EAGLContext(API: .OpenGLES2)
         ciContext = CIContext(EAGLContext: glContext)
@@ -44,13 +44,8 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
-    required init?(coder aCoder: NSCoder) {
-        blendFilter = CIFilter(name: "CISoftLightBlendMode")!
-        glContext = EAGLContext(API: .OpenGLES2)
-        ciContext = CIContext(EAGLContext: glContext)
-        captureSession = AVCaptureSession()
-        isSavingPhoto = false
-        super.init(coder: aCoder)
+    required init(coder aCoder: NSCoder) {
+        fatalError("NSCoding not supported")
     }
 
     override func viewDidLoad() {
@@ -132,7 +127,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     }
     
     func addPhoto(photo: CGImage) {
-        if (photoCounter >= photoCapaciy) {
+        if photoCounter >= photoCapaciy {
             NSLog("photo capacity reached")
             return
         }
