@@ -15,7 +15,6 @@ class CameraViewController: UIViewController, GLViewControllerDelegate {
     @IBOutlet var rotatableViews: [UIView]!
     @IBOutlet weak var photoSavedWrapperView: UIView!
     @IBOutlet weak var glViewWrapper: UIView!
-    let documentInteractionController: UIDocumentInteractionController
     @IBOutlet weak var stillImageView: UIImageView!
     let glViewController: GLViewController
     
@@ -25,7 +24,6 @@ class CameraViewController: UIViewController, GLViewControllerDelegate {
     }
     
     required init?(coder aCoder: NSCoder) {
-        documentInteractionController = UIDocumentInteractionController()
         glViewController = GLViewController(nibName: "GLViewController", bundle: nil)
         super.init(coder: aCoder)
     }
