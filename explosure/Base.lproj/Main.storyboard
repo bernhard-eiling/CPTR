@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15A279b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15A279b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
@@ -10,7 +10,7 @@
         <!--Camera View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="CameraViewController" customModule="explosure" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="CameraViewController" customModule="CPTR" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -30,8 +30,8 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="yP6-oY-3rV">
                                 <rect key="frame" x="-1" y="0.0" width="376" height="500"/>
                             </imageView>
-                            <view hidden="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WQT-hL-sLR" userLabel="saved wrapper">
-                                <rect key="frame" x="122" y="269" width="130" height="130"/>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WQT-hL-sLR" userLabel="saved wrapper">
+                                <rect key="frame" x="122" y="185" width="130" height="130"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SAVED" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="acf-7D-5Ox">
                                         <rect key="frame" x="0.0" y="0.0" width="130" height="130"/>
@@ -54,12 +54,11 @@
                                 <rect key="frame" x="0.0" y="500" width="375" height="167"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Mnh-Z5-Xw4" userLabel="SHA">
-                                        <rect key="frame" x="66" y="56" width="56" height="56"/>
+                                        <rect key="frame" x="74" y="64" width="40" height="40"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p0z-4W-mBf" userLabel="SHA Button">
-                                                <rect key="frame" x="0.0" y="1" width="56" height="56"/>
-                                                <fontDescription key="fontDescription" name="BodoniSvtyTwoITCTT-Book" family="Bodoni 72" pointSize="22"/>
-                                                <state key="normal" title="SHA">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p0z-4W-mBf" userLabel="SHA Button">
+                                                <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
+                                                <state key="normal" image="share-small">
                                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
                                                 <connections>
@@ -78,10 +77,10 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2KK-mA-8Ab" userLabel="CAP">
                                         <rect key="frame" x="159" y="56" width="56" height="56"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1hP-Q2-VMB" userLabel="cap Button">
-                                                <rect key="frame" x="1" y="1" width="56" height="56"/>
-                                                <fontDescription key="fontDescription" name="BodoniSvtyTwoITCTT-Book" family="Bodoni 72" pointSize="22"/>
-                                                <state key="normal" title="CAP">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1hP-Q2-VMB" userLabel="cap Button">
+                                                <rect key="frame" x="0.0" y="0.0" width="56" height="56"/>
+                                                <fontDescription key="fontDescription" name="BodoniSvtyTwoITCTT-Book" family="Bodoni 72" pointSize="18"/>
+                                                <state key="normal" title="CPTR">
                                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
                                                 <connections>
@@ -97,40 +96,17 @@
                                             <constraint firstItem="1hP-Q2-VMB" firstAttribute="centerX" secondItem="2KK-mA-8Ab" secondAttribute="centerX" id="uzU-bI-snu"/>
                                         </constraints>
                                     </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IiJ-RR-8Oi" userLabel="BAL">
-                                        <rect key="frame" x="254" y="56" width="56" height="56"/>
-                                        <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mHF-RN-UWN" userLabel="BAL Button">
-                                                <rect key="frame" x="1" y="1" width="56" height="56"/>
-                                                <fontDescription key="fontDescription" name="BodoniSvtyTwoITCTT-Book" family="Bodoni 72" pointSize="22"/>
-                                                <state key="normal" title="BAL">
-                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                                </state>
-                                            </button>
-                                        </subviews>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <constraints>
-                                            <constraint firstItem="mHF-RN-UWN" firstAttribute="height" secondItem="IiJ-RR-8Oi" secondAttribute="height" id="1gQ-x5-bwB"/>
-                                            <constraint firstItem="mHF-RN-UWN" firstAttribute="width" secondItem="IiJ-RR-8Oi" secondAttribute="width" id="Ih6-Dd-ojj"/>
-                                            <constraint firstItem="mHF-RN-UWN" firstAttribute="centerX" secondItem="IiJ-RR-8Oi" secondAttribute="centerX" id="P2H-zK-lCZ"/>
-                                            <constraint firstItem="mHF-RN-UWN" firstAttribute="centerY" secondItem="IiJ-RR-8Oi" secondAttribute="centerY" id="ZaH-va-W99"/>
-                                        </constraints>
-                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstItem="IiJ-RR-8Oi" firstAttribute="centerY" secondItem="lov-Cd-6c0" secondAttribute="centerY" id="4zc-Cs-quw"/>
+                                    <constraint firstItem="Mnh-Z5-Xw4" firstAttribute="height" secondItem="2KK-mA-8Ab" secondAttribute="height" multiplier="0.7" id="0D9-u5-G22"/>
                                     <constraint firstItem="2KK-mA-8Ab" firstAttribute="width" secondItem="lov-Cd-6c0" secondAttribute="height" multiplier="1/3" id="A3x-n2-Rfi"/>
                                     <constraint firstItem="Mnh-Z5-Xw4" firstAttribute="centerY" secondItem="lov-Cd-6c0" secondAttribute="centerY" id="I0g-ME-ILF"/>
-                                    <constraint firstItem="IiJ-RR-8Oi" firstAttribute="width" secondItem="lov-Cd-6c0" secondAttribute="height" multiplier="1/3" id="KLs-T3-3qg"/>
                                     <constraint firstItem="2KK-mA-8Ab" firstAttribute="height" secondItem="lov-Cd-6c0" secondAttribute="height" multiplier="1 /3" id="cNk-Ef-qcY"/>
-                                    <constraint firstItem="IiJ-RR-8Oi" firstAttribute="centerX" secondItem="lov-Cd-6c0" secondAttribute="centerX" multiplier="3/2" id="f8a-K6-Bgd"/>
                                     <constraint firstItem="2KK-mA-8Ab" firstAttribute="centerY" secondItem="lov-Cd-6c0" secondAttribute="centerY" id="k6H-kb-j2J"/>
-                                    <constraint firstItem="Mnh-Z5-Xw4" firstAttribute="width" secondItem="lov-Cd-6c0" secondAttribute="height" multiplier="1/3" id="oAP-3Y-VVY"/>
                                     <constraint firstItem="2KK-mA-8Ab" firstAttribute="centerX" secondItem="lov-Cd-6c0" secondAttribute="centerX" id="qdC-cd-QAy"/>
                                     <constraint firstItem="Mnh-Z5-Xw4" firstAttribute="centerX" secondItem="lov-Cd-6c0" secondAttribute="centerX" multiplier="1/2" id="sVr-oY-clZ"/>
-                                    <constraint firstItem="Mnh-Z5-Xw4" firstAttribute="height" secondItem="lov-Cd-6c0" secondAttribute="height" multiplier="1/3" id="scG-JN-fSl"/>
-                                    <constraint firstItem="IiJ-RR-8Oi" firstAttribute="height" secondItem="lov-Cd-6c0" secondAttribute="height" multiplier="1/3" id="zt5-NK-Uj4"/>
+                                    <constraint firstItem="Mnh-Z5-Xw4" firstAttribute="width" secondItem="2KK-mA-8Ab" secondAttribute="width" multiplier="0.7" id="wKr-8o-wkb"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -161,7 +137,6 @@
                         <outlet property="stillImageView" destination="yP6-oY-3rV" id="JC9-rn-geE"/>
                         <outletCollection property="rotatableViews" destination="1hP-Q2-VMB" collectionClass="NSMutableArray" id="Tdf-0J-G0S"/>
                         <outletCollection property="rotatableViews" destination="p0z-4W-mBf" collectionClass="NSMutableArray" id="UrY-vh-cb2"/>
-                        <outletCollection property="rotatableViews" destination="mHF-RN-UWN" collectionClass="NSMutableArray" id="NNj-3k-GCn"/>
                         <outletCollection property="rotatableViews" destination="acf-7D-5Ox" collectionClass="NSMutableArray" id="IB5-CX-cgm"/>
                     </connections>
                 </viewController>
@@ -175,4 +150,7 @@
             <point key="canvasLocation" x="522.5" y="476.5"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="share-small" width="13" height="18"/>
+    </resources>
 </document>
