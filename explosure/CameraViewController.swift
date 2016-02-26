@@ -51,7 +51,8 @@ class CameraViewController: UIViewController, GLViewControllerDelegate {
         if let sharePhoto = glViewController.blendedPhoto {
             let shareViewController = ShareViewController(nibName: "ShareViewController", bundle: nil)
             self.presentViewController(shareViewController, animated: true) { () -> Void in
-                shareViewController.sharePhoto(UIImage(CGImage:sharePhoto.rotate90Degrees(toSize: sharePhoto.size())))
+                let rotatedUIImage = UIImage(CGImage: sharePhoto, scale: 1.0, orientation: CGImage.imageOrientationAccordingToDeviceOrientation())
+                shareViewController.sharePhoto(rotatedUIImage)
             }
         }
     }
