@@ -106,8 +106,6 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
                 stillImageOutput.captureStillImageAsynchronouslyFromConnection(stillImageConnection, completionHandler: { (imageDataSampleBuffer: CMSampleBuffer?, error: NSError?) -> Void in
                     if let ciImage = self.ciImageFromImageBuffer(imageDataSampleBuffer) {
                         let cgImage = self.ciContext.createCGImage(ciImage, fromRect: ciImage.extent)
-//                        let cgImageSize = CGSize(width: CGImageGetWidth(cgImage), height: CGImageGetHeight(cgImage))
-//                        let rotatedGgImage = self.rotateCGImage90Degrees(cgImage, toSize: cgImageSize)
                         self.blendPhoto(cgImage)
                     }
                 })
@@ -136,10 +134,13 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
             self.blendedPhoto = CGBitmapContextCreateImage(context)
             UIGraphicsEndImageContext();
             
-            self.setFilterBackgroundImage(self.blendedPhoto)
-            if (self.photoCounter >= self.photoCapacity) {
-                self.saveImageToPhotoLibrary(self.blendedPhoto)
-            }
+            self.saveImageToPhotoLibrary(self.blendedPhoto)
+            
+            
+//            self.setFilterBackgroundImage(self.blendedPhoto)
+//            if (self.photoCounter >= self.photoCapacity) {
+//                self.saveImageToPhotoLibrary(self.blendedPhoto)
+//            }
         }
     }
     
@@ -155,15 +156,15 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     private func saveImageToPhotoLibrary(photo: CGImage?) {
         self.glViewControllerDelegate?.photoSavedToPhotoLibrary(UIImage(CGImage: photo!))
         PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
-            let rotatedUIImage = self.rotatedImageAccordingToDeviceOrientation(photo!)
+            let rotatedUIImage = UIImage(CGImage: photo!, scale: 1.0, orientation: self.imageOrientationAccordingToDeviceOrientation())
             PHAssetCreationRequest.creationRequestForAssetFromImage(rotatedUIImage)
             }) { (success, error) -> Void in
                 if (!success) {
                     NSLog("could not save image to photo library")
                 } else {
-                    self.savedPhoto = photo
-                    self.photoCounter = 0
-                    self.blendedPhoto = nil
+//                    self.savedPhoto = photo
+//                    self.photoCounter = 0
+//                    self.blendedPhoto = nil
                     NSLog("image saved to photo library")
                 }
         }
@@ -185,18 +186,19 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         return CGBitmapContextCreateImage(context!)!
     }
     
-    private func rotatedImageAccordingToDeviceOrientation(image: CGImage) -> UIImage { // does not actual pixel rotation?
-        var imageOrientation: UIImageOrientation?
-        if (UIDevice.currentDevice().orientation == .Portrait) {
-            imageOrientation = .Right
-        } else if (UIDevice.currentDevice().orientation == .LandscapeLeft) {
-            imageOrientation = .Up
-        } else if (UIDevice.currentDevice().orientation == .LandscapeRight) {
-            imageOrientation = .Down
-        } else {
-            imageOrientation = .Left
+    private func imageOrientationAccordingToDeviceOrientation() -> UIImageOrientation {
+        switch UIDevice.currentDevice().orientation {
+            case .Portrait:
+                return .Right
+            case .LandscapeLeft:
+                return .Up
+            case .LandscapeRight:
+                return .Down
+            case .PortraitUpsideDown:
+                return .Left
+            default:
+                return .Right
         }
-        return UIImage(CGImage: image, scale: 1.0, orientation: imageOrientation!);
     }
     
     private func sizeOfCGImage(image: CGImage) -> CGSize {
