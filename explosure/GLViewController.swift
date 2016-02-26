@@ -16,8 +16,8 @@ protocol GLViewControllerDelegate {
 }
 
 class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
-
-    var savedPhoto: CGImage?
+    
+    var blendedPhoto: CGImage?
     
     private var stillImageOutput: AVCaptureStillImageOutput?
     private var blendFilter: CIFilter
@@ -25,10 +25,9 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     private let ciContext: CIContext
     private let captureSession: AVCaptureSession
     private var captureDevice: AVCaptureDevice?
-    private var blendedPhoto: CGImage?
 
-    private let photoCapacity = 2.0
-    private var photoCounter = 0.0
+    private let photoCapacity = 2
+    private var photoCounter = 0
     
     var glViewControllerDelegate: GLViewControllerDelegate?
     
@@ -83,7 +82,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     }
     
     private func drawVideoWithSampleBuffer(sampleBuffer: CMSampleBuffer!) {
-        if self.savedPhoto != nil {
+        if self.capacityReached() {
             return
         }
         if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
@@ -100,6 +99,10 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     
     // STILL IMAGE CAPTURE
     func captureImage() {
+        if self.capacityReached() {
+            self.resetBlender()
+            return
+        }
         dispatch_async(dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)) { () -> Void in
             if let stillImageOutput = self.stillImageOutput {
                 let stillImageConnection = stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)
@@ -114,7 +117,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     }
 
     private func blendPhoto(photo: CGImage) {
-        if self.photoCounter >= self.photoCapacity {
+        if self.capacityReached() {
             NSLog("photo capacity reached")
             return
         }
@@ -123,24 +126,23 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         
         let sessionQueue = dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)
         dispatch_async(sessionQueue) { () -> Void in
-            UIGraphicsBeginImageContext(self.sizeOfCGImage(photo))
-            let context: CGContext? = UIGraphicsGetCurrentContext()
-            CGContextScaleCTM(context, 1.0, -1.0) // flip
-            CGContextTranslateCTM(context, 0.0, -CGFloat(CGImageGetHeight(photo)))
-            CGContextDrawImage(context, self.rectOfCGImage(photo), self.blendedPhoto)
-            CGContextSetBlendMode(context, .Normal)
-            CGContextSetAlpha(context, 0.5)
-            CGContextDrawImage(context, self.rectOfCGImage(photo), photo)
-            self.blendedPhoto = CGBitmapContextCreateImage(context)
-            UIGraphicsEndImageContext();
+            if self.blendedPhoto == nil { // first photo cannot blend with other photo
+                self.blendedPhoto = photo
+            } else {
+                UIGraphicsBeginImageContext(self.sizeOfCGImage(photo))
+                let context: CGContext? = UIGraphicsGetCurrentContext()
+                CGContextScaleCTM(context, 1.0, -1.0) // flip
+                CGContextTranslateCTM(context, 0.0, -CGFloat(CGImageGetHeight(photo)))
+                CGContextDrawImage(context, self.rectOfCGImage(photo), self.blendedPhoto)
+                CGContextSetBlendMode(context, .Normal)
+                CGContextSetAlpha(context, 0.5)
+                CGContextDrawImage(context, self.rectOfCGImage(photo), photo)
+                self.blendedPhoto = CGBitmapContextCreateImage(context)
+                UIGraphicsEndImageContext();
+            }
             
-            self.saveImageToPhotoLibrary(self.blendedPhoto)
-            
-            
-//            self.setFilterBackgroundImage(self.blendedPhoto)
-//            if (self.photoCounter >= self.photoCapacity) {
-//                self.saveImageToPhotoLibrary(self.blendedPhoto)
-//            }
+            self.saveBlendedImageIfPossible()
+            self.setFilterBackgroundImage(self.blendedPhoto)
         }
     }
     
@@ -148,23 +150,21 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         if let backgroundPhoto = backgroundPhoto {
             let ciImage = CIImage(CGImage: backgroundPhoto)
             self.blendFilter.setValue(ciImage, forKey: "inputBackgroundImage")
-        } else {
-            self.resetCameraView()
         }
     }
     
-    private func saveImageToPhotoLibrary(photo: CGImage?) {
-        self.glViewControllerDelegate?.photoSavedToPhotoLibrary(UIImage(CGImage: photo!))
+    private func saveBlendedImageIfPossible() {
+        if !self.capacityReached() {
+            return
+        }
         PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
-            let rotatedUIImage = UIImage(CGImage: photo!, scale: 1.0, orientation: self.imageOrientationAccordingToDeviceOrientation())
+            let rotatedUIImage = UIImage(CGImage: self.blendedPhoto!, scale: 1.0, orientation: self.imageOrientationAccordingToDeviceOrientation())
             PHAssetCreationRequest.creationRequestForAssetFromImage(rotatedUIImage)
             }) { (success, error) -> Void in
                 if (!success) {
                     NSLog("could not save image to photo library")
                 } else {
-//                    self.savedPhoto = photo
-//                    self.photoCounter = 0
-//                    self.blendedPhoto = nil
+                    self.glViewControllerDelegate?.photoSavedToPhotoLibrary(UIImage(CGImage: self.blendedPhoto!))
                     NSLog("image saved to photo library")
                 }
         }
@@ -208,8 +208,14 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     private func rectOfCGImage(image: CGImage) -> CGRect {
         return CGRect(origin: CGPointZero, size: self.sizeOfCGImage(image))
     }
+
+    private func capacityReached() -> Bool {
+        return self.photoCounter >= self.photoCapacity
+    }
     
-    private func resetCameraView() {
+    private func resetBlender() {
+        self.photoCounter = 0
+        self.blendedPhoto = nil
         self.blendFilter.setValue(nil, forKey: "inputBackgroundImage")
     }
     

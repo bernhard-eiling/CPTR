@@ -71,7 +71,7 @@ class CameraViewController: UIViewController, GLViewControllerDelegate {
     }
     
     func presentShareViewController() {
-        if let sharePhoto = glViewController.savedPhoto {
+        if let sharePhoto = glViewController.blendedPhoto {
             let shareViewController = ShareViewController(nibName: "ShareViewController", bundle: nil)
             self.presentViewController(shareViewController, animated: true) { () -> Void in
                 shareViewController.sharePhoto(UIImage(CGImage:sharePhoto))
