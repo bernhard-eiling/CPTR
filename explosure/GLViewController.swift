@@ -142,13 +142,15 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
             }
             
             self.saveBlendedImageIfPossible()
-            self.setFilterBackgroundImage(self.blendedPhoto)
+            self.setFilterBackgroundPhoto(self.blendedPhoto)
         }
     }
     
-    private func setFilterBackgroundImage(backgroundPhoto: CGImage?) {
-        if let backgroundPhoto = backgroundPhoto {
-            let ciImage = CIImage(CGImage: backgroundPhoto)
+    private func setFilterBackgroundPhoto(photo: CGImage?) {
+        if let photo = photo {
+            let pixelSize = CGSize(width: self.glView.frame.width * self.glView.contentScaleFactor, height: self.glView.frame.height * self.glView.contentScaleFactor)
+            let scaledCGimage = self.rotateCGImage90Degrees(photo, toSize: pixelSize)
+            let ciImage = CIImage(CGImage: scaledCGimage)
             self.blendFilter.setValue(ciImage, forKey: "inputBackgroundImage")
         }
     }
@@ -175,13 +177,13 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     
     // move this to extension of CGImage
     private func rotateCGImage90Degrees(cgImage: CGImage, toSize size:CGSize) -> CGImage {
-        UIGraphicsBeginImageContext(CGSize(width: size.height , height: size.width))
+        UIGraphicsBeginImageContext(CGSize(width: size.width , height: size.height))
         let context: CGContext? = UIGraphicsGetCurrentContext()
-        CGContextTranslateCTM(context, size.height / 2, size.width / 2)
+        CGContextTranslateCTM(context, size.width / 2, size.height / 2)
         CGContextRotateCTM(context, CGFloat(M_PI_2))
         CGContextScaleCTM(context, 1.0, -1.0)
-        CGContextTranslateCTM(context, -size.width / 2, -size.height / 2)
-        CGContextDrawImage(context, CGRectMake(0, 0, size.width, size.height), cgImage)
+        CGContextTranslateCTM(context, -size.height / 2, -size.width / 2)
+        CGContextDrawImage(context, CGRectMake(0, 0, size.height, size.width), cgImage)
         UIGraphicsEndImageContext();
         return CGBitmapContextCreateImage(context!)!
     }
@@ -201,6 +203,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         }
     }
     
+    // move this to extension of CGImage
     private func sizeOfCGImage(image: CGImage) -> CGSize {
         return CGSize(width: CGImageGetWidth(image), height: CGImageGetHeight(image))
     }
