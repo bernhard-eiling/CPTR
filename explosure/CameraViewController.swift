@@ -24,21 +24,21 @@ class CameraViewController: UIViewController, GLViewControllerDelegate {
     }
     
     required init?(coder aCoder: NSCoder) {
-        glViewController = GLViewController()
+        self.glViewController = GLViewController()
         super.init(coder: aCoder)
     }
     
     override func viewDidLoad() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "deviceOrientationDidChange", name: UIDeviceOrientationDidChangeNotification, object: nil)
-        addChildViewController(glViewController)
-        glViewController.view.frame = self.glViewWrapper.bounds
+        self.addChildViewController(self.glViewController)
+        self.glViewController.view.frame = self.glViewWrapper.bounds
         self.glViewWrapper.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
-        self.glViewWrapper.addSubview(glViewController.view)
+        self.glViewWrapper.addSubview(self.glViewController.view)
         super.viewDidLoad()
     }
     
     @IBAction func captureButtonTapped() {
-        glViewController.captureImage()
+        self.glViewController.captureImage()
 //        if glViewController.savedPhoto != nil {
 //            captureButton.titleLabel!.text = "CAP"
 //            self.stillImageView.image = nil
@@ -48,7 +48,7 @@ class CameraViewController: UIViewController, GLViewControllerDelegate {
     }
     
     @IBAction func shareButtonTapped() {
-        if let sharePhoto = glViewController.blendedPhoto {
+        if let sharePhoto = self.glViewController.blendedPhoto {
             let shareViewController = ShareViewController(nibName: "ShareViewController", bundle: nil)
             self.presentViewController(shareViewController, animated: true) { () -> Void in
                 let rotatedUIImage = UIImage(CGImage: sharePhoto, scale: 1.0, orientation: CGImage.imageOrientationAccordingToDeviceOrientation())
@@ -58,7 +58,7 @@ class CameraViewController: UIViewController, GLViewControllerDelegate {
     }
     
     @IBAction func focusGestureRecognizerTapped(sender: UITapGestureRecognizer) {
-        glViewController.focusCaptureDeviceWithPoint(sender.locationInView(self.glViewWrapper))
+        self.glViewController.focusCaptureDeviceWithPoint(sender.locationInView(self.glViewWrapper))
     }
     
     func photoSavedToPhotoLibrary(savedPhoto: UIImage) {
@@ -79,16 +79,16 @@ class CameraViewController: UIViewController, GLViewControllerDelegate {
     func deviceOrientationDidChange() {
         switch UIDevice.currentDevice().orientation {
         case .Portrait:
-            rotateRotatableViewsWithTransform(CGAffineTransformIdentity)
+            self.rotateRotatableViewsWithTransform(CGAffineTransformIdentity)
             break
         case .LandscapeLeft:
-            rotateRotatableViewsWithTransform(CGAffineTransformMakeRotation(CGFloat(M_PI_2)))
+            self.rotateRotatableViewsWithTransform(CGAffineTransformMakeRotation(CGFloat(M_PI_2)))
             break
         case .LandscapeRight:
-            rotateRotatableViewsWithTransform(CGAffineTransformMakeRotation(-CGFloat(M_PI_2)))
+            self.rotateRotatableViewsWithTransform(CGAffineTransformMakeRotation(-CGFloat(M_PI_2)))
             break
         case .PortraitUpsideDown:
-            rotateRotatableViewsWithTransform(CGAffineTransformMakeRotation(CGFloat(M_PI)))
+            self.rotateRotatableViewsWithTransform(CGAffineTransformMakeRotation(CGFloat(M_PI)))
             break
         default:
             break

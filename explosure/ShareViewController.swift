@@ -13,12 +13,12 @@ class ShareViewController: UIViewController, UIDocumentInteractionControllerDele
     let documentInteractionController: UIDocumentInteractionController
     
     required override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
-        documentInteractionController = UIDocumentInteractionController()
+        self.documentInteractionController = UIDocumentInteractionController()
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
     required init?(coder aCoder: NSCoder) {
-        documentInteractionController = UIDocumentInteractionController()
+        self.documentInteractionController = UIDocumentInteractionController()
         super.init(coder: aCoder)
     }
 
@@ -35,10 +35,10 @@ class ShareViewController: UIViewController, UIDocumentInteractionControllerDele
         } catch {
             NSLog("could not safe temp image")
         }
-        documentInteractionController.URL = homePathUrl
-        documentInteractionController.UTI = "com.instagram.photo"
-        documentInteractionController.delegate = self
-        documentInteractionController.presentOpenInMenuFromRect(CGRectZero, inView: self.view, animated: true)
+        self.documentInteractionController.URL = homePathUrl
+        self.documentInteractionController.UTI = "com.instagram.photo"
+        self.documentInteractionController.delegate = self
+        self.documentInteractionController.presentOpenInMenuFromRect(CGRectZero, inView: self.view, animated: true)
     }
     
     func documentInteractionControllerDidEndPreview(controller: UIDocumentInteractionController) {

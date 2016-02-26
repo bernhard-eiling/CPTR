@@ -204,7 +204,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         if self.glContext != EAGLContext.currentContext() {
             EAGLContext.setCurrentContext(self.glContext)
         }
-        drawVideoWithSampleBuffer(sampleBuffer)
+        self.drawVideoWithSampleBuffer(sampleBuffer)
     }
     
     
