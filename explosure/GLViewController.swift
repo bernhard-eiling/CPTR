@@ -129,14 +129,14 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
             if self.blendedPhoto == nil { // first photo cannot blend with other photo
                 self.blendedPhoto = photo
             } else {
-                UIGraphicsBeginImageContext(self.sizeOfCGImage(photo))
+                UIGraphicsBeginImageContext(photo.size())
                 let context: CGContext? = UIGraphicsGetCurrentContext()
                 CGContextScaleCTM(context, 1.0, -1.0) // flip
                 CGContextTranslateCTM(context, 0.0, -CGFloat(CGImageGetHeight(photo)))
-                CGContextDrawImage(context, self.rectOfCGImage(photo), self.blendedPhoto)
+                CGContextDrawImage(context, photo.rect(), self.blendedPhoto)
                 CGContextSetBlendMode(context, .Normal)
                 CGContextSetAlpha(context, 0.5)
-                CGContextDrawImage(context, self.rectOfCGImage(photo), photo)
+                CGContextDrawImage(context, photo.rect(), photo)
                 self.blendedPhoto = CGBitmapContextCreateImage(context)
                 UIGraphicsEndImageContext();
             }
@@ -149,7 +149,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     private func setFilterBackgroundPhoto(photo: CGImage?) {
         if let photo = photo {
             let pixelSize = CGSize(width: self.glView.frame.width * self.glView.contentScaleFactor, height: self.glView.frame.height * self.glView.contentScaleFactor)
-            let scaledCGimage = self.rotateCGImage90Degrees(photo, toSize: pixelSize)
+            let scaledCGimage = photo.rotate90Degrees(toSize: pixelSize)
             let ciImage = CIImage(CGImage: scaledCGimage)
             self.blendFilter.setValue(ciImage, forKey: "inputBackgroundImage")
         }
@@ -160,7 +160,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
             return
         }
         PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
-            let rotatedUIImage = UIImage(CGImage: self.blendedPhoto!, scale: 1.0, orientation: self.imageOrientationAccordingToDeviceOrientation())
+            let rotatedUIImage = UIImage(CGImage: self.blendedPhoto!, scale: 1.0, orientation: CGImage.imageOrientationAccordingToDeviceOrientation())
             PHAssetCreationRequest.creationRequestForAssetFromImage(rotatedUIImage)
             }) { (success, error) -> Void in
                 if (!success) {
@@ -174,43 +174,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     
     
     // HELPER
-    
-    // move this to extension of CGImage
-    private func rotateCGImage90Degrees(cgImage: CGImage, toSize size:CGSize) -> CGImage {
-        UIGraphicsBeginImageContext(CGSize(width: size.width , height: size.height))
-        let context: CGContext? = UIGraphicsGetCurrentContext()
-        CGContextTranslateCTM(context, size.width / 2, size.height / 2)
-        CGContextRotateCTM(context, CGFloat(M_PI_2))
-        CGContextScaleCTM(context, 1.0, -1.0)
-        CGContextTranslateCTM(context, -size.height / 2, -size.width / 2)
-        CGContextDrawImage(context, CGRectMake(0, 0, size.height, size.width), cgImage)
-        UIGraphicsEndImageContext();
-        return CGBitmapContextCreateImage(context!)!
-    }
-    
-    private func imageOrientationAccordingToDeviceOrientation() -> UIImageOrientation {
-        switch UIDevice.currentDevice().orientation {
-            case .Portrait:
-                return .Right
-            case .LandscapeLeft:
-                return .Up
-            case .LandscapeRight:
-                return .Down
-            case .PortraitUpsideDown:
-                return .Left
-            default:
-                return .Right
-        }
-    }
-    
-    // move this to extension of CGImage
-    private func sizeOfCGImage(image: CGImage) -> CGSize {
-        return CGSize(width: CGImageGetWidth(image), height: CGImageGetHeight(image))
-    }
-    
-    private func rectOfCGImage(image: CGImage) -> CGRect {
-        return CGRect(origin: CGPointZero, size: self.sizeOfCGImage(image))
-    }
+
 
     private func capacityReached() -> Bool {
         return self.photoCounter >= self.photoCapacity
