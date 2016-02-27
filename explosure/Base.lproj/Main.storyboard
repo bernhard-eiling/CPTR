@@ -21,7 +21,6 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DJm-Tz-Kyf" userLabel="GLK View wrapper">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="500"/>
-                                <color key="backgroundColor" red="0.64872382198952883" green="0.33341632914500219" blue="0.50016887012436517" alpha="1" colorSpace="calibratedRGB"/>
                                 <gestureRecognizers/>
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="l6C-R0-Fqx" appends="YES" id="vyG-n9-8jV"/>

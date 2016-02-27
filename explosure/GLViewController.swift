@@ -25,7 +25,9 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     private let ciContext: CIContext
     private let captureSession: AVCaptureSession
     private var captureDevice: AVCaptureDevice?
-
+    
+    @IBOutlet weak var cameraAuthDeniedLabel: UILabel!
+    
     private let photoCapacity = 2
     private var photoCounter = 0
     
@@ -44,9 +46,45 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     required init(coder aCoder: NSCoder) {
         fatalError("NSCoding not supported")
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "applicationDidBecomeActive", name: UIApplicationDidBecomeActiveNotification, object: nil)
+        self.authorizeCamera()
+    }
+    
+    func applicationDidBecomeActive() {
+        self.authorizeCamera()
+    }
+    
+    private func authorizeCamera() {
+        let authorizationStatus = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
+        switch authorizationStatus {
+        case .NotDetermined:
+            AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo,
+                completionHandler: { (granted:Bool) -> Void in
+                    if granted {
+                        self.cameraAuthDeniedLabel.hidden = true
+                        self.setupCamera()
+                    }
+                    else {
+                        self.cameraAuthDeniedLabel.hidden = false
+                        NSLog("camera authorization denied")
+                    }
+            })
+        case .Authorized:
+            self.cameraAuthDeniedLabel.hidden = true
+            self.setupCamera()
+        case .Denied, .Restricted:
+            self.cameraAuthDeniedLabel.hidden = false
+            NSLog("camera authorization denied")
+        }
+    }
+    
+    private func setupCamera() {
+        if self.captureDevice != nil {
+            return
+        }
         self.captureSession.sessionPreset = AVCaptureSessionPresetPhoto
         self.addCaptureDeviceInput()
         self.addStillImageDataOutput()
@@ -115,7 +153,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
             }
         }
     }
-
+    
     private func blendPhoto(photo: CGImage) {
         if self.capacityReached() {
             NSLog("photo capacity reached")
@@ -174,8 +212,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     
     
     // HELPER
-
-
+    
     private func capacityReached() -> Bool {
         return self.photoCounter >= self.photoCapacity
     }
@@ -206,7 +243,6 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         }
         self.drawVideoWithSampleBuffer(sampleBuffer)
     }
-    
     
     
     // AVCapture SETUP
@@ -271,5 +307,5 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         }
         return nil;
     }
-
+    
 }
