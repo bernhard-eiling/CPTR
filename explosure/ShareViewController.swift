@@ -18,12 +18,12 @@ class ShareViewController: UIViewController, UIDocumentInteractionControllerDele
     }
     
     required init?(coder aCoder: NSCoder) {
-        self.documentInteractionController = UIDocumentInteractionController()
-        super.init(coder: aCoder)
+        fatalError("NSCoding not supported")
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewDidAppear(animated: Bool) {
+        GAHelper.trackShareView()
+        super.viewDidAppear(animated)
     }
     
     func sharePhoto(photo: UIImage) {

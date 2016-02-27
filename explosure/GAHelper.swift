@@ -18,5 +18,18 @@ class GAHelper {
         GAI.sharedInstance().trackUncaughtExceptions = true  // report uncaught exceptions
         GAI.sharedInstance().logger.logLevel = GAILogLevel.Verbose  // remove before app release
     }
+    
+    class func trackCameraView() {
+        GAHelper.trackView("camera-view")
+    }
+    
+    class func trackShareView() {
+        GAHelper.trackView("share-view")
+    }
 
+    private class func trackView(viewName: String) {
+        GAI.sharedInstance().defaultTracker.set(kGAIScreenName, value: viewName)
+        let builder = GAIDictionaryBuilder.createScreenView()
+        GAI.sharedInstance().defaultTracker.send(builder.build() as [NSObject : AnyObject])
+    }
 }

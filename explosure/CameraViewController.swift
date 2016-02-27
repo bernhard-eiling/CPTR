@@ -37,6 +37,11 @@ class CameraViewController: UIViewController, GLViewControllerDelegate {
         super.viewDidLoad()
     }
     
+    override func viewDidAppear(animated: Bool) {
+        GAHelper.trackCameraView()
+        super.viewDidAppear(animated)
+    }
+    
     @IBAction func captureButtonTapped() {
         self.glViewController.captureImage()
 //        if glViewController.savedPhoto != nil {
