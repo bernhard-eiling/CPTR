@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		6F14E2E51C42F70600A74D08 /* GLViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F14E2E41C42F70600A74D08 /* GLViewController.xib */; };
 		6F4F9C611C810712000EE53D /* CGImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F9C601C810712000EE53D /* CGImageExtension.swift */; };
+		6F4F9C631C815809000EE53D /* Supporting Files in Resources */ = {isa = PBXBuildFile; fileRef = 6F4F9C621C815808000EE53D /* Supporting Files */; };
 		6F8B73991BC07526008E41A4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F8B73981BC07526008E41A4 /* AppDelegate.swift */; };
 		6F8B739B1BC07526008E41A4 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F8B739A1BC07526008E41A4 /* CameraViewController.swift */; };
 		6F8B739E1BC07526008E41A4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F8B739C1BC07526008E41A4 /* Main.storyboard */; };
@@ -17,11 +18,14 @@
 		6FEF7D991BF546000090EFF3 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEF7D971BF546000090EFF3 /* ShareViewController.swift */; };
 		6FEF7D9A1BF546000090EFF3 /* ShareViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6FEF7D981BF546000090EFF3 /* ShareViewController.xib */; };
 		6FEF7D9D1BF927040090EFF3 /* GLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEF7D9B1BF927040090EFF3 /* GLViewController.swift */; };
+		90528A6E6AC51D29CDA2F030 /* libPods-CPTR.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DCBCCE86280C15141415B31F /* libPods-CPTR.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0D348F83D0638F98020ED707 /* Pods-CPTR.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CPTR.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CPTR/Pods-CPTR.debug.xcconfig"; sourceTree = "<group>"; };
 		6F14E2E41C42F70600A74D08 /* GLViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GLViewController.xib; sourceTree = "<group>"; };
 		6F4F9C601C810712000EE53D /* CGImageExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGImageExtension.swift; sourceTree = "<group>"; };
+		6F4F9C621C815808000EE53D /* Supporting Files */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Supporting Files"; sourceTree = "<group>"; };
 		6F8B73951BC07526008E41A4 /* CPTR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CPTR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F8B73981BC07526008E41A4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6F8B739A1BC07526008E41A4 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
@@ -32,6 +36,8 @@
 		6FEF7D971BF546000090EFF3 /* ShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		6FEF7D981BF546000090EFF3 /* ShareViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ShareViewController.xib; sourceTree = "<group>"; };
 		6FEF7D9B1BF927040090EFF3 /* GLViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GLViewController.swift; sourceTree = "<group>"; };
+		890C16E5C4904FEF95171BCB /* Pods-CPTR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CPTR.release.xcconfig"; path = "Pods/Target Support Files/Pods-CPTR/Pods-CPTR.release.xcconfig"; sourceTree = "<group>"; };
+		DCBCCE86280C15141415B31F /* libPods-CPTR.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CPTR.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,12 +45,22 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90528A6E6AC51D29CDA2F030 /* libPods-CPTR.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		62B860CECE4AE3DB99332B4A /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				0D348F83D0638F98020ED707 /* Pods-CPTR.debug.xcconfig */,
+				890C16E5C4904FEF95171BCB /* Pods-CPTR.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		6F4F9C5F1C810617000EE53D /* extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -58,6 +74,8 @@
 			children = (
 				6F8B73971BC07526008E41A4 /* explosure */,
 				6F8B73961BC07526008E41A4 /* Products */,
+				62B860CECE4AE3DB99332B4A /* Pods */,
+				9681E79C7A894DF84C347784 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -72,6 +90,7 @@
 		6F8B73971BC07526008E41A4 /* explosure */ = {
 			isa = PBXGroup;
 			children = (
+				6F4F9C621C815808000EE53D /* Supporting Files */,
 				6F4F9C5F1C810617000EE53D /* extensions */,
 				6F8B73981BC07526008E41A4 /* AppDelegate.swift */,
 				6F8B739A1BC07526008E41A4 /* CameraViewController.swift */,
@@ -87,6 +106,14 @@
 			path = explosure;
 			sourceTree = "<group>";
 		};
+		9681E79C7A894DF84C347784 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DCBCCE86280C15141415B31F /* libPods-CPTR.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -94,10 +121,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6F8B73A71BC07526008E41A4 /* Build configuration list for PBXNativeTarget "CPTR" */;
 			buildPhases = (
+				F5641A5DDF2F9F152DA33F1C /* Check Pods Manifest.lock */,
 				6F8B73911BC07526008E41A4 /* Sources */,
 				6F8B73921BC07526008E41A4 /* Frameworks */,
 				6F8B73931BC07526008E41A4 /* Resources */,
 				69848841BAA0FF84238D6BBE /* Tailor */,
+				996E269E598FCCA891631454 /* Embed Pods Frameworks */,
+				1221D2C5326065FC647250E6 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -146,6 +176,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F4F9C631C815809000EE53D /* Supporting Files in Resources */,
 				6F8B73A31BC07526008E41A4 /* LaunchScreen.storyboard in Resources */,
 				6F8B73A01BC07526008E41A4 /* Assets.xcassets in Resources */,
 				6F14E2E51C42F70600A74D08 /* GLViewController.xib in Resources */,
@@ -157,6 +188,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		1221D2C5326065FC647250E6 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CPTR/Pods-CPTR-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		69848841BAA0FF84238D6BBE /* Tailor */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 8;
@@ -170,6 +216,36 @@
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = /usr/local/bin/tailor;
+		};
+		996E269E598FCCA891631454 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CPTR/Pods-CPTR-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F5641A5DDF2F9F152DA33F1C /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -291,6 +367,7 @@
 		};
 		6F8B73A81BC07526008E41A4 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0D348F83D0638F98020ED707 /* Pods-CPTR.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -305,6 +382,7 @@
 		};
 		6F8B73A91BC07526008E41A4 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 890C16E5C4904FEF95171BCB /* Pods-CPTR.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
