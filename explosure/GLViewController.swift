@@ -197,6 +197,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         if !self.capacityReached() {
             return
         }
+        GAHelper.trackCompletePhotocapture()
         PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
             let rotatedUIImage = UIImage(CGImage: self.blendedPhoto!, scale: 1.0, orientation: CGImage.imageOrientationAccordingToDeviceOrientation())
             PHAssetCreationRequest.creationRequestForAssetFromImage(rotatedUIImage)
@@ -204,6 +205,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
                 if (!success) {
                     NSLog("could not save image to photo library")
                 } else {
+                    GAHelper.trackPhotoSaved()
                     self.glViewControllerDelegate?.photoSavedToPhotoLibrary(UIImage(CGImage: self.blendedPhoto!))
                     NSLog("image saved to photo library")
                 }
