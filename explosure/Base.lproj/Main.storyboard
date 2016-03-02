@@ -53,10 +53,10 @@
                                 <rect key="frame" x="0.0" y="500" width="375" height="167"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Mnh-Z5-Xw4" userLabel="SHA">
-                                        <rect key="frame" x="65" y="64" width="40" height="40"/>
+                                        <rect key="frame" x="57" y="56" width="56" height="56"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p0z-4W-mBf" userLabel="SHA Button">
-                                                <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="56" height="56"/>
                                                 <state key="normal" image="share-small">
                                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
@@ -98,14 +98,14 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstItem="Mnh-Z5-Xw4" firstAttribute="height" secondItem="2KK-mA-8Ab" secondAttribute="height" multiplier="0.7" id="0D9-u5-G22"/>
+                                    <constraint firstItem="Mnh-Z5-Xw4" firstAttribute="height" secondItem="2KK-mA-8Ab" secondAttribute="height" id="0D9-u5-G22"/>
                                     <constraint firstItem="2KK-mA-8Ab" firstAttribute="width" secondItem="lov-Cd-6c0" secondAttribute="height" multiplier="1/3" id="A3x-n2-Rfi"/>
                                     <constraint firstItem="Mnh-Z5-Xw4" firstAttribute="centerY" secondItem="lov-Cd-6c0" secondAttribute="centerY" id="I0g-ME-ILF"/>
                                     <constraint firstItem="2KK-mA-8Ab" firstAttribute="height" secondItem="lov-Cd-6c0" secondAttribute="height" multiplier="1 /3" id="cNk-Ef-qcY"/>
                                     <constraint firstItem="2KK-mA-8Ab" firstAttribute="centerY" secondItem="lov-Cd-6c0" secondAttribute="centerY" id="k6H-kb-j2J"/>
                                     <constraint firstItem="2KK-mA-8Ab" firstAttribute="centerX" secondItem="lov-Cd-6c0" secondAttribute="centerX" id="qdC-cd-QAy"/>
                                     <constraint firstItem="Mnh-Z5-Xw4" firstAttribute="centerX" secondItem="lov-Cd-6c0" secondAttribute="centerX" multiplier="1/2.2" id="sVr-oY-clZ"/>
-                                    <constraint firstItem="Mnh-Z5-Xw4" firstAttribute="width" secondItem="2KK-mA-8Ab" secondAttribute="width" multiplier="0.7" id="wKr-8o-wkb"/>
+                                    <constraint firstItem="Mnh-Z5-Xw4" firstAttribute="width" secondItem="2KK-mA-8Ab" secondAttribute="width" id="wKr-8o-wkb"/>
                                 </constraints>
                             </view>
                         </subviews>
