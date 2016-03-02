@@ -11,15 +11,15 @@ import CoreGraphics
 
 class BlendedPhoto {
     
-    var cgImage: CGImage {
+    var image: CGImage {
         didSet {
             self.imageOrientation = CGImage.imageOrientationAccordingToDeviceOrientation()
         }
     }
     var imageOrientation: UIImageOrientation
     
-    init(cgImage: CGImage) {
-        self.cgImage = cgImage
+    init(image: CGImage) {
+        self.image = image
         self.imageOrientation = CGImage.imageOrientationAccordingToDeviceOrientation()
     }
 }

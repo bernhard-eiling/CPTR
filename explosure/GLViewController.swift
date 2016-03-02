@@ -17,7 +17,7 @@ protocol GLViewControllerDelegate {
 
 class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     
-    var blendedPhoto: CGImage?
+    var blendedPhoto: BlendedPhoto?
     
     private var stillImageOutput: AVCaptureStillImageOutput?
     private var blendFilter: CIFilter
@@ -165,22 +165,24 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         let sessionQueue = dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)
         dispatch_async(sessionQueue) { () -> Void in
             if self.blendedPhoto == nil { // first photo cannot blend with other photo
-                self.blendedPhoto = photo
+                self.blendedPhoto = BlendedPhoto(image: photo)
             } else {
                 UIGraphicsBeginImageContext(photo.size())
                 let context: CGContext? = UIGraphicsGetCurrentContext()
                 CGContextScaleCTM(context, 1.0, -1.0) // flip
                 CGContextTranslateCTM(context, 0.0, -CGFloat(CGImageGetHeight(photo)))
-                CGContextDrawImage(context, photo.rect(), self.blendedPhoto)
+                CGContextDrawImage(context, photo.rect(), self.blendedPhoto!.image)
                 CGContextSetBlendMode(context, .Normal)
                 CGContextSetAlpha(context, 0.5)
                 CGContextDrawImage(context, photo.rect(), photo)
-                self.blendedPhoto = CGBitmapContextCreateImage(context)
+                if let renderImage = CGBitmapContextCreateImage(context) {
+                    self.blendedPhoto!.image = renderImage
+                }
                 UIGraphicsEndImageContext();
             }
             
             self.saveBlendedImageIfPossible()
-            self.setFilterBackgroundPhoto(self.blendedPhoto)
+            self.setFilterBackgroundPhoto(self.blendedPhoto!.image)
         }
     }
     
@@ -199,14 +201,14 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         }
         GAHelper.trackCompletePhotocapture()
         PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
-            let rotatedUIImage = UIImage(CGImage: self.blendedPhoto!, scale: 1.0, orientation: CGImage.imageOrientationAccordingToDeviceOrientation())
+            let rotatedUIImage = UIImage(CGImage: self.blendedPhoto!.image, scale: 1.0, orientation: CGImage.imageOrientationAccordingToDeviceOrientation())
             PHAssetCreationRequest.creationRequestForAssetFromImage(rotatedUIImage)
             }) { (success, error) -> Void in
                 if (!success) {
                     NSLog("could not save image to photo library")
                 } else {
                     GAHelper.trackPhotoSaved()
-                    self.glViewControllerDelegate?.photoSavedToPhotoLibrary(UIImage(CGImage: self.blendedPhoto!))
+                    self.glViewControllerDelegate?.photoSavedToPhotoLibrary(UIImage(CGImage: self.blendedPhoto!.image))
                     NSLog("image saved to photo library")
                 }
         }

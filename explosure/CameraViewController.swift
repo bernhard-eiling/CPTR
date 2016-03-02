@@ -53,10 +53,10 @@ class CameraViewController: UIViewController, GLViewControllerDelegate {
     }
     
     @IBAction func shareButtonTapped() {
-        if let sharePhoto = self.glViewController.blendedPhoto {
+        if let blendedPhoto = self.glViewController.blendedPhoto {
             let shareViewController = ShareViewController(nibName: "ShareViewController", bundle: nil)
             self.presentViewController(shareViewController, animated: true) { () -> Void in
-                let rotatedUIImage = UIImage(CGImage: sharePhoto, scale: 1.0, orientation: CGImage.imageOrientationAccordingToDeviceOrientation())
+                let rotatedUIImage = UIImage(CGImage: blendedPhoto.image, scale: 1.0, orientation: blendedPhoto.imageOrientation)
                 shareViewController.sharePhoto(rotatedUIImage)
             }
         }
