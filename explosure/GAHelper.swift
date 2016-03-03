@@ -15,7 +15,7 @@ class GAHelper {
         GGLContext.sharedInstance().configureWithError(&configureError)
         assert(configureError == nil, "Error configuring Google services: \(configureError)")
         GAI.sharedInstance().trackUncaughtExceptions = true
-        GAI.sharedInstance().logger.logLevel = GAILogLevel.Verbose  // remove before app release
+//        GAI.sharedInstance().logger.logLevel = GAILogLevel.Verbose  // remove before app release
     }
     
     

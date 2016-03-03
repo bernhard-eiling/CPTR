@@ -20,7 +20,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     var blendedPhoto: BlendedPhoto?
     
     private var stillImageOutput: AVCaptureStillImageOutput?
-    private var blendFilter: CIFilter
+    private var videoBlendFilter: CIFilter
     private var stillImageBlendFilter: CIFilter
     private let glContext: EAGLContext
     private let ciContext: CIContext
@@ -36,9 +36,11 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     
     @IBOutlet var glView: GLKView!
     
+    let filterName = "CILightenBlendMode"
+    
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
-        self.blendFilter = CIFilter(name: "CISoftLightBlendMode")!
-        self.stillImageBlendFilter = CIFilter(name: "CISoftLightBlendMode")!
+        self.videoBlendFilter = CIFilter(name: self.filterName)!
+        self.stillImageBlendFilter = CIFilter(name: self.filterName)!
         self.glContext = EAGLContext(API: .OpenGLES2)
         self.ciContext = CIContext(EAGLContext: self.glContext)
         self.captureSession = AVCaptureSession()
@@ -126,11 +128,11 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
             return
         }
         if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
-            self.blendFilter.setValue(CIImage(CVPixelBuffer: imageBuffer), forKey: "inputImage")
-            if self.blendFilter.outputImage != nil && view != nil {
+            self.videoBlendFilter.setValue(CIImage(CVPixelBuffer: imageBuffer), forKey: "inputImage")
+            if self.videoBlendFilter.outputImage != nil && view != nil {
                 self.glView.bindDrawable()
-                let drawRect = CGRectMake(0, 0, self.blendFilter.outputImage!.extent.width, self.blendFilter.outputImage!.extent.height)
-                self.ciContext.drawImage(self.blendFilter.outputImage!, inRect: drawRect, fromRect: self.blendFilter.outputImage!.extent)
+                let drawRect = CGRectMake(0, 0, self.videoBlendFilter.outputImage!.extent.width, self.videoBlendFilter.outputImage!.extent.height)
+                self.ciContext.drawImage(self.videoBlendFilter.outputImage!, inRect: drawRect, fromRect: self.videoBlendFilter.outputImage!.extent)
                 self.glView.display()
             }
         }
@@ -179,44 +181,12 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         }
     }
     
-    private func blendPhoto(photo: CGImage) {
-        if self.capacityReached() {
-            NSLog("photo capacity reached")
-            return
-        }
-        self.photoCounter++
-        NSLog ("photo count: %i", self.photoCounter)
-        
-        let sessionQueue = dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)
-        dispatch_async(sessionQueue) { () -> Void in
-            if self.blendedPhoto == nil { // first photo cannot blend with other photo
-                self.blendedPhoto = BlendedPhoto(image: photo)
-            } else {
-                UIGraphicsBeginImageContext(photo.size())
-                let context: CGContext? = UIGraphicsGetCurrentContext()
-                CGContextScaleCTM(context, 1.0, -1.0) // flip
-                CGContextTranslateCTM(context, 0.0, -CGFloat(CGImageGetHeight(photo)))
-                CGContextDrawImage(context, photo.rect(), self.blendedPhoto!.image)
-                CGContextSetBlendMode(context, .Normal)
-                CGContextSetAlpha(context, 0.5)
-                CGContextDrawImage(context, photo.rect(), photo)
-                if let renderImage = CGBitmapContextCreateImage(context) {
-                    self.blendedPhoto!.image = renderImage
-                }
-                UIGraphicsEndImageContext();
-            }
-            
-            self.saveBlendedImageIfPossible()
-            self.setFilterBackgroundPhoto(self.blendedPhoto!.image)
-        }
-    }
-    
     private func setFilterBackgroundPhoto(photo: CGImage?) {
         if let photo = photo {
             let pixelSize = CGSize(width: self.glView.frame.width * self.glView.contentScaleFactor, height: self.glView.frame.height * self.glView.contentScaleFactor)
             let scaledCGimage = photo.rotate90Degrees(toSize: pixelSize)
             let ciImage = CIImage(CGImage: scaledCGimage)
-            self.blendFilter.setValue(ciImage, forKey: "inputBackgroundImage")
+            self.videoBlendFilter.setValue(ciImage, forKey: "inputBackgroundImage")
         }
     }
     
@@ -249,7 +219,9 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     private func resetBlender() {
         self.photoCounter = 0
         self.blendedPhoto = nil
-        self.blendFilter.setValue(nil, forKey: "inputBackgroundImage")
+        self.videoBlendFilter.setValue(nil, forKey: "inputBackgroundImage")
+        self.stillImageBlendFilter.setValue(nil, forKey: "inputBackgroundImage")
+        self.stillImageBlendFilter.setValue(nil, forKey: "inputImage")
     }
     
     
