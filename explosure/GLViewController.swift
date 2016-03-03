@@ -21,6 +21,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     
     private var stillImageOutput: AVCaptureStillImageOutput?
     private var blendFilter: CIFilter
+    private var stillImageBlendFilter: CIFilter
     private let glContext: EAGLContext
     private let ciContext: CIContext
     private let captureSession: AVCaptureSession
@@ -37,6 +38,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         self.blendFilter = CIFilter(name: "CISoftLightBlendMode")!
+        self.stillImageBlendFilter = CIFilter(name: "CISoftLightBlendMode")!
         self.glContext = EAGLContext(API: .OpenGLES2)
         self.ciContext = CIContext(EAGLContext: self.glContext)
         self.captureSession = AVCaptureSession()
@@ -146,11 +148,34 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
                 let stillImageConnection = stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)
                 stillImageOutput.captureStillImageAsynchronouslyFromConnection(stillImageConnection, completionHandler: { (imageDataSampleBuffer: CMSampleBuffer?, error: NSError?) -> Void in
                     if let ciImage = self.ciImageFromImageBuffer(imageDataSampleBuffer) {
-                        let cgImage = self.ciContext.createCGImage(ciImage, fromRect: ciImage.extent)
-                        self.blendPhoto(cgImage)
+                        self.blendCIImagePhoto(ciImage)
+//                        let cgImage = self.ciContext.createCGImage(ciImage, fromRect: ciImage.extent)
+//                        self.blendPhoto(cgImage)
                     }
                 })
             }
+        }
+    }
+    
+    private func blendCIImagePhoto(photo: CIImage) {
+        if self.capacityReached() {
+            NSLog("photo capacity reached")
+            return
+        }
+        self.photoCounter++
+        NSLog ("photo count: %i", self.photoCounter)
+        
+        let sessionQueue = dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)
+        dispatch_async(sessionQueue) { () -> Void in
+            if self.blendedPhoto == nil { // first photo cannot blend with other photo
+                self.blendedPhoto = BlendedPhoto(image: self.ciContext.createCGImage(photo, fromRect: photo.extent))
+            } else {
+                self.stillImageBlendFilter.setValue(CIImage(CGImage: self.blendedPhoto!.image), forKey: "inputBackgroundImage")
+                self.stillImageBlendFilter.setValue(photo, forKey: "inputImage")
+                self.blendedPhoto!.image =  self.ciContext.createCGImage(self.stillImageBlendFilter.outputImage!, fromRect: self.stillImageBlendFilter.outputImage!.extent)
+            }
+            self.saveBlendedImageIfPossible()
+            self.setFilterBackgroundPhoto(self.blendedPhoto!.image)
         }
     }
     
