@@ -28,6 +28,7 @@
                     <gestureRecognizers/>
                     <connections>
                         <outletCollection property="gestureRecognizers" destination="MlJ-AF-a1B" appends="YES" id="3LE-GK-XYD"/>
+                        <outletCollection property="gestureRecognizers" destination="v36-JJ-GyP" appends="YES" id="zUi-7V-HVN"/>
                     </connections>
                 </glkView>
             </subviews>
@@ -43,9 +44,14 @@
                 <constraint firstItem="dzU-Rg-tI0" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" id="usN-hj-ZGK"/>
             </constraints>
         </view>
-        <swipeGestureRecognizer direction="right" id="MlJ-AF-a1B">
+        <swipeGestureRecognizer direction="right" id="MlJ-AF-a1B" userLabel="Swipe Right Gesture Recognizer">
             <connections>
-                <action selector="viewSwiped:" destination="-1" id="oZa-zO-psV"/>
+                <action selector="filterSwipedRight:" destination="-1" id="sNU-GK-Fqn"/>
+            </connections>
+        </swipeGestureRecognizer>
+        <swipeGestureRecognizer direction="left" id="v36-JJ-GyP" userLabel="Swipe Left Gesture Recognizer">
+            <connections>
+                <action selector="filterSwipedLeft:" destination="-1" id="v1Q-yz-UVv"/>
             </connections>
         </swipeGestureRecognizer>
     </objects>

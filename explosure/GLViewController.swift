@@ -20,8 +20,6 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     var blendedPhoto: BlendedPhoto?
     
     private var stillImageOutput: AVCaptureStillImageOutput?
-    private var videoBlendFilter: Filter
-    private var stillImageBlendFilter: Filter
     private let glContext: EAGLContext
     private let ciContext: CIContext
     private let captureSession: AVCaptureSession
@@ -31,17 +29,19 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     
     private let photoCapacity = 2
     private var photoCounter = 0
+    private var videoBlendFilter: Filter
+    private var stillImageBlendFilter: Filter
+    private let filterManager: FilterManager
     
     var glViewControllerDelegate: GLViewControllerDelegate?
     
     @IBOutlet var glView: GLKView!
-    
-//    let filterName = "CILightenBlendMode"
-    let filterName = "CIDifferenceBlendMode"
-    
+
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
-        self.videoBlendFilter = Filter(name: self.filterName)
-        self.stillImageBlendFilter = Filter(name: self.filterName)
+        self.filterManager = FilterManager()
+        self.videoBlendFilter = Filter(name: self.filterManager.filterNames[self.filterManager.currentIndex])
+        self.stillImageBlendFilter = Filter(name: self.filterManager.filterNames[self.filterManager.currentIndex])
+        self.filterManager.filters = [self.videoBlendFilter, self.stillImageBlendFilter]
         self.glContext = EAGLContext(API: .OpenGLES2)
         self.ciContext = CIContext(EAGLContext: self.glContext)
         self.captureSession = AVCaptureSession()
@@ -107,7 +107,12 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         }
     }
 
-    @IBAction func viewSwiped(sender: UISwipeGestureRecognizer) {
+    @IBAction func filterSwipedLeft(sender: UISwipeGestureRecognizer) {
+        self.filterManager.last()
+    }
+    
+    @IBAction func filterSwipedRight(sender: UISwipeGestureRecognizer) {
+        self.filterManager.next()
     }
     
     func focusCaptureDeviceWithPoint(focusPoint: CGPoint) {
