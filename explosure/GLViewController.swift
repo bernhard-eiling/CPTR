@@ -24,6 +24,8 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     private let ciContext: CIContext
     private let captureSession: AVCaptureSession
     private var captureDevice: AVCaptureDevice?
+    private var currentCaptureDeviceInput: AVCaptureDeviceInput?
+    private var currentvideoDataOutput: AVCaptureVideoDataOutput?
     
     @IBOutlet weak var cameraAuthDeniedLabel: UILabel!
     
@@ -36,7 +38,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     var glViewControllerDelegate: GLViewControllerDelegate?
     
     @IBOutlet var glView: GLKView!
-
+    
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         self.filterManager = FilterManager()
         self.videoBlendFilter = Filter(name: self.filterManager.filterNames[self.filterManager.currentIndex])
@@ -91,14 +93,15 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
             return
         }
         self.captureSession.sessionPreset = AVCaptureSessionPresetPhoto
-        self.addCaptureDeviceInput()
+        self.addCaptureDeviceInputFromDevicePosition(.Back)
         self.addStillImageDataOutput()
         self.setStillImageOrientation(.Portrait)
         
         self.glView.context = self.glContext
         self.glView.enableSetNeedsDisplay = false
         
-        if let videoDataOutput = videoDataOutput() {
+        self.currentvideoDataOutput = self.videoDataOutput()
+        if let videoDataOutput = self.currentvideoDataOutput {
             self.setVideoOrientation(.Portrait, videoDataOutput: videoDataOutput)
             videoDataOutput.setSampleBufferDelegate(self, queue: dispatch_queue_create("VideoDataOutputQueue", DISPATCH_QUEUE_SERIAL))
         }
@@ -106,7 +109,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
             self.captureSession.startRunning()
         }
     }
-
+    
     @IBAction func filterSwipedLeft(sender: UISwipeGestureRecognizer) {
         self.filterManager.last()
     }
@@ -144,6 +147,23 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
                 self.ciContext.drawImage(self.videoBlendFilter.outputImage!, inRect: drawRect, fromRect: self.videoBlendFilter.outputImage!.extent)
                 self.glView.display()
             }
+        }
+    }
+    
+    func toggleCamera() {
+        if let captureDevice = self.captureDevice {
+            switch captureDevice.position {
+            case .Back:
+                self.addCaptureDeviceInputFromDevicePosition(.Front)
+            case .Front:
+                self.addCaptureDeviceInputFromDevicePosition(.Back)
+            default:
+                self.addCaptureDeviceInputFromDevicePosition(.Front)
+            }
+        }
+        self.setStillImageOrientation(.Portrait)
+        if let videoDataOutput = self.currentvideoDataOutput {
+            self.setVideoOrientation(.Portrait, videoDataOutput: videoDataOutput)
         }
     }
     
@@ -255,14 +275,14 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     
     // AVCapture SETUP
     
-    private func addCaptureDeviceInput() {
-        var captureDeviceInput : AVCaptureDeviceInput
+    private func addCaptureDeviceInputFromDevicePosition(devicePosition: AVCaptureDevicePosition) {
         do {
-            self.captureDevice = self.backCameraDevice()
+            self.captureDevice = self.cameraDeviceFromDevicePosition(devicePosition)
             if self.captureDevice != nil {
-                captureDeviceInput = try AVCaptureDeviceInput(device: self.captureDevice)
-                if self.captureSession.canAddInput(captureDeviceInput) {
-                    self.captureSession.addInput(captureDeviceInput)
+                self.captureSession.removeInput(self.currentCaptureDeviceInput)
+                self.currentCaptureDeviceInput = try AVCaptureDeviceInput(device: self.captureDevice)
+                if self.captureSession.canAddInput(self.currentCaptureDeviceInput) {
+                    self.captureSession.addInput(self.currentCaptureDeviceInput)
                 }
             }
         } catch {
@@ -306,10 +326,10 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         }
     }
     
-    private func backCameraDevice() -> AVCaptureDevice? {
+    private func cameraDeviceFromDevicePosition(devicePosition: AVCaptureDevicePosition) -> AVCaptureDevice? {
         let captureDevices = AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo)
         for captureDevice in captureDevices as! [AVCaptureDevice] {
-            if captureDevice.position == .Back {
+            if captureDevice.position == devicePosition {
                 return captureDevice;
             }
         }

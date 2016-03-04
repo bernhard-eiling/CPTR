@@ -44,12 +44,6 @@ class CameraViewController: UIViewController, GLViewControllerDelegate {
     
     @IBAction func captureButtonTapped() {
         self.glViewController.captureImage()
-//        if glViewController.savedPhoto != nil {
-//            captureButton.titleLabel!.text = "CAP"
-//            self.stillImageView.image = nil
-//        } else {
-//            
-//        }
     }
     
     @IBAction func shareButtonTapped() {
@@ -60,6 +54,10 @@ class CameraViewController: UIViewController, GLViewControllerDelegate {
                 shareViewController.sharePhoto(rotatedUIImage)
             }
         }
+    }
+    
+    @IBAction func selfieButtonTapped() {
+        self.glViewController.toggleCamera()
     }
     
     @IBAction func focusGestureRecognizerTapped(sender: UITapGestureRecognizer) {

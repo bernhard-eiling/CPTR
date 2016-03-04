@@ -83,6 +83,10 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2KK-mA-8Ab" userLabel="CAP">
                                         <rect key="frame" x="159" y="56" width="56" height="56"/>
                                         <subviews>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ePa-Vb-PIo">
+                                                <rect key="frame" x="14" y="14" width="28" height="28"/>
+                                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                            </view>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1hP-Q2-VMB" userLabel="cap Button">
                                                 <rect key="frame" x="0.0" y="0.0" width="56" height="56"/>
                                                 <fontDescription key="fontDescription" name="BodoniSvtyTwoITCTT-Book" family="Bodoni 72" pointSize="18"/>
@@ -93,10 +97,6 @@
                                                     <action selector="captureButtonTapped" destination="BYZ-38-t0r" eventType="touchUpInside" id="u9R-Qw-w7e"/>
                                                 </connections>
                                             </button>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ePa-Vb-PIo">
-                                                <rect key="frame" x="14" y="14" width="28" height="28"/>
-                                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                            </view>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -126,7 +126,7 @@
                                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
                                                 <connections>
-                                                    <action selector="shareButtonTapped" destination="BYZ-38-t0r" eventType="touchUpInside" id="XSq-VP-g75"/>
+                                                    <action selector="selfieButtonTapped" destination="BYZ-38-t0r" eventType="touchUpInside" id="TuE-fx-Ris"/>
                                                 </connections>
                                             </button>
                                         </subviews>
