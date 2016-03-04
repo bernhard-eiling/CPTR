@@ -26,6 +26,12 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     private var captureDevice: AVCaptureDevice?
     private var currentCaptureDeviceInput: AVCaptureDeviceInput?
     private var currentvideoDataOutput: AVCaptureVideoDataOutput?
+    private var maxStillImageResolution: CGSize? {
+        get {
+            let stillImageDimensions = self.captureDevice?.activeFormat?.highResolutionStillImageDimensions
+            return CGSize(width: Int(stillImageDimensions!.width), height: Int(stillImageDimensions!.height))
+        }
+    }
     
     @IBOutlet weak var cameraAuthDeniedLabel: UILabel!
     
@@ -143,10 +149,23 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
             self.videoBlendFilter.inputImage = CIImage(CVPixelBuffer: imageBuffer)
             if self.videoBlendFilter.outputImage != nil && view != nil {
                 self.glView.bindDrawable()
-                let drawRect = CGRectMake(0, 0, self.videoBlendFilter.outputImage!.extent.width, self.videoBlendFilter.outputImage!.extent.height)
-                self.ciContext.drawImage(self.videoBlendFilter.outputImage!, inRect: drawRect, fromRect: self.videoBlendFilter.outputImage!.extent)
+                let flippedCIImage = self.flippedCIImageIfFrontFromImage(self.videoBlendFilter.outputImage!)
+                self.ciContext.drawImage(flippedCIImage, inRect: flippedCIImage.extent, fromRect: flippedCIImage.extent)
                 self.glView.display()
             }
+        }
+    }
+    
+    private func flippedCIImageIfFrontFromImage(ciImage: CIImage) -> CIImage {
+        switch self.captureDevice!.position {
+        case .Back:
+            return ciImage
+        case .Front:
+            let transformTranslate = CGAffineTransformMakeTranslation(self.glView.frame.width * self.glView.contentScaleFactor, 0)
+            let transformScale = CGAffineTransformMakeScale(-1.0, 1.0)
+            return ciImage.imageByApplyingTransform(CGAffineTransformConcat(transformScale, transformTranslate))
+        default:
+            return ciImage
         }
     }
     
@@ -161,7 +180,6 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
                 self.addCaptureDeviceInputFromDevicePosition(.Front)
             }
         }
-        self.setStillImageOrientation(.Portrait)
         if let videoDataOutput = self.currentvideoDataOutput {
             self.setVideoOrientation(.Portrait, videoDataOutput: videoDataOutput)
         }
@@ -197,11 +215,18 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         let sessionQueue = dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)
         dispatch_async(sessionQueue) { () -> Void in
             if self.blendedPhoto == nil { // first photo cannot blend with other photo
-                self.blendedPhoto = BlendedPhoto(image: self.ciContext.createCGImage(photo, fromRect: photo.extent))
-            } else {
+                let cgImage = self.ciContext.createCGImage(photo, fromRect: photo.extent)
+                let scaledCGImage = self.scaledCGImageIfNecessary(cgImage)
+                self.blendedPhoto = BlendedPhoto(image: scaledCGImage)
+            } else { // maybe use here CIImage scale algorithm
                 self.stillImageBlendFilter.inputBackgroundImage = CIImage(CGImage: self.blendedPhoto!.image)
-                self.stillImageBlendFilter.inputImage = photo
-                self.blendedPhoto!.image =  self.ciContext.createCGImage(self.stillImageBlendFilter.outputImage!, fromRect: self.stillImageBlendFilter.outputImage!.extent)
+                
+                let cgImage = self.ciContext.createCGImage(photo, fromRect: photo.extent)
+                let scaledCGImage = self.scaledCGImageIfNecessary(cgImage)
+                self.stillImageBlendFilter.inputImage = CIImage(CGImage: scaledCGImage)
+                
+                let blendedCGImage = self.ciContext.createCGImage(self.stillImageBlendFilter.outputImage!, fromRect: self.stillImageBlendFilter.outputImage!.extent)
+                self.blendedPhoto!.image = blendedCGImage
             }
             self.saveBlendedImageIfPossible()
             self.setFilterBackgroundPhoto(self.blendedPhoto!.image)
@@ -213,7 +238,8 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
             let pixelSize = CGSize(width: self.glView.frame.width * self.glView.contentScaleFactor, height: self.glView.frame.height * self.glView.contentScaleFactor)
             let scaledCGimage = photo.rotate90Degrees(toSize: pixelSize)
             let ciImage = CIImage(CGImage: scaledCGimage)
-            self.videoBlendFilter.inputBackgroundImage = ciImage
+            let flippedImage = self.flippedCIImageIfFrontFromImage(ciImage)
+            self.videoBlendFilter.inputBackgroundImage = flippedImage
         }
     }
     
@@ -238,6 +264,13 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     
     
     // HELPER
+    
+    private func scaledCGImageIfNecessary(cgImage: CGImage) -> CGImage {
+        if cgImage.size() == self.maxStillImageResolution {
+            return cgImage;
+        }
+        return cgImage.scaleToSize(self.maxStillImageResolution!)
+    }
     
     private func capacityReached() -> Bool {
         return self.photoCounter >= self.photoCapacity

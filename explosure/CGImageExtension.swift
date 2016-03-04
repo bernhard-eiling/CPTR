@@ -6,11 +6,10 @@
 //  Copyright © 2016 bernhardeiling. All rights reserved.
 //
 
-import Foundation
 import UIKit
 
 extension CGImage {
-
+    
     func rotate90Degrees(toSize size:CGSize) -> CGImage {
         UIGraphicsBeginImageContext(CGSize(width: size.width , height: size.height))
         let context: CGContext? = UIGraphicsGetCurrentContext()
@@ -19,6 +18,14 @@ extension CGImage {
         CGContextScaleCTM(context, 1.0, -1.0)
         CGContextTranslateCTM(context, -size.height / 2, -size.width / 2)
         CGContextDrawImage(context, CGRectMake(0, 0, size.height, size.width), self)
+        UIGraphicsEndImageContext();
+        return CGBitmapContextCreateImage(context!)!
+    }
+    
+    func scaleToSize(size: CGSize) -> CGImage {
+        UIGraphicsBeginImageContext(CGSize(width: size.width , height: size.height))
+        let context: CGContext? = UIGraphicsGetCurrentContext()
+        CGContextDrawImage(context, CGRectMake(0, 0, size.width, size.height), self)
         UIGraphicsEndImageContext();
         return CGBitmapContextCreateImage(context!)!
     }
