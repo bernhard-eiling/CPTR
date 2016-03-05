@@ -10,6 +10,7 @@ import UIKit
 
 extension CGImage {
     
+    // replace with CIImage translations
     func rotate90Degrees(toSize size:CGSize) -> CGImage {
         UIGraphicsBeginImageContext(CGSize(width: size.width , height: size.height))
         let context: CGContext? = UIGraphicsGetCurrentContext()
@@ -21,15 +22,7 @@ extension CGImage {
         UIGraphicsEndImageContext();
         return CGBitmapContextCreateImage(context!)!
     }
-    
-    func scaleToSize(size: CGSize) -> CGImage {
-        UIGraphicsBeginImageContext(CGSize(width: size.width , height: size.height))
-        let context: CGContext? = UIGraphicsGetCurrentContext()
-        CGContextDrawImage(context, CGRectMake(0, 0, size.width, size.height), self)
-        UIGraphicsEndImageContext();
-        return CGBitmapContextCreateImage(context!)!
-    }
-    
+
     class func imageOrientationAccordingToDeviceOrientation() -> UIImageOrientation {
         switch UIDevice.currentDevice().orientation {
         case .Portrait:

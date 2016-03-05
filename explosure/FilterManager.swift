@@ -11,7 +11,7 @@ import Foundation
 class FilterManager {
     
     var filters: [Filter]?
-    let filterNames = ["CIOverlayBlendMode", "CIDifferenceBlendMode", "CILightenBlendMode"]
+    let filterNames = ["CILightenBlendMode", "CIDifferenceBlendMode", "CIOverlayBlendMode"]
     var currentIndex = 0 {
         didSet {
             if self.currentIndex >= self.filterNames.count {
