@@ -221,13 +221,16 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         }
     }
     
-    private func setFilterBackgroundPhoto(photo: CGImage?) {
-        if let photo = photo {
-            let pixelSize = CGSize(width: self.glView.frame.width * self.glView.contentScaleFactor, height: self.glView.frame.height * self.glView.contentScaleFactor)
-            let scaledCGimage = photo.rotate90Degrees(toSize: pixelSize)
-            let ciImage = CIImage(CGImage: scaledCGimage)
-            self.videoBlendFilter.inputBackgroundImage = ciImage
+    private func setFilterBackgroundPhoto(photo: CGImage) {
+        let pixelSize = CGSize(width: self.glView.frame.width * self.glView.contentScaleFactor, height: self.glView.frame.height * self.glView.contentScaleFactor)
+        let scaledCGimage: CGImage
+        if self.captureDevice?.position == .Back {
+            scaledCGimage = photo.rotate90Degrees(toSize: pixelSize, degrees: M_PI_2)
+        } else {
+            scaledCGimage = photo.rotate90Degrees(toSize: pixelSize, degrees: -M_PI_2)
         }
+        let ciImage = CIImage(CGImage: scaledCGimage)
+        self.videoBlendFilter.inputBackgroundImage = self.flippedCIImageIfFrontCamera(ciImage)
     }
     
     private func saveBlendedImageIfPossible() {
@@ -276,6 +279,14 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
             }
         }
         return ciImage;
+    }
+    
+    private func rotatedCIImage(ciImage: CIImage, degrees: Double) ->CIImage {
+        let imageSize = ciImage.extent.size
+        let transformTranslateOut = CGAffineTransformMakeTranslation(imageSize.width / 2.0, imageSize.height / 2.0)
+        let transformRotate = CGAffineTransformMakeRotation(CGFloat(degrees))
+        let transformTranslateBack = CGAffineTransformMakeTranslation(-imageSize.width / 2.0, -imageSize.height / 2.0)
+        return ciImage.imageByApplyingTransform(CGAffineTransformConcat(transformTranslateBack, CGAffineTransformConcat(transformTranslateOut, transformRotate)))
     }
     
     private func capacityReached() -> Bool {
