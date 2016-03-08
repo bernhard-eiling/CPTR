@@ -22,21 +22,7 @@ extension CGImage {
         UIGraphicsEndImageContext();
         return CGBitmapContextCreateImage(context!)!
     }
-
-    class func imageOrientationAccordingToDeviceOrientation() -> UIImageOrientation {
-        switch UIDevice.currentDevice().orientation {
-        case .Portrait:
-            return .Right
-        case .LandscapeLeft:
-            return .Up
-        case .LandscapeRight:
-            return .Down
-        case .PortraitUpsideDown:
-            return .Left
-        default:
-            return .Right
-        }
-    }
+    
     
     func size() -> CGSize {
         return CGSize(width: CGImageGetWidth(self), height: CGImageGetHeight(self))

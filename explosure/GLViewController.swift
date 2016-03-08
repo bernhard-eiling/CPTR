@@ -101,6 +101,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         self.captureSession.sessionPreset = AVCaptureSessionPresetPhoto
         self.addCaptureDeviceInputFromDevicePosition(.Back)
         self.addStillImageDataOutput()
+        
         self.setStillImageOrientation(.Portrait)
         
         self.glView.context = self.glContext
@@ -208,13 +209,14 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         dispatch_async(sessionQueue) { () -> Void in
             let cgPhoto = self.ciContext.createCGImage(photo, fromRect: photo.extent)
             if self.blendedPhoto == nil { // first photo cannot blend with other photo
-                self.blendedPhoto = BlendedPhoto(image: cgPhoto)
+                self.blendedPhoto = BlendedPhoto(image: cgPhoto, imageOrientation: self.imageOrientation())
             } else {
                 self.stillImageBlendFilter.inputBackgroundImage = CIImage(CGImage: self.blendedPhoto!.image)
                 self.stillImageBlendFilter.inputImage = photo
                 
                 let blendedCGImage = self.ciContext.createCGImage(self.stillImageBlendFilter.outputImage!, fromRect: self.stillImageBlendFilter.outputImage!.extent)
                 self.blendedPhoto!.image = blendedCGImage
+                self.blendedPhoto!.imageOrientation = self.imageOrientation()
             }
             self.saveBlendedImageIfPossible()
             self.setFilterBackgroundPhoto(self.blendedPhoto!.image)
@@ -239,7 +241,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         }
         GAHelper.trackCompletePhotocapture()
         PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
-            let rotatedUIImage = UIImage(CGImage: self.blendedPhoto!.image, scale: 1.0, orientation: CGImage.imageOrientationAccordingToDeviceOrientation())
+            let rotatedUIImage = UIImage(CGImage: self.blendedPhoto!.image, scale: 1.0, orientation: self.imageOrientation())
             PHAssetCreationRequest.creationRequestForAssetFromImage(rotatedUIImage)
             }) { (success, error) -> Void in
                 if (!success) {
@@ -254,6 +256,45 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     
     
     // HELPER
+    
+    private func imageOrientation() -> UIImageOrientation {
+        if let cameraPosition = self.captureDevice?.position {
+            switch cameraPosition {
+            case .Back: do {
+                switch UIDevice.currentDevice().orientation {
+                case .Portrait:
+                    return .Right
+                case .LandscapeLeft:
+                    return .Up
+                case .LandscapeRight:
+                    return .Down
+                case .PortraitUpsideDown:
+                    return .Left
+                default:
+                    return .Left
+                }
+                }
+                
+            case .Front: do {
+                switch UIDevice.currentDevice().orientation {
+                case .Portrait:
+                    return .Left
+                case .LandscapeLeft:
+                    return .Down
+                case .LandscapeRight:
+                    return .Up
+                case .PortraitUpsideDown:
+                    return .Right
+                default:
+                    return .Right
+                }
+                }
+            default:
+                return .Left
+            }
+        }
+        return .Left
+    }
     
     private func scaledCIImageIfNecessary(ciImage: CIImage) -> CIImage {
         if ciImage.extent.size == self.maxStillImageResolution {
@@ -279,14 +320,6 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
             }
         }
         return ciImage;
-    }
-    
-    private func rotatedCIImage(ciImage: CIImage, degrees: Double) ->CIImage {
-        let imageSize = ciImage.extent.size
-        let transformTranslateOut = CGAffineTransformMakeTranslation(imageSize.width / 2.0, imageSize.height / 2.0)
-        let transformRotate = CGAffineTransformMakeRotation(CGFloat(degrees))
-        let transformTranslateBack = CGAffineTransformMakeTranslation(-imageSize.width / 2.0, -imageSize.height / 2.0)
-        return ciImage.imageByApplyingTransform(CGAffineTransformConcat(transformTranslateBack, CGAffineTransformConcat(transformTranslateOut, transformRotate)))
     }
     
     private func capacityReached() -> Bool {
