@@ -26,12 +26,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     private var captureDevice: AVCaptureDevice?
     private var currentCaptureDeviceInput: AVCaptureDeviceInput?
     private var currentvideoDataOutput: AVCaptureVideoDataOutput?
-    private var maxStillImageResolution: CGSize? {
-        get {
-            let stillImageDimensions = self.captureDevice?.activeFormat?.highResolutionStillImageDimensions
-            return CGSize(width: Int(stillImageDimensions!.width), height: Int(stillImageDimensions!.height))
-        }
-    }
+    private var maxStillImageResolution: CGSize?
     
     @IBOutlet weak var cameraAuthDeniedLabel: UILabel!
     
@@ -106,6 +101,9 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         
         self.glView.context = self.glContext
         self.glView.enableSetNeedsDisplay = false
+        
+        let stillImageDimensions = self.captureDevice?.activeFormat?.highResolutionStillImageDimensions
+        self.maxStillImageResolution = CGSize(width: Int(stillImageDimensions!.width), height: Int(stillImageDimensions!.height)) // max resolution of front camera
         
         self.currentvideoDataOutput = self.videoDataOutput()
         if let videoDataOutput = self.currentvideoDataOutput {
