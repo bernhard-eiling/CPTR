@@ -57,7 +57,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "applicationDidBecomeActive", name: UIApplicationDidBecomeActiveNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(applicationDidBecomeActive), name: UIApplicationDidBecomeActiveNotification, object: nil)
         self.authorizeCamera()
     }
     
@@ -200,7 +200,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
             NSLog("photo capacity reached")
             return
         }
-        self.photoCounter++
+        self.photoCounter += 1
         NSLog ("photo count: %i", self.photoCounter)
         
         let sessionQueue = dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)

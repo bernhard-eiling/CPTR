@@ -23,7 +23,7 @@ class FilterManager {
     }
     
     func next() {
-        self.currentIndex++
+        self.currentIndex += 1
         if let filters = self.filters {
             for filter in filters {
                 filter.name = self.filterNames[self.currentIndex]
@@ -32,7 +32,7 @@ class FilterManager {
     }
     
     func last() {
-        self.currentIndex--
+        self.currentIndex -= 1
         if let filters = self.filters {
             for filter in filters {
                 filter.name = self.filterNames[self.currentIndex]
