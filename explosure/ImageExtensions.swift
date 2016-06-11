@@ -31,4 +31,24 @@ extension CGImage {
     func rect() -> CGRect {
         return CGRect(origin: CGPointZero, size: self.size())
     }
+    
+}
+
+extension CIImage {
+    
+    func verticalFlippedImage() -> CIImage {
+        let transformScale = CGAffineTransformMakeScale(1.0, -1.0)
+        return imageByApplyingTransform(transformScale)
+    }
+    
+    func scaledToResolution(resolution: CGSize) -> CIImage {
+        if extent.size == resolution {
+            return self;
+        }
+        let xScale = resolution.width / extent.size.width
+        let yScale = resolution.height / extent.size.height
+        let transformScale = CGAffineTransformMakeScale(xScale, yScale)
+        return imageByApplyingTransform(transformScale)
+    }
+    
 }
