@@ -19,5 +19,42 @@ extension AVCaptureDevice {
         }
         return nil;
     }
+
+    func imageOrientation() -> UIImageOrientation {
+        switch position {
+        case .Back: do {
+            switch UIDevice.currentDevice().orientation {
+            case .Portrait:
+                return .Right
+            case .LandscapeLeft:
+                return .Up
+            case .LandscapeRight:
+                return .Down
+            case .PortraitUpsideDown:
+                return .Left
+            default:
+                return .Left
+            }
+            }
+            
+        case .Front: do {
+            switch UIDevice.currentDevice().orientation {
+            case .Portrait:
+                return .Left
+            case .LandscapeLeft:
+                return .Down
+            case .LandscapeRight:
+                return .Up
+            case .PortraitUpsideDown:
+                return .Right
+            default:
+                return .Right
+            }
+            }
+        default:
+            return .Left
+        }
+        return .Left
+    }
     
 }
