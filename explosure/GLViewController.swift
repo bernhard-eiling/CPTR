@@ -22,10 +22,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     private let ciContext: CIContext
     private let captureSession: AVCaptureSession
     private var captureDevice: AVCaptureDevice? {
-        get {
-            return self.captureDevice
-        }
-        set {
+        didSet {
             if let stillImageController = self.stillImageController {
                 stillImageController.captureDevice = captureDevice
             }
@@ -202,7 +199,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
             let stillImageConnection = self.stillImageOutput?.connectionWithMediaType(AVMediaTypeVideo)
             self.stillImageOutput?.captureStillImageAsynchronouslyFromConnection(stillImageConnection, completionHandler: { (imageDataSampleBuffer: CMSampleBuffer?, error: NSError?) -> Void in
                 if let ciImage = self.ciImageFromImageBuffer(imageDataSampleBuffer) {
-                    self.stillImageController?.compoundStillImageFromImage(ciImage, completion: { (success, compoundImage) in
+                    self.stillImageController?.compoundStillImageFromImage(ciImage, completion: { (compoundImage) in
                         
                     })
                 }

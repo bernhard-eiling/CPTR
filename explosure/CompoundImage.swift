@@ -11,10 +11,20 @@ import CoreGraphics
 
 class CompoundImage {
     
-    var image: CGImage
+    var completed: Bool {
+        return imageCounter >= 2
+    }
+    var image: CGImage {
+        didSet {
+            imageCounter += 1
+        }
+    }
     var imageOrientation: UIImageOrientation
     
+    private var imageCounter: UInt
+    
     init(image: CGImage, imageOrientation: UIImageOrientation) {
+        self.imageCounter = 0
         self.image = image
         self.imageOrientation = imageOrientation
     }

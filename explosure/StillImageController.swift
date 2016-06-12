@@ -31,15 +31,11 @@ class StillImageController {
         }
     }
     
-    func compoundStillImageFromImage(ciImage: CIImage, completion: (success: Bool, compoundImage: CompoundImage?) -> ()) {
+    func compoundStillImageFromImage(ciImage: CIImage, completion: (compoundImage: CompoundImage?) -> ()) {
         let normalizedImg = normalizedImage(ciImage)
         addImageToCompoundImage(normalizedImg)
         saveCompoundImage()
-        if let compoundImage = self.compoundImage {
-            completion(success: true, compoundImage: compoundImage)
-        } else {
-            completion(success: false, compoundImage: nil)
-        }
+        completion(compoundImage: compoundImage)
     }
     
     private func normalizedImage(ciImage: CIImage) -> CIImage {
@@ -83,7 +79,5 @@ class StillImageController {
         }
         
     }
-    
-    
     
 }
