@@ -1,5 +1,5 @@
 //
-//  BlendedPhoto.swift
+//  CompoundImage.swift
 //  CPTR
 //
 //  Created by Bernhard on 28.02.16.
@@ -8,9 +8,8 @@
 
 import UIKit
 import CoreGraphics
-import AVFoundation
 
-class BlendedPhoto {
+class CompoundImage {
     
     var image: CGImage
     var imageOrientation: UIImageOrientation

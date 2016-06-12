@@ -16,13 +16,15 @@
 		6F8B739E1BC07526008E41A4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F8B739C1BC07526008E41A4 /* Main.storyboard */; };
 		6F8B73A01BC07526008E41A4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6F8B739F1BC07526008E41A4 /* Assets.xcassets */; };
 		6F8B73A31BC07526008E41A4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F8B73A11BC07526008E41A4 /* LaunchScreen.storyboard */; };
-		6FD200EF1C832D38002F746D /* BlendedPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD200EE1C832D38002F746D /* BlendedPhoto.swift */; };
+		6FD200EF1C832D38002F746D /* CompoundImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD200EE1C832D38002F746D /* CompoundImage.swift */; };
 		6FDB51991C88F657002D77A1 /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDB51981C88F657002D77A1 /* Filter.swift */; };
 		6FDB519B1C89080C002D77A1 /* FilterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDB519A1C89080C002D77A1 /* FilterManager.swift */; };
 		6FEF7D991BF546000090EFF3 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEF7D971BF546000090EFF3 /* ShareViewController.swift */; };
 		6FEF7D9A1BF546000090EFF3 /* ShareViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6FEF7D981BF546000090EFF3 /* ShareViewController.xib */; };
 		6FEF7D9D1BF927040090EFF3 /* GLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEF7D9B1BF927040090EFF3 /* GLViewController.swift */; };
 		90528A6E6AC51D29CDA2F030 /* libPods-CPTR.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DCBCCE86280C15141415B31F /* libPods-CPTR.a */; };
+		9E1AA2701D0D6EBF00190549 /* StillImageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1AA26F1D0D6EBF00190549 /* StillImageController.swift */; };
+		9E6645761D0D89F200ED76C3 /* AVCaptureDeviceExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6645751D0D89F200ED76C3 /* AVCaptureDeviceExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,13 +41,15 @@
 		6F8B739F1BC07526008E41A4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6F8B73A21BC07526008E41A4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6F8B73A41BC07526008E41A4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		6FD200EE1C832D38002F746D /* BlendedPhoto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlendedPhoto.swift; sourceTree = "<group>"; };
+		6FD200EE1C832D38002F746D /* CompoundImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompoundImage.swift; sourceTree = "<group>"; };
 		6FDB51981C88F657002D77A1 /* Filter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
 		6FDB519A1C89080C002D77A1 /* FilterManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterManager.swift; sourceTree = "<group>"; };
 		6FEF7D971BF546000090EFF3 /* ShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		6FEF7D981BF546000090EFF3 /* ShareViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ShareViewController.xib; sourceTree = "<group>"; };
 		6FEF7D9B1BF927040090EFF3 /* GLViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GLViewController.swift; sourceTree = "<group>"; };
 		890C16E5C4904FEF95171BCB /* Pods-CPTR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CPTR.release.xcconfig"; path = "Pods/Target Support Files/Pods-CPTR/Pods-CPTR.release.xcconfig"; sourceTree = "<group>"; };
+		9E1AA26F1D0D6EBF00190549 /* StillImageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StillImageController.swift; sourceTree = "<group>"; };
+		9E6645751D0D89F200ED76C3 /* AVCaptureDeviceExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCaptureDeviceExtension.swift; sourceTree = "<group>"; };
 		DCBCCE86280C15141415B31F /* libPods-CPTR.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CPTR.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -84,6 +88,7 @@
 			isa = PBXGroup;
 			children = (
 				6F4F9C601C810712000EE53D /* ImageExtensions.swift */,
+				9E6645751D0D89F200ED76C3 /* AVCaptureDeviceExtension.swift */,
 			);
 			name = extensions;
 			sourceTree = "<group>";
@@ -104,6 +109,7 @@
 				6FEF7D9B1BF927040090EFF3 /* GLViewController.swift */,
 				6F14E2E41C42F70600A74D08 /* GLViewController.xib */,
 				6F8B739A1BC07526008E41A4 /* CameraViewController.swift */,
+				9E1AA26F1D0D6EBF00190549 /* StillImageController.swift */,
 			);
 			name = sections;
 			sourceTree = "<group>";
@@ -145,7 +151,7 @@
 		6FD200ED1C8328A7002F746D /* models */ = {
 			isa = PBXGroup;
 			children = (
-				6FD200EE1C832D38002F746D /* BlendedPhoto.swift */,
+				6FD200EE1C832D38002F746D /* CompoundImage.swift */,
 				6FDB51981C88F657002D77A1 /* Filter.swift */,
 				6FDB519A1C89080C002D77A1 /* FilterManager.swift */,
 			);
@@ -305,10 +311,12 @@
 				6F4F9C611C810712000EE53D /* ImageExtensions.swift in Sources */,
 				6FEF7D991BF546000090EFF3 /* ShareViewController.swift in Sources */,
 				6FEF7D9D1BF927040090EFF3 /* GLViewController.swift in Sources */,
+				9E6645761D0D89F200ED76C3 /* AVCaptureDeviceExtension.swift in Sources */,
+				9E1AA2701D0D6EBF00190549 /* StillImageController.swift in Sources */,
 				6F8B73991BC07526008E41A4 /* AppDelegate.swift in Sources */,
 				6FDB519B1C89080C002D77A1 /* FilterManager.swift in Sources */,
 				6FDB51991C88F657002D77A1 /* Filter.swift in Sources */,
-				6FD200EF1C832D38002F746D /* BlendedPhoto.swift in Sources */,
+				6FD200EF1C832D38002F746D /* CompoundImage.swift in Sources */,
 				6F8930041C82235900BAF19A /* GAHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

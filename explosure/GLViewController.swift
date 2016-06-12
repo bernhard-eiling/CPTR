@@ -9,15 +9,13 @@
 import UIKit
 import AVFoundation
 import GLKit
-import Photos
 
 protocol GLViewControllerDelegate {
     func photoSavedToPhotoLibrary(savedPhoto: UIImage)
 }
 
 class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
-    
-    var blendedPhoto: BlendedPhoto?
+
     
     private var stillImageOutput: AVCaptureStillImageOutput?
     private let glContext: EAGLContext
@@ -26,7 +24,6 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     private var captureDevice: AVCaptureDevice?
     private var currentCaptureDeviceInput: AVCaptureDeviceInput?
     private var currentvideoDataOutput: AVCaptureVideoDataOutput?
-    private var maxStillImageResolution: CGSize?
     
     @IBOutlet weak var cameraAuthDeniedLabel: UILabel!
     
@@ -35,6 +32,9 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     private var videoBlendFilter: Filter
     private var stillImageBlendFilter: Filter
     private let filterManager: FilterManager
+    
+    
+    var blendedPhoto: CompoundImage?
     
     var glViewControllerDelegate: GLViewControllerDelegate?
     
@@ -90,6 +90,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     }
     
     private func setupCamera() {
+        // GUARD statement
         if self.captureDevice != nil {
             return
         }
@@ -103,8 +104,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         self.glView.context = self.glContext
         self.glView.enableSetNeedsDisplay = false
         
-        let stillImageDimensions = self.captureDevice?.activeFormat?.highResolutionStillImageDimensions
-        self.maxStillImageResolution = CGSize(width: Int(stillImageDimensions!.width), height: Int(stillImageDimensions!.height)) // max resolution of front camera
+        
         
         self.currentvideoDataOutput = self.videoDataOutput()
         if let videoDataOutput = self.currentvideoDataOutput {
@@ -177,55 +177,16 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     
     
     // STILL IMAGE CAPTURE
+    // this methode should return an image and should be called somewhere else
+    
     func captureImage() {
         if self.capacityReached() {
             self.resetBlender()
             return
         }
-        dispatch_async(dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)) { () -> Void in
-            if let stillImageOutput = self.stillImageOutput {
-                let stillImageConnection = stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)
-                stillImageOutput.captureStillImageAsynchronouslyFromConnection(stillImageConnection, completionHandler: { (imageDataSampleBuffer: CMSampleBuffer?, error: NSError?) -> Void in
-                    if let ciImage = self.ciImageFromImageBuffer(imageDataSampleBuffer) {
-                        if self.captureDevice?.position == .Front {
-                            let flipppedCIImage = ciImage.verticalFlippedImage()
-                            let scaledAndFlippedImage = flipppedCIImage.scaledToResolution(self.maxStillImageResolution!)
-                        }
-                        //                        self.blendCIImagePhoto(normalizedCIImage)
-                    }
-                })
-            }
-        }
+        
     }
 
-    private func blendCIImagePhoto(photo: CIImage) {
-        if self.capacityReached() {
-            NSLog("photo capacity reached")
-            return
-        }
-        self.photoCounter += 1
-        NSLog ("photo count: %i", self.photoCounter)
-        
-        let sessionQueue = dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)
-        dispatch_async(sessionQueue) { () -> Void in
-            if self.blendedPhoto == nil { // first photo cannot blend with other photo
-                let cgPhoto = self.ciContext.createCGImage(photo, fromRect: photo.extent)
-                self.blendedPhoto = BlendedPhoto(image: cgPhoto, imageOrientation: self.imageOrientation())
-            } else {
-                self.stillImageBlendFilter.inputBackgroundImage = CIImage(CGImage: self.blendedPhoto!.image)
-                self.stillImageBlendFilter.inputImage = photo
-                
-                let blendedCGImage = self.ciContext.createCGImage(self.stillImageBlendFilter.outputImage!, fromRect: self.stillImageBlendFilter.outputImage!.extent)
-                self.blendedPhoto!.image = blendedCGImage
-                self.blendedPhoto!.imageOrientation = self.imageOrientation()
-            }
-            self.saveBlendedImageIfPossible()
-            
-            // setting BG video filter for front facing camera broken
-            //            self.setFilterBackgroundPhoto(self.blendedPhoto!.image)
-        }
-    }
-    
     private func setFilterBackgroundPhoto(photo: CGImage) {
         let pixelSize = CGSize(width: self.glView.frame.width * self.glView.contentScaleFactor, height: self.glView.frame.height * self.glView.contentScaleFactor)
         let scaledCGimage: CGImage
@@ -237,67 +198,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         let ciImage = CIImage(CGImage: scaledCGimage)
 //        self.videoBlendFilter.inputBackgroundImage = self.flippedCIImageIfFrontCamera(ciImage)
     }
-    
-    private func saveBlendedImageIfPossible() {
-        if !self.capacityReached() {
-            return
-        }
-        GAHelper.trackCompletePhotocapture()
-        PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
-            let rotatedUIImage = UIImage(CGImage: self.blendedPhoto!.image, scale: 1.0, orientation: self.imageOrientation())
-            PHAssetCreationRequest.creationRequestForAssetFromImage(rotatedUIImage)
-        }) { (success, error) -> Void in
-            if (!success) {
-                NSLog("could not save image to photo library")
-            } else {
-                GAHelper.trackPhotoSaved()
-                self.glViewControllerDelegate?.photoSavedToPhotoLibrary(UIImage(CGImage: self.blendedPhoto!.image))
-                NSLog("image saved to photo library")
-            }
-        }
-    }
-    
-    
-    // HELPER
-    
-    private func imageOrientation() -> UIImageOrientation {
-        if let cameraPosition = self.captureDevice?.position {
-            switch cameraPosition {
-            case .Back: do {
-                switch UIDevice.currentDevice().orientation {
-                case .Portrait:
-                    return .Right
-                case .LandscapeLeft:
-                    return .Up
-                case .LandscapeRight:
-                    return .Down
-                case .PortraitUpsideDown:
-                    return .Left
-                default:
-                    return .Left
-                }
-                }
-                
-            case .Front: do {
-                switch UIDevice.currentDevice().orientation {
-                case .Portrait:
-                    return .Left
-                case .LandscapeLeft:
-                    return .Down
-                case .LandscapeRight:
-                    return .Up
-                case .PortraitUpsideDown:
-                    return .Right
-                default:
-                    return .Right
-                }
-                }
-            default:
-                return .Left
-            }
-        }
-        return .Left
-    }
+
 
     private func capacityReached() -> Bool {
         return self.photoCounter >= self.photoCapacity
@@ -314,16 +215,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     
     // VIDEO DRAWING
     
-    private func ciImageFromImageBuffer(imageSampleBuffer: CMSampleBuffer?) -> CIImage? {
-        if let sampleBuffer = imageSampleBuffer {
-            if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
-                let ciImage = CIImage(CVPixelBuffer: imageBuffer)
-                return ciImage
-            }
-        }
-        NSLog("Could not convert image buffer to CIImage")
-        return nil
-    }
+    
     
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
         if self.glContext != EAGLContext.currentContext() {
@@ -337,7 +229,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     
     private func addCaptureDeviceInputFromDevicePosition(devicePosition: AVCaptureDevicePosition) {
         do {
-            self.captureDevice = self.cameraDeviceFromDevicePosition(devicePosition)
+            self.captureDevice = AVCaptureDevice.captureDevice(devicePosition)
             if self.captureDevice != nil {
                 self.captureSession.removeInput(self.currentCaptureDeviceInput)
                 self.currentCaptureDeviceInput = try AVCaptureDeviceInput(device: self.captureDevice)
@@ -388,14 +280,6 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         }
     }
     
-    private func cameraDeviceFromDevicePosition(devicePosition: AVCaptureDevicePosition) -> AVCaptureDevice? {
-        let captureDevices = AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo)
-        for captureDevice in captureDevices as! [AVCaptureDevice] {
-            if captureDevice.position == devicePosition {
-                return captureDevice;
-            }
-        }
-        return nil;
-    }
+    
     
 }
