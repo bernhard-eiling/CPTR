@@ -15,7 +15,7 @@ class StillImageController {
     
     private let ciContext: CIContext
     private let maxStillImageResolution: CGSize
-    private let compoundImage: CompoundImage
+    private var compoundImage: CompoundImage
     private let stillImageBlendFilter: Filter
     
     init?(ciContext: CIContext) {
@@ -37,6 +37,10 @@ class StillImageController {
         addImageToCompoundImage(normalizedImg)
         saveCompoundImage()
         completion(compoundImage: compoundImage)
+    }
+    
+    func resetCompoundImage() {
+        compoundImage = CompoundImage()
     }
     
     private func normalizedImage(ciImage: CIImage) -> CIImage {
