@@ -15,12 +15,13 @@ class StillImageController {
     
     private let ciContext: CIContext
     private let maxStillImageResolution: CGSize
-    private var compoundImage: CompoundImage?
+    private let compoundImage: CompoundImage
     private let stillImageBlendFilter: Filter
     
     init?(ciContext: CIContext) {
         self.ciContext = ciContext
         self.stillImageBlendFilter = Filter(name: "CILightenBlendMode")
+        self.compoundImage = CompoundImage()
         
         if let backCamera = AVCaptureDevice.captureDevice(.Back) {
             let backCameraResolution = backCamera.activeFormat?.highResolutionStillImageDimensions
@@ -31,7 +32,7 @@ class StillImageController {
         }
     }
     
-    func compoundStillImageFromImage(ciImage: CIImage, completion: (compoundImage: CompoundImage?) -> ()) {
+    func compoundStillImageFromImage(ciImage: CIImage, completion: (compoundImage: CompoundImage) -> ()) {
         let normalizedImg = normalizedImage(ciImage)
         addImageToCompoundImage(normalizedImg)
         saveCompoundImage()
@@ -47,27 +48,24 @@ class StillImageController {
     }
     
     private func addImageToCompoundImage(ciImage: CIImage) {
+        guard !compoundImage.completed else { return }
         if let captureDevice = captureDevice {
-            if compoundImage == nil { // first photo cannot blend with other photo
-                let cgImage = ciContext.createCGImage(ciImage, fromRect: ciImage.extent)
-                compoundImage = CompoundImage(image: cgImage, imageOrientation: captureDevice.imageOrientation())
-            } else {
-                stillImageBlendFilter.inputBackgroundImage = CIImage(CGImage: self.compoundImage!.image)
-                stillImageBlendFilter.inputImage = ciImage
-                
-                let blendedCGImage = self.ciContext.createCGImage(self.stillImageBlendFilter.outputImage!, fromRect: self.stillImageBlendFilter.outputImage!.extent)
-                compoundImage!.image = blendedCGImage
-                compoundImage!.imageOrientation = captureDevice.imageOrientation()
+            if let image = self.compoundImage.image {
+                stillImageBlendFilter.inputBackgroundImage = CIImage(CGImage: image)
             }
+            stillImageBlendFilter.inputImage = ciImage
+            let blendedCGImage = self.ciContext.createCGImage(self.stillImageBlendFilter.outputImage!, fromRect: self.stillImageBlendFilter.outputImage!.extent)
+            compoundImage.image = blendedCGImage
+            compoundImage.imageOrientation = captureDevice.imageOrientation()
         }
         //            self.setFilterBackgroundPhoto(self.blendedPhoto!.image)
     }
     
     private func saveCompoundImage() {
-        guard captureDevice != nil || compoundImage != nil else { return }
+        guard captureDevice != nil && compoundImage.image != nil && compoundImage.imageOrientation != nil else { return }
         GAHelper.trackCompletePhotocapture()
         PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
-            let rotatedUIImage = UIImage(CGImage: self.compoundImage!.image, scale: 1.0, orientation: self.compoundImage!.imageOrientation)
+            let rotatedUIImage = UIImage(CGImage: self.compoundImage.image!, scale: 1.0, orientation: self.compoundImage.imageOrientation!)
             PHAssetCreationRequest.creationRequestForAssetFromImage(rotatedUIImage)
         }) { (success, error) -> Void in
             if (!success) {
@@ -77,7 +75,6 @@ class StillImageController {
                 NSLog("image saved to photo library")
             }
         }
-        
     }
     
 }
