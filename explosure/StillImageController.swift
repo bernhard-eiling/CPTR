@@ -54,13 +54,14 @@ class StillImageController {
     private func addImageToCompoundImage(ciImage: CIImage) {
         guard !compoundImage.completed else { return }
         if let captureDevice = captureDevice {
-            if let image = self.compoundImage.image {
+            if let image = compoundImage.image {
                 stillImageBlendFilter.inputBackgroundImage = CIImage(CGImage: image)
             }
             stillImageBlendFilter.inputImage = ciImage
-            let blendedCGImage = self.ciContext.createCGImage(self.stillImageBlendFilter.outputImage!, fromRect: self.stillImageBlendFilter.outputImage!.extent)
+            let blendedCGImage = ciContext.createCGImage(stillImageBlendFilter.outputImage!, fromRect:stillImageBlendFilter.outputImage!.extent)
             compoundImage.image = blendedCGImage
             compoundImage.imageOrientation = captureDevice.imageOrientation()
+            stillImageBlendFilter.inputImage = nil // ciImage has to be set to nil in order to capture another ciImage
         }
         //            self.setFilterBackgroundPhoto(self.blendedPhoto!.image)
     }
