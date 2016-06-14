@@ -30,7 +30,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         stillImageOutput.highResolutionStillImageOutputEnabled = true
         return stillImageOutput
     }()
-
+    
     private let glContext: EAGLContext
     private let ciContext: CIContext
     private let captureSession: AVCaptureSession
@@ -107,29 +107,23 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     }
     
     private func setupCamera() {
-        // GUARD statement
-        if captureDevice != nil {
-            return
-        }
-        
-        // REFACTOR init of captureDevice or DIE !!!
+        captureDevice = AVCaptureDevice.captureDevice(.Back)
         addCaptureDeviceInputFromDevicePosition(.Back)
-        
-        glView.context = glContext
-        glView.enableSetNeedsDisplay = false
         
         if let imageController = StillImageController(ciContext: ciContext, captureDevice: captureDevice!) {
             stillImageController = imageController
         } else {
             NSLog("unable to init stillimage controller")
         }
+
+        glView.context = glContext
+        glView.enableSetNeedsDisplay = false
         
+        // adding Outputs
         if captureSession.canAddOutput(videoDataOutput) {
             captureSession.addOutput(videoDataOutput)
         }
-        NSLog("could not add VideoDataOutput to session")
         setVideoOrientation(.Portrait, videoDataOutput: videoDataOutput)
-
         if captureSession.canAddOutput(stillImageOutput) {
             captureSession.addOutput(stillImageOutput)
         }
@@ -217,27 +211,24 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
             glView.bindDrawable()
             ciContext.drawImage(videoBlendFilter.outputImage!, inRect: videoBlendFilter.outputImage!.extent, fromRect: videoBlendFilter.outputImage!.extent)
             glView.display()
-            
         }
     }
     
     // AVCapture SETUP
     
     private func addCaptureDeviceInputFromDevicePosition(devicePosition: AVCaptureDevicePosition) {
+        guard captureDevice != nil else { return }
         do {
-            captureDevice = AVCaptureDevice.captureDevice(devicePosition)
-            if captureDevice != nil {
-                captureSession.removeInput(currentCaptureDeviceInput)
-                currentCaptureDeviceInput = try AVCaptureDeviceInput(device: captureDevice)
-                if captureSession.canAddInput(currentCaptureDeviceInput) {
-                    captureSession.addInput(currentCaptureDeviceInput)
-                }
+            captureSession.removeInput(currentCaptureDeviceInput)
+            currentCaptureDeviceInput = try AVCaptureDeviceInput(device: captureDevice)
+            if captureSession.canAddInput(currentCaptureDeviceInput) {
+                captureSession.addInput(currentCaptureDeviceInput)
             }
         } catch {
             NSLog("capture device could not be added to session");
         }
     }
-
+    
     private func setVideoOrientation(orientation: AVCaptureVideoOrientation, videoDataOutput: AVCaptureVideoDataOutput) {
         let videoOutputConnection = videoDataOutput.connectionWithMediaType(AVMediaTypeVideo)
         if videoOutputConnection.supportsVideoOrientation {
