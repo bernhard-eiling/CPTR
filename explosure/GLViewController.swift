@@ -32,9 +32,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     private var currentvideoDataOutput: AVCaptureVideoDataOutput?
     
     @IBOutlet weak var cameraAuthDeniedLabel: UILabel!
-    
-    private let photoCapacity = 2
-    private var photoCounter = 0
+
     private var videoBlendFilter: Filter
     private var stillImageBlendFilter: Filter
     private let filterManager: FilterManager
@@ -101,6 +99,8 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         if captureDevice != nil {
             return
         }
+        
+        // REFACTOR init of captureDevice or DIE !!!
         addCaptureDeviceInputFromDevicePosition(.Back)
         addStillImageDataOutput()
         
@@ -109,7 +109,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         glView.context = self.glContext
         glView.enableSetNeedsDisplay = false
         
-        if let imageController = StillImageController(ciContext: ciContext) {
+        if let imageController = StillImageController(ciContext: ciContext, captureDevice: captureDevice!) {
             stillImageController = imageController
         } else {
             NSLog("unable to init stillimage controller")
@@ -151,9 +151,6 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     }
     
     private func drawVideoWithSampleBuffer(sampleBuffer: CMSampleBuffer!) {
-        if capacityReached() {
-            return
-        }
         if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
             videoBlendFilter.inputImage = CIImage(CVPixelBuffer: imageBuffer)
             if videoBlendFilter.outputImage != nil && view != nil {
@@ -189,21 +186,15 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     // this methode should return an image and should be called somewhere else
     
     func captureImage() {
-        if self.capacityReached() {
-            self.resetBlender()
-            return
-        }
         dispatch_async(dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)) { () -> Void in
             let stillImageConnection = self.stillImageOutput?.connectionWithMediaType(AVMediaTypeVideo)
             self.stillImageOutput?.captureStillImageAsynchronouslyFromConnection(stillImageConnection, completionHandler: { (imageDataSampleBuffer: CMSampleBuffer?, error: NSError?) -> Void in
                 if let ciImage = self.ciImageFromImageBuffer(imageDataSampleBuffer) {
-
                     self.stillImageController?.compoundStillImageFromImage(ciImage, completion: { (compoundImage) in
-//                        dispatch_async(dispatch_get_main_queue(), {
-                            let image = compoundImage.image!
+                        if let image = compoundImage.image {
                             let ciImage = CIImage(CGImage: image)
                             let i = 0
-//                        })
+                        }
                     })
                 }
             })
@@ -221,14 +212,8 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         let ciImage = CIImage(CGImage: scaledCGimage)
         //        self.videoBlendFilter.inputBackgroundImage = self.flippedCIImageIfFrontCamera(ciImage)
     }
-    
-    
-    private func capacityReached() -> Bool {
-        return self.photoCounter >= self.photoCapacity
-    }
-    
+
     private func resetBlender() {
-        self.photoCounter = 0
         self.blendedPhoto = nil
         self.videoBlendFilter.inputBackgroundImage = nil
         self.stillImageBlendFilter.inputBackgroundImage = nil
@@ -255,7 +240,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
             captureDevice = AVCaptureDevice.captureDevice(devicePosition)
             if captureDevice != nil {
                 let backCameraResolution = captureDevice!.activeFormat?.highResolutionStillImageDimensions
-
+                
                 captureSession.removeInput(currentCaptureDeviceInput)
                 currentCaptureDeviceInput = try AVCaptureDeviceInput(device: captureDevice)
                 if captureSession.canAddInput(currentCaptureDeviceInput) {

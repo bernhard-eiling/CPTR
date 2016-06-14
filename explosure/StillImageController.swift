@@ -18,8 +18,9 @@ class StillImageController {
     private var compoundImage: CompoundImage
     private let stillImageBlendFilter: Filter
     
-    init?(ciContext: CIContext) {
+    init?(ciContext: CIContext, captureDevice: AVCaptureDevice) {
         self.ciContext = ciContext
+        self.captureDevice = captureDevice
         self.stillImageBlendFilter = Filter(name: "CILightenBlendMode")
         self.compoundImage = CompoundImage()
         
@@ -36,7 +37,7 @@ class StillImageController {
         let normalizedImg = normalizedImage(ciImage)
         addImageToCompoundImage(normalizedImg)
         // comment in
-//        saveCompoundImage()
+        //        saveCompoundImage()
         completion(compoundImage: compoundImage)
     }
     
@@ -54,17 +55,15 @@ class StillImageController {
     }
     
     private func addImageToCompoundImage(ciImage: CIImage) {
-        guard !compoundImage.completed else { return }
-        if let captureDevice = captureDevice {
-            if let image = compoundImage.image {
-                stillImageBlendFilter.inputBackgroundImage = CIImage(CGImage: image)
-            }
-            stillImageBlendFilter.inputImage = ciImage
-            let blendedCGImage = ciContext.createCGImage(stillImageBlendFilter.outputImage!, fromRect:stillImageBlendFilter.outputImage!.extent)
-            compoundImage.image = blendedCGImage
-            compoundImage.imageOrientation = captureDevice.imageOrientation()
-            stillImageBlendFilter.inputImage = nil // ciImage has to be set to nil in order to capture another ciImage
+        guard !compoundImage.completed && captureDevice != nil else { return }
+        if let image = compoundImage.image {
+            stillImageBlendFilter.inputBackgroundImage = CIImage(CGImage: image)
         }
+        stillImageBlendFilter.inputImage = ciImage
+        let blendedCGImage = ciContext.createCGImage(stillImageBlendFilter.outputImage!, fromRect:stillImageBlendFilter.outputImage!.extent)
+        compoundImage.image = blendedCGImage
+        compoundImage.imageOrientation = captureDevice!.imageOrientation()
+        stillImageBlendFilter.inputImage = nil // ciImage has to be set to nil in order to capture another ciImage
         //            self.setFilterBackgroundPhoto(self.blendedPhoto!.image)
     }
     
