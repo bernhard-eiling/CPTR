@@ -48,17 +48,13 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         self.filterManager = FilterManager()
-        self.videoBlendFilter = Filter(name: self.filterManager.filterNames[self.filterManager.currentIndex])
-        self.stillImageBlendFilter = Filter(name: self.filterManager.filterNames[self.filterManager.currentIndex])
-        self.filterManager.filters = [self.videoBlendFilter, self.stillImageBlendFilter]
+        self.videoBlendFilter = Filter(name: filterManager.filterNames[filterManager.currentIndex])
+        self.stillImageBlendFilter = Filter(name: filterManager.filterNames[filterManager.currentIndex])
+        self.filterManager.filters = [videoBlendFilter, stillImageBlendFilter]
         self.glContext = EAGLContext(API: .OpenGLES2)
-        self.ciContext = CIContext(EAGLContext: self.glContext)
+        self.ciContext = CIContext(EAGLContext: glContext)
         self.captureSession = AVCaptureSession()
-        if let stillImageController = StillImageController(ciContext: self.ciContext) {
-            self.stillImageController = stillImageController
-        } else {
-            NSLog("unable to init stillimage controller")
-        }
+        self.captureSession.sessionPreset = AVCaptureSessionPresetPhoto
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
@@ -69,11 +65,11 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     override func viewDidLoad() {
         super.viewDidLoad()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(applicationDidBecomeActive), name: UIApplicationDidBecomeActiveNotification, object: nil)
-        self.authorizeCamera()
+        authorizeCamera()
     }
     
     func applicationDidBecomeActive() {
-        self.authorizeCamera()
+        authorizeCamera()
     }
     
     private func authorizeCamera() {
@@ -92,34 +88,36 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
                                                         }
             })
         case .Authorized:
-            self.cameraAuthDeniedLabel.hidden = true
-            self.setupCamera()
+            cameraAuthDeniedLabel.hidden = true
+            setupCamera()
         case .Denied, .Restricted:
-            self.cameraAuthDeniedLabel.hidden = false
+            cameraAuthDeniedLabel.hidden = false
             NSLog("camera authorization denied")
         }
     }
     
     private func setupCamera() {
         // GUARD statement
-        if self.captureDevice != nil {
+        if captureDevice != nil {
             return
         }
-        self.captureSession.sessionPreset = AVCaptureSessionPresetPhoto
-        self.addCaptureDeviceInputFromDevicePosition(.Back)
-        self.addStillImageDataOutput()
+        addCaptureDeviceInputFromDevicePosition(.Back)
+        addStillImageDataOutput()
         
         // not required for still image capture
         //        self.setStillImageOrientation(.PortraitUpsideDown)
+        glView.context = self.glContext
+        glView.enableSetNeedsDisplay = false
         
-        self.glView.context = self.glContext
-        self.glView.enableSetNeedsDisplay = false
+        if let imageController = StillImageController(ciContext: ciContext) {
+            stillImageController = imageController
+        } else {
+            NSLog("unable to init stillimage controller")
+        }
         
-        
-        
-        self.currentvideoDataOutput = self.videoDataOutput()
-        if let videoDataOutput = self.currentvideoDataOutput {
-            self.setVideoOrientation(.Portrait, videoDataOutput: videoDataOutput)
+        currentvideoDataOutput = videoDataOutput()
+        if let videoDataOutput = currentvideoDataOutput {
+            setVideoOrientation(.Portrait, videoDataOutput: videoDataOutput)
             videoDataOutput.setSampleBufferDelegate(self, queue: dispatch_queue_create("VideoDataOutputQueue", DISPATCH_QUEUE_SERIAL))
         }
         dispatch_async(dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)) { () -> Void in
@@ -128,16 +126,16 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     }
     
     @IBAction func filterSwipedLeft(sender: UISwipeGestureRecognizer) {
-        self.filterManager.last()
+        filterManager.last()
     }
     
     @IBAction func filterSwipedRight(sender: UISwipeGestureRecognizer) {
-        self.filterManager.next()
+        filterManager.next()
     }
     
     func focusCaptureDeviceWithPoint(focusPoint: CGPoint) {
-        let normalizedFocusPoint = CGPoint(x: focusPoint.y / self.glView!.frame.size.height, y: 1.0 - (focusPoint.x / self.glView!.frame.size.width)) // coordinates switch is necessarry due to 90 degree rotation of camera
-        if let captureDevice = self.captureDevice {
+        let normalizedFocusPoint = CGPoint(x: focusPoint.y / glView!.frame.size.height, y: 1.0 - (focusPoint.x / glView!.frame.size.width)) // coordinates switch is necessarry due to 90 degree rotation of camera
+        if let captureDevice = captureDevice {
             do {
                 try captureDevice.lockForConfiguration()
             } catch {
@@ -153,32 +151,32 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     }
     
     private func drawVideoWithSampleBuffer(sampleBuffer: CMSampleBuffer!) {
-        if self.capacityReached() {
+        if capacityReached() {
             return
         }
         if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
-            self.videoBlendFilter.inputImage = CIImage(CVPixelBuffer: imageBuffer)
-            if self.videoBlendFilter.outputImage != nil && view != nil {
-                self.glView.bindDrawable()
+            videoBlendFilter.inputImage = CIImage(CVPixelBuffer: imageBuffer)
+            if videoBlendFilter.outputImage != nil && view != nil {
+                glView.bindDrawable()
                 //                let flippedCIImage = self.flippedCIImageIfFrontCamera(self.videoBlendFilter.outputImage!)
                 //                self.ciContext.drawImage(flippedCIImage, inRect: flippedCIImage.extent, fromRect: flippedCIImage.extent)
                 
                 // remove later
-                self.ciContext.drawImage(self.videoBlendFilter.outputImage!, inRect: self.videoBlendFilter.outputImage!.extent, fromRect: self.videoBlendFilter.outputImage!.extent)
-                self.glView.display()
+                ciContext.drawImage(videoBlendFilter.outputImage!, inRect: videoBlendFilter.outputImage!.extent, fromRect: videoBlendFilter.outputImage!.extent)
+                glView.display()
             }
         }
     }
     
     func toggleCamera() {
-        if let captureDevice = self.captureDevice {
+        if let captureDevice = captureDevice {
             switch captureDevice.position {
             case .Back:
-                self.addCaptureDeviceInputFromDevicePosition(.Front)
+                addCaptureDeviceInputFromDevicePosition(.Front)
             case .Front:
-                self.addCaptureDeviceInputFromDevicePosition(.Back)
+                addCaptureDeviceInputFromDevicePosition(.Back)
             default:
-                self.addCaptureDeviceInputFromDevicePosition(.Front)
+                addCaptureDeviceInputFromDevicePosition(.Front)
             }
         }
         if let videoDataOutput = self.currentvideoDataOutput {
@@ -199,8 +197,13 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
             let stillImageConnection = self.stillImageOutput?.connectionWithMediaType(AVMediaTypeVideo)
             self.stillImageOutput?.captureStillImageAsynchronouslyFromConnection(stillImageConnection, completionHandler: { (imageDataSampleBuffer: CMSampleBuffer?, error: NSError?) -> Void in
                 if let ciImage = self.ciImageFromImageBuffer(imageDataSampleBuffer) {
+
                     self.stillImageController?.compoundStillImageFromImage(ciImage, completion: { (compoundImage) in
-                        
+//                        dispatch_async(dispatch_get_main_queue(), {
+                            let image = compoundImage.image!
+                            let ciImage = CIImage(CGImage: image)
+                            let i = 0
+//                        })
                     })
                 }
             })
@@ -208,9 +211,9 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     }
     
     private func setFilterBackgroundPhoto(photo: CGImage) {
-        let pixelSize = CGSize(width: self.glView.frame.width * self.glView.contentScaleFactor, height: self.glView.frame.height * self.glView.contentScaleFactor)
+        let pixelSize = CGSize(width: glView.frame.width * glView.contentScaleFactor, height: glView.frame.height * glView.contentScaleFactor)
         let scaledCGimage: CGImage
-        if self.captureDevice?.position == .Back {
+        if captureDevice?.position == .Back {
             scaledCGimage = photo.rotate90Degrees(toSize: pixelSize, degrees: M_PI_2)
         } else {
             scaledCGimage = photo.rotate90Degrees(toSize: pixelSize, degrees: -M_PI_2)
@@ -249,12 +252,14 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     
     private func addCaptureDeviceInputFromDevicePosition(devicePosition: AVCaptureDevicePosition) {
         do {
-            self.captureDevice = AVCaptureDevice.captureDevice(devicePosition)
-            if self.captureDevice != nil {
-                self.captureSession.removeInput(self.currentCaptureDeviceInput)
-                self.currentCaptureDeviceInput = try AVCaptureDeviceInput(device: self.captureDevice)
-                if self.captureSession.canAddInput(self.currentCaptureDeviceInput) {
-                    self.captureSession.addInput(self.currentCaptureDeviceInput)
+            captureDevice = AVCaptureDevice.captureDevice(devicePosition)
+            if captureDevice != nil {
+                let backCameraResolution = captureDevice!.activeFormat?.highResolutionStillImageDimensions
+
+                captureSession.removeInput(currentCaptureDeviceInput)
+                currentCaptureDeviceInput = try AVCaptureDeviceInput(device: captureDevice)
+                if captureSession.canAddInput(currentCaptureDeviceInput) {
+                    captureSession.addInput(currentCaptureDeviceInput)
                 }
             }
         } catch {
@@ -266,8 +271,8 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         let videoDataOutput = AVCaptureVideoDataOutput()
         videoDataOutput.alwaysDiscardsLateVideoFrames = true
         videoDataOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey: NSNumber(unsignedInt: kCVPixelFormatType_32BGRA)]
-        if self.captureSession.canAddOutput(videoDataOutput) {
-            self.captureSession.addOutput(videoDataOutput)
+        if captureSession.canAddOutput(videoDataOutput) {
+            captureSession.addOutput(videoDataOutput)
             return videoDataOutput
         }
         NSLog("could not add VideoDataOutput to session")
@@ -275,10 +280,11 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     }
     
     private func addStillImageDataOutput() {
-        self.stillImageOutput = AVCaptureStillImageOutput()
-        self.stillImageOutput!.outputSettings = [kCVPixelBufferPixelFormatTypeKey: NSNumber(unsignedInt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
-        if self.captureSession.canAddOutput(self.stillImageOutput) {
-            self.captureSession.addOutput(self.stillImageOutput)
+        stillImageOutput = AVCaptureStillImageOutput()
+        stillImageOutput?.outputSettings = [kCVPixelBufferPixelFormatTypeKey: NSNumber(unsignedInt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
+        stillImageOutput?.highResolutionStillImageOutputEnabled = true
+        if captureSession.canAddOutput(stillImageOutput) {
+            captureSession.addOutput(stillImageOutput)
             return
         }
         NSLog("could not add StillImageDataOutput to session")

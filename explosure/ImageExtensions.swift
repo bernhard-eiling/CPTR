@@ -37,8 +37,9 @@ extension CGImage {
 extension CIImage {
     
     func verticalFlippedImage() -> CIImage {
-        let transformScale = CGAffineTransformMakeScale(1.0, -1.0)
-        return imageByApplyingTransform(transformScale)
+        let scaleTransform = CGAffineTransformMakeScale(1.0, -1.0)
+        let translateTransform = CGAffineTransformMakeTranslation(0.0, self.extent.size.height)
+        return imageByApplyingTransform(CGAffineTransformConcat(scaleTransform, translateTransform))
     }
     
     func scaledToResolution(resolution: CGSize) -> CIImage {

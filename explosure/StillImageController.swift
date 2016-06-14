@@ -35,7 +35,8 @@ class StillImageController {
     func compoundStillImageFromImage(ciImage: CIImage, completion: (compoundImage: CompoundImage) -> ()) {
         let normalizedImg = normalizedImage(ciImage)
         addImageToCompoundImage(normalizedImg)
-        saveCompoundImage()
+        // comment in
+//        saveCompoundImage()
         completion(compoundImage: compoundImage)
     }
     
@@ -46,7 +47,8 @@ class StillImageController {
     private func normalizedImage(ciImage: CIImage) -> CIImage {
         if captureDevice?.position == .Front {
             let flipppedCIImage = ciImage.verticalFlippedImage()
-            return flipppedCIImage.scaledToResolution(maxStillImageResolution)
+            let scaledFlippedCIImage = flipppedCIImage.scaledToResolution(maxStillImageResolution)
+            return scaledFlippedCIImage
         }
         return ciImage
     }
