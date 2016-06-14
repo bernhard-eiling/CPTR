@@ -28,7 +28,7 @@ class StillImageController {
             let backCameraResolution = backCamera.activeFormat?.highResolutionStillImageDimensions
             self.maxStillImageResolution = CGSize(width: Int(backCameraResolution!.width), height: Int(backCameraResolution!.height))
         } else {
-            NSLog("back captureDevice couldn't be found")
+            NSLog("StillImageController init failed - back captureDevice couldn't be found")
             return nil
         }
     }
@@ -64,7 +64,6 @@ class StillImageController {
         compoundImage.image = blendedCGImage
         compoundImage.imageOrientation = captureDevice!.imageOrientation()
         stillImageBlendFilter.inputImage = nil // ciImage has to be set to nil in order to capture another ciImage
-        //            self.setFilterBackgroundPhoto(self.blendedPhoto!.image)
     }
     
     private func saveCompoundImage() {
