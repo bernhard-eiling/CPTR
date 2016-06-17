@@ -17,18 +17,13 @@ protocol GLViewControllerDelegate {
 class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     private lazy var videoDataOutput: AVCaptureVideoDataOutput = {
-        let videoDataOutput = AVCaptureVideoDataOutput()
-        videoDataOutput.alwaysDiscardsLateVideoFrames = true
-        videoDataOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey: NSNumber(unsignedInt: kCVPixelFormatType_32BGRA)]
+        let videoDataOutput = AVCaptureVideoDataOutput.configuredOutput()
         videoDataOutput.setSampleBufferDelegate(self, queue: dispatch_queue_create("VideoDataOutputQueue", DISPATCH_QUEUE_SERIAL))
         return videoDataOutput
     }()
     
     private lazy var stillImageOutput: AVCaptureStillImageOutput = {
-        let stillImageOutput = AVCaptureStillImageOutput()
-        stillImageOutput.outputSettings = [kCVPixelBufferPixelFormatTypeKey: NSNumber(unsignedInt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)]
-        stillImageOutput.highResolutionStillImageOutputEnabled = true
-        return stillImageOutput
+        return AVCaptureStillImageOutput.configuredOutput()
     }()
     
     private let glContext: EAGLContext
