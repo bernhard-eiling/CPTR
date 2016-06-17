@@ -42,7 +42,6 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         }
     }
     private var currentCaptureDeviceInput: AVCaptureDeviceInput?
-    private var currentvideoDataOutput: AVCaptureVideoDataOutput?
     
     @IBOutlet weak var cameraAuthDeniedLabel: UILabel!
     
@@ -107,8 +106,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     }
     
     private func setupCamera() {
-        captureDevice = AVCaptureDevice.captureDevice(.Back)
-        addCaptureDeviceInputFromDevicePosition(.Back)
+        configureCaptureDevice(.Back)
         
         if let imageController = StillImageController(ciContext: ciContext, captureDevice: captureDevice!) {
             stillImageController = imageController
@@ -118,12 +116,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
 
         glView.context = glContext
         glView.enableSetNeedsDisplay = false
-        
-        // adding Outputs
-        if captureSession.canAddOutput(videoDataOutput) {
-            captureSession.addOutput(videoDataOutput)
-        }
-        setVideoOrientation(.Portrait, videoDataOutput: videoDataOutput)
+
         if captureSession.canAddOutput(stillImageOutput) {
             captureSession.addOutput(stillImageOutput)
         }
@@ -162,15 +155,12 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         if let captureDevice = captureDevice {
             switch captureDevice.position {
             case .Back:
-                addCaptureDeviceInputFromDevicePosition(.Front)
+                configureCaptureDevice(.Front)
             case .Front:
-                addCaptureDeviceInputFromDevicePosition(.Back)
+                configureCaptureDevice(.Back)
             default:
-                addCaptureDeviceInputFromDevicePosition(.Front)
+                configureCaptureDevice(.Front)
             }
-        }
-        if let videoDataOutput = self.currentvideoDataOutput {
-            self.setVideoOrientation(.Portrait, videoDataOutput: videoDataOutput)
         }
     }
     
@@ -216,20 +206,24 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     
     // AVCapture SETUP
     
-    private func addCaptureDeviceInputFromDevicePosition(devicePosition: AVCaptureDevicePosition) {
-        guard captureDevice != nil else { return }
+    private func configureCaptureDevice(devicePosition: AVCaptureDevicePosition) {
         do {
+            captureDevice = AVCaptureDevice.captureDevice(devicePosition)
             captureSession.removeInput(currentCaptureDeviceInput)
             currentCaptureDeviceInput = try AVCaptureDeviceInput(device: captureDevice)
             if captureSession.canAddInput(currentCaptureDeviceInput) {
                 captureSession.addInput(currentCaptureDeviceInput)
             }
+            setVideoOrientation(.Portrait)
         } catch {
             NSLog("capture device could not be added to session");
         }
     }
     
-    private func setVideoOrientation(orientation: AVCaptureVideoOrientation, videoDataOutput: AVCaptureVideoDataOutput) {
+    private func setVideoOrientation(orientation: AVCaptureVideoOrientation) {
+        if captureSession.canAddOutput(videoDataOutput) {
+            captureSession.addOutput(videoDataOutput)
+        }
         let videoOutputConnection = videoDataOutput.connectionWithMediaType(AVMediaTypeVideo)
         if videoOutputConnection.supportsVideoOrientation {
             videoOutputConnection.videoOrientation = orientation
