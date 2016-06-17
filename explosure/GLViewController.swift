@@ -113,10 +113,10 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         } else {
             NSLog("unable to init stillimage controller")
         }
-
+        
         glView.context = glContext
         glView.enableSetNeedsDisplay = false
-
+        
         if captureSession.canAddOutput(stillImageOutput) {
             captureSession.addOutput(stillImageOutput)
         }
@@ -169,18 +169,23 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     // this methode should return an image and should be called somewhere else
     
     func captureImage() {
-        
+        self.ciImageFromStillImageOutput { (capturedCiImage) in
+            guard capturedCiImage != nil else { return }
+            self.stillImageController?.compoundStillImageFromImage(capturedCiImage!, completion: { (compoundImage) in
+                guard compoundImage.image != nil else { return }
+                let ciImage = CIImage(CGImage: compoundImage.image!)
+                self.videoBlendFilter.inputBackgroundImage = ciImage
+            })
+        }
+    }
+    
+    private func ciImageFromStillImageOutput(completion: ((capturedCiImage: CIImage?) -> ())) {
         dispatch_async(dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)) { () -> Void in
             let stillImageConnection = self.stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)
             self.stillImageOutput.captureStillImageAsynchronouslyFromConnection(stillImageConnection, completionHandler: { (imageDataSampleBuffer: CMSampleBuffer?, error: NSError?) -> Void in
-                if let ciImage = self.ciImageFromImageBuffer(imageDataSampleBuffer) {
-                    self.stillImageController?.compoundStillImageFromImage(ciImage, completion: { (compoundImage) in
-                        if let image = compoundImage.image {
-                            let ciImage = CIImage(CGImage: image)
-                            self.videoBlendFilter.inputBackgroundImage = ciImage
-                        }
-                    })
-                }
+                dispatch_async(dispatch_get_main_queue(), {
+                    completion(capturedCiImage: self.ciImageFromImageBuffer(imageDataSampleBuffer))
+                })
             })
         }
     }
