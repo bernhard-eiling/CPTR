@@ -163,12 +163,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         self.ciImageFromStillImageOutput { (capturedCiImage) in
             guard capturedCiImage != nil else { return }
             self.stillImageController?.compoundStillImageFromImage(capturedCiImage!, completion: { (compoundImage) in
-                guard compoundImage.image != nil else { return }
-                let ciImage = CIImage(CGImage: compoundImage.image!)
-                let rotatedImage = ciImage.rotated90DegreesRight()
-                let filterImageRect = self.videoBlendFilter.outputImage!.extent
-                let scaledAndRotatedImage = rotatedImage.scaledToResolution(CGSize(width: filterImageRect.size.width, height: filterImageRect.size.height))
-                self.videoBlendFilter.inputBackgroundImage = scaledAndRotatedImage
+                self.setCompoundImageToFilter(compoundImage.image)
             })
         }
     }
@@ -183,9 +178,19 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
             })
         }
     }
+    
+    private func setCompoundImageToFilter(compoundImage: CGImage?) {
+        if let cgImage = compoundImage {
+            let ciImage = CIImage(CGImage: cgImage)
+            let rotatedImage = ciImage.rotated90DegreesRight()
+            let filterImageRect = self.videoBlendFilter.outputImage!.extent
+            let scaledAndRotatedImage = rotatedImage.scaledToResolution(CGSize(width: filterImageRect.size.width, height: filterImageRect.size.height))
+            videoBlendFilter.inputBackgroundImage = scaledAndRotatedImage
+        }
+    }
 
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
-        if self.glContext != EAGLContext.currentContext() {
+        if glContext != EAGLContext.currentContext() {
             EAGLContext.setCurrentContext(self.glContext)
         }
         drawVideoWithSampleBuffer(sampleBuffer)
