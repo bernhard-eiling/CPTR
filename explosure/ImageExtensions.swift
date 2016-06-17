@@ -9,21 +9,7 @@
 import UIKit
 
 extension CGImage {
-    
-    // replace with CIImage translations
-    func rotate90Degrees(toSize size:CGSize, degrees: Double) -> CGImage {
-        UIGraphicsBeginImageContext(CGSize(width: size.width , height: size.height))
-        let context: CGContext? = UIGraphicsGetCurrentContext()
-        CGContextTranslateCTM(context, size.width / 2, size.height / 2)
-        CGContextRotateCTM(context, CGFloat(degrees))
-        CGContextScaleCTM(context, 1.0, -1.0)
-        CGContextTranslateCTM(context, -size.height / 2, -size.width / 2)
-        CGContextDrawImage(context, CGRectMake(0, 0, size.height, size.width), self)
-        UIGraphicsEndImageContext();
-        return CGBitmapContextCreateImage(context!)!
-    }
-    
-    
+
     func size() -> CGSize {
         return CGSize(width: CGImageGetWidth(self), height: CGImageGetHeight(self))
     }
@@ -50,6 +36,12 @@ extension CIImage {
         let yScale = resolution.height / extent.size.height
         let transformScale = CGAffineTransformMakeScale(xScale, yScale)
         return imageByApplyingTransform(transformScale)
+    }
+    
+    func rotated90DegreesRight() -> CIImage {
+        let translateTransform = CGAffineTransformMakeTranslation(-self.extent.size.width, 0.0)
+        let rotateTransform = CGAffineTransformMakeRotation(CGFloat(-M_PI / 2))
+        return imageByApplyingTransform(CGAffineTransformConcat(translateTransform, rotateTransform))
     }
     
 }

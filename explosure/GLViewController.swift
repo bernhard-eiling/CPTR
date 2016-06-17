@@ -164,17 +164,16 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
         }
     }
     
-    
-    // STILL IMAGE CAPTURE
-    // this methode should return an image and should be called somewhere else
-    
     func captureImage() {
         self.ciImageFromStillImageOutput { (capturedCiImage) in
             guard capturedCiImage != nil else { return }
             self.stillImageController?.compoundStillImageFromImage(capturedCiImage!, completion: { (compoundImage) in
                 guard compoundImage.image != nil else { return }
                 let ciImage = CIImage(CGImage: compoundImage.image!)
-                self.videoBlendFilter.inputBackgroundImage = ciImage
+                let rotatedImage = ciImage.rotated90DegreesRight()
+                let filterImageRect = self.videoBlendFilter.outputImage!.extent
+                let scaledAndRotatedImage = rotatedImage.scaledToResolution(CGSize(width: filterImageRect.size.width, height: filterImageRect.size.height))
+                self.videoBlendFilter.inputBackgroundImage = scaledAndRotatedImage
             })
         }
     }
@@ -189,9 +188,7 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
             })
         }
     }
-    
-    // VIDEO DRAWING
-    
+
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
         if self.glContext != EAGLContext.currentContext() {
             EAGLContext.setCurrentContext(self.glContext)
