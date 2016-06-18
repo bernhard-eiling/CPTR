@@ -40,7 +40,7 @@ extension CIImage {
     
     func rotated90DegreesRight() -> CIImage {
         let translateTransform = CGAffineTransformMakeTranslation(-self.extent.size.width, 0.0)
-        let rotateTransform = CGAffineTransformMakeRotation(CGFloat(-M_PI / 2))
+        let rotateTransform = CGAffineTransformMakeRotation(CGFloat(-M_PI_2))
         return imageByApplyingTransform(CGAffineTransformConcat(translateTransform, rotateTransform))
     }
     

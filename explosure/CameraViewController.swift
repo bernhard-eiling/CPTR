@@ -2,77 +2,227 @@
 //  CameraViewController.swift
 //  explosure
 //
-//  Created by Bernhard Eiling on 03.10.15.
+//  Created by Bernhard Eiling on 15.11.15.
 //  Copyright © 2015 bernhardeiling. All rights reserved.
 //
 
 import UIKit
 import AVFoundation
+import GLKit
 
-class CameraViewController: UIViewController, GLViewControllerDelegate {
+class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     
+    private lazy var videoDataOutput: AVCaptureVideoDataOutput = {
+        let videoDataOutput = AVCaptureVideoDataOutput.configuredOutput()
+        videoDataOutput.setSampleBufferDelegate(self, queue: dispatch_queue_create("VideoDataOutputQueue", DISPATCH_QUEUE_SERIAL))
+        return videoDataOutput
+    }()
+    
+    private lazy var stillImageOutput: AVCaptureStillImageOutput = {
+        return AVCaptureStillImageOutput.configuredOutput()
+    }()
+    
+    private let glContext: EAGLContext
+    private let ciContext: CIContext
+    private let captureSession: AVCaptureSession
+    private var captureDevice: AVCaptureDevice? {
+        didSet {
+            if let stillImageController = self.stillImageController {
+                stillImageController.captureDevice = captureDevice
+            }
+        }
+    }
+    private var currentCaptureDeviceInput: AVCaptureDeviceInput?
+    
+    @IBOutlet weak var glView: GLKView!
     @IBOutlet weak var captureButton: UIButton!
     @IBOutlet var rotatableViews: [UIView]!
-    @IBOutlet weak var photoSavedWrapperView: UIView!
-    @IBOutlet weak var glViewWrapper: UIView!
-    @IBOutlet weak var stillImageView: UIImageView!
-    let glViewController: GLViewController
     
+    private var videoBlendFilter: Filter
+    private var stillImageBlendFilter: Filter
+    private let filterManager: FilterManager
+    private var stillImageController: StillImageController?
     
-    deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+        self.filterManager = FilterManager()
+        self.videoBlendFilter = Filter(name: filterManager.filterNames[filterManager.currentIndex])
+        self.stillImageBlendFilter = Filter(name: filterManager.filterNames[filterManager.currentIndex])
+        self.filterManager.filters = [videoBlendFilter, stillImageBlendFilter]
+        self.glContext = EAGLContext(API: .OpenGLES2)
+        self.ciContext = CIContext(EAGLContext: glContext)
+        self.captureSession = AVCaptureSession()
+        self.captureSession.sessionPreset = AVCaptureSessionPresetPhoto
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
-    required init?(coder aCoder: NSCoder) {
-        self.glViewController = GLViewController()
-        super.init(coder: aCoder)
+    required init(coder aCoder: NSCoder) {
+        self.filterManager = FilterManager()
+        self.videoBlendFilter = Filter(name: filterManager.filterNames[filterManager.currentIndex])
+        self.stillImageBlendFilter = Filter(name: filterManager.filterNames[filterManager.currentIndex])
+        self.filterManager.filters = [videoBlendFilter, stillImageBlendFilter]
+        self.glContext = EAGLContext(API: .OpenGLES2)
+        self.ciContext = CIContext(EAGLContext: glContext)
+        self.captureSession = AVCaptureSession()
+        self.captureSession.sessionPreset = AVCaptureSessionPresetPhoto
+        super.init(coder: aCoder)!
     }
     
     override func viewDidLoad() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(deviceOrientationDidChange), name: UIDeviceOrientationDidChangeNotification, object: nil)
-        self.addChildViewController(self.glViewController)
-        self.glViewController.view.frame = self.glViewWrapper.bounds
-        self.glViewWrapper.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
-        self.glViewWrapper.addSubview(self.glViewController.view)
         super.viewDidLoad()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(deviceOrientationDidChange), name: UIDeviceOrientationDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(applicationDidBecomeActive), name: UIApplicationDidBecomeActiveNotification, object: nil)
+        glView.context = glContext
+        glView.enableSetNeedsDisplay = false
+        authorizeCamera()
     }
     
     override func viewDidAppear(animated: Bool) {
-        GAHelper.trackCameraView()
         super.viewDidAppear(animated)
+        GAHelper.trackCameraView()
     }
     
+    func applicationDidBecomeActive() {
+        authorizeCamera()
+    }
+    
+    private func authorizeCamera() {
+        let authorizationStatus = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
+        switch authorizationStatus {
+        case .NotDetermined:
+            AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, completionHandler: { (granted:Bool) -> Void in
+                if granted {
+                    self.setupCamera()
+                }
+                else {
+                    NSLog("camera authorization denied")
+                }
+            })
+        case .Authorized:
+            setupCamera()
+        case .Denied, .Restricted:
+            NSLog("camera authorization denied")
+        }
+    }
+    
+    private func setupCamera() {
+        configureCaptureDevice(.Back)
+        
+        if let imageController = StillImageController(ciContext: ciContext, captureDevice: captureDevice!) {
+            stillImageController = imageController
+        } else {
+            NSLog("unable to init stillimage controller")
+        }
+        
+        if captureSession.canAddOutput(stillImageOutput) {
+            captureSession.addOutput(stillImageOutput)
+        }
+        
+        dispatch_async(dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)) { () -> Void in
+            self.captureSession.startRunning()
+        }
+    }
+    
+    
     @IBAction func captureButtonTapped() {
-        self.glViewController.captureImage()
+        guard stillImageController?.compoundImage.completed == false else {
+            videoBlendFilter.inputBackgroundImage = nil
+            stillImageController!.reset()
+            return
+        }
+        self.ciImageFromStillImageOutput { (capturedCiImage) in
+            guard capturedCiImage != nil else { return }
+            self.stillImageController?.compoundStillImageFromImage(capturedCiImage!, completion: { (compoundImage) in
+                self.setCompoundImageToFilter(compoundImage.image)
+            })
+        }
     }
     
     @IBAction func shareButtonTapped() {
         let shareViewController = ShareViewController(nibName: "ShareViewController", bundle: nil)
         self.presentViewController(shareViewController, animated: true) { () -> Void in
-//            let rotatedUIImage = UIImage(CGImage: blendedPhoto.image!, scale: 1.0, orientation: blendedPhoto.imageOrientation!)
-//            shareViewController.sharePhoto(rotatedUIImage)
+            //            let rotatedUIImage = UIImage(CGImage: blendedPhoto.image!, scale: 1.0, orientation: blendedPhoto.imageOrientation!)
+            //            shareViewController.sharePhoto(rotatedUIImage)
         }
     }
     
-    @IBAction func selfieButtonTapped() {
-        self.glViewController.toggleCamera()
+    @IBAction func toggleCameraButtonTapped() {
+        if let captureDevice = captureDevice {
+            switch captureDevice.position {
+            case .Back:
+                configureCaptureDevice(.Front)
+            case .Front:
+                configureCaptureDevice(.Back)
+            default:
+                configureCaptureDevice(.Front)
+            }
+        }
     }
     
-    @IBAction func focusGestureRecognizerTapped(sender: UITapGestureRecognizer) {
-        self.glViewController.focusCaptureDeviceWithPoint(sender.locationInView(self.glViewWrapper))
+    @IBAction func filterSwipedLeft(sender: UISwipeGestureRecognizer) {
+        filterManager.last()
     }
     
-    func photoSavedToPhotoLibrary(savedPhoto: UIImage) {
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in
-            self.stillImageView.image = savedPhoto
-            self.photoSavedWrapperView.hidden = false
-            self.photoSavedWrapperView.alpha = 1.0
-            self.photoSavedWrapperView.transform = CGAffineTransformMakeScale(0.8, 0.8)
-            UIView.animateWithDuration(0.3, delay: 1.0, options: .CurveEaseOut, animations: { () -> Void in
-                self.photoSavedWrapperView.alpha = 0.0
-                self.photoSavedWrapperView.transform = CGAffineTransformIdentity
-            }) { (Bool) -> Void in
-                self.photoSavedWrapperView.hidden = true
+    @IBAction func filterSwipedRight(sender: UISwipeGestureRecognizer) {
+        filterManager.next()
+    }
+    
+    func focusCaptureDeviceWithPoint(focusPoint: CGPoint) {
+        let normalizedFocusPoint = CGPoint(x: focusPoint.y / view.frame.size.height, y: 1.0 - (focusPoint.x / view.frame.size.width)) // coordinates switch is necessarry due to 90 degree rotation of camera
+        if let captureDevice = captureDevice {
+            do {
+                try captureDevice.lockForConfiguration()
+            } catch {
+                NSLog("focus capture device failed")
+                return
+            }
+            if captureDevice.focusPointOfInterestSupported {
+                captureDevice.focusPointOfInterest = normalizedFocusPoint
+                captureDevice.focusMode = .AutoFocus
+            }
+            captureDevice.unlockForConfiguration()
+        }
+    }
+
+    private func ciImageFromStillImageOutput(completion: ((capturedCiImage: CIImage?) -> ())) {
+        dispatch_async(dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)) { () -> Void in
+            let stillImageConnection = self.stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)
+            self.stillImageOutput.captureStillImageAsynchronouslyFromConnection(stillImageConnection, completionHandler: { (imageDataSampleBuffer: CMSampleBuffer?, error: NSError?) -> Void in
+                dispatch_async(dispatch_get_main_queue(), {
+                    completion(capturedCiImage: self.ciImageFromImageBuffer(imageDataSampleBuffer))
+                })
+            })
+        }
+    }
+    
+    private func setCompoundImageToFilter(compoundImage: CGImage?) {
+        if let cgImage = compoundImage {
+            let ciImage = CIImage(CGImage: cgImage)
+            let rotatedImage = ciImage.rotated90DegreesRight()
+            let filterImageRect = self.videoBlendFilter.outputImage!.extent
+            let scaledAndRotatedImage = rotatedImage.scaledToResolution(CGSize(width: filterImageRect.size.width, height: filterImageRect.size.height))
+            videoBlendFilter.inputBackgroundImage = scaledAndRotatedImage
+        }
+    }
+    
+    func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
+        if glContext != EAGLContext.currentContext() {
+            EAGLContext.setCurrentContext(self.glContext)
+        }
+        drawVideoWithSampleBuffer(sampleBuffer)
+    }
+    
+    private func drawVideoWithSampleBuffer(sampleBuffer: CMSampleBuffer!) {
+        guard view != nil else { return }
+        if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
+            if stillImageController?.compoundImage.completed == false {
+                videoBlendFilter.inputImage = CIImage(CVPixelBuffer: imageBuffer)
+            }
+            if let outputImage = videoBlendFilter.outputImage {
+                glView.bindDrawable()
+                ciContext.drawImage(outputImage, inRect: outputImage.extent, fromRect: outputImage.extent)
+                
+                // check if drawable ?
+                glView.display()
             }
         }
     }
@@ -107,5 +257,40 @@ class CameraViewController: UIViewController, GLViewControllerDelegate {
     override func shouldAutorotate() -> Bool {
         return false
     }
+    
+    private func configureCaptureDevice(devicePosition: AVCaptureDevicePosition) {
+        do {
+            captureDevice = AVCaptureDevice.captureDevice(devicePosition)
+            captureSession.removeInput(currentCaptureDeviceInput)
+            currentCaptureDeviceInput = try AVCaptureDeviceInput(device: captureDevice)
+            if captureSession.canAddInput(currentCaptureDeviceInput) {
+                captureSession.addInput(currentCaptureDeviceInput)
+            }
+            setVideoOrientation(.Portrait)
+        } catch {
+            NSLog("capture device could not be added to session");
+        }
+    }
+    
+    private func setVideoOrientation(orientation: AVCaptureVideoOrientation) {
+        if captureSession.canAddOutput(videoDataOutput) {
+            captureSession.addOutput(videoDataOutput)
+        }
+        let videoOutputConnection = videoDataOutput.connectionWithMediaType(AVMediaTypeVideo)
+        if videoOutputConnection.supportsVideoOrientation {
+            videoOutputConnection.videoOrientation = orientation
+        }
+    }
+    
+    private func ciImageFromImageBuffer(imageSampleBuffer: CMSampleBuffer?) -> CIImage? {
+        if let sampleBuffer = imageSampleBuffer {
+            if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
+                let ciImage = CIImage(CVPixelBuffer: imageBuffer)
+                return ciImage
+            }
+        }
+        NSLog("Could not convert image buffer to CIImage")
+        return nil
+    }
+    
 }
-	
