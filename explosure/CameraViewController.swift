@@ -44,15 +44,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     private var stillImageController: StillImageController?
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
-        self.filterManager = FilterManager()
-        self.videoBlendFilter = Filter(name: filterManager.filterNames[filterManager.currentIndex])
-        self.stillImageBlendFilter = Filter(name: filterManager.filterNames[filterManager.currentIndex])
-        self.filterManager.filters = [videoBlendFilter, stillImageBlendFilter]
-        self.glContext = EAGLContext(API: .OpenGLES2)
-        self.ciContext = CIContext(EAGLContext: glContext)
-        self.captureSession = AVCaptureSession()
-        self.captureSession.sessionPreset = AVCaptureSessionPresetPhoto
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        fatalError("its not possible to init the CameraViewController with a nib")
     }
     
     required init(coder aCoder: NSCoder) {
@@ -140,8 +132,8 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     @IBAction func shareButtonTapped() {
         let shareViewController = ShareViewController(nibName: "ShareViewController", bundle: nil)
         self.presentViewController(shareViewController, animated: true) { () -> Void in
-            //            let rotatedUIImage = UIImage(CGImage: blendedPhoto.image!, scale: 1.0, orientation: blendedPhoto.imageOrientation!)
-            //            shareViewController.sharePhoto(rotatedUIImage)
+//            let rotatedUIImage = UIImage(CGImage: blendedPhoto.image!, scale: 1.0, orientation: blendedPhoto.imageOrientation!)
+//            shareViewController.sharePhoto(rotatedUIImage)
         }
     }
     
@@ -182,7 +174,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             captureDevice.unlockForConfiguration()
         }
     }
-
+    
     private func ciImageFromStillImageOutput(completion: ((capturedCiImage: CIImage?) -> ())) {
         dispatch_async(dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)) { () -> Void in
             let stillImageConnection = self.stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)
@@ -215,7 +207,11 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         guard view != nil else { return }
         if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
             if stillImageController?.compoundImage.completed == false {
-                videoBlendFilter.inputImage = CIImage(CVPixelBuffer: imageBuffer)
+                var videoImage = CIImage(CVPixelBuffer: imageBuffer)
+                if captureDevice?.position == .Front {
+                    videoImage = videoImage.horizontalFlippedImage()
+                }
+                videoBlendFilter.inputImage = videoImage
             }
             if let outputImage = videoBlendFilter.outputImage {
                 glView.bindDrawable()
@@ -254,10 +250,6 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         }
     }
     
-    override func shouldAutorotate() -> Bool {
-        return false
-    }
-    
     private func configureCaptureDevice(devicePosition: AVCaptureDevicePosition) {
         do {
             captureDevice = AVCaptureDevice.captureDevice(devicePosition)
@@ -291,6 +283,10 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         }
         NSLog("Could not convert image buffer to CIImage")
         return nil
+    }
+    
+    override func shouldAutorotate() -> Bool {
+        return false
     }
     
 }

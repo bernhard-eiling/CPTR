@@ -22,6 +22,12 @@ extension CGImage {
 
 extension CIImage {
     
+    func horizontalFlippedImage() -> CIImage {
+        let scaleTransform = CGAffineTransformMakeScale(-1.0, 1.0)
+        let translateTransform = CGAffineTransformMakeTranslation(self.extent.size.width, 0.0)
+        return imageByApplyingTransform(CGAffineTransformConcat(scaleTransform, translateTransform))
+    }
+    
     func verticalFlippedImage() -> CIImage {
         let scaleTransform = CGAffineTransformMakeScale(1.0, -1.0)
         let translateTransform = CGAffineTransformMakeTranslation(0.0, self.extent.size.height)
