@@ -18,9 +18,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         return videoDataOutput
     }()
     
-    private lazy var stillImageOutput: AVCaptureStillImageOutput = {
-        return AVCaptureStillImageOutput.configuredOutput()
-    }()
+    private lazy var stillImageOutput: AVCaptureStillImageOutput = AVCaptureStillImageOutput.configuredOutput()
     
     private let glContext: EAGLContext
     private let ciContext: CIContext
