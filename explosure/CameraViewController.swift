@@ -42,6 +42,10 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     private var stillImageBlendFilter: Filter
     private let filterManager: FilterManager
     private var stillImageController: StillImageController?
+
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         fatalError("its not possible to init the CameraViewController with a nib")
@@ -198,13 +202,8 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
         if glContext != EAGLContext.currentContext() {
-            EAGLContext.setCurrentContext(self.glContext)
+            EAGLContext.setCurrentContext(glContext)
         }
-        drawVideoWithSampleBuffer(sampleBuffer)
-    }
-    
-    private func drawVideoWithSampleBuffer(sampleBuffer: CMSampleBuffer!) {
-        guard view != nil else { return }
         if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
             if stillImageController?.compoundImage.completed == false {
                 var videoImage = CIImage(CVPixelBuffer: imageBuffer)
@@ -212,6 +211,8 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
                     videoImage = videoImage.horizontalFlippedImage()
                 }
                 videoBlendFilter.inputImage = videoImage
+//                connection.videoMirrored = captureDevice?.position == .Front
+//                videoBlendFilter.inputImage = CIImage(CVPixelBuffer: imageBuffer)
             }
             if let outputImage = videoBlendFilter.outputImage {
                 glView.bindDrawable()
@@ -226,16 +227,16 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     func deviceOrientationDidChange() {
         switch UIDevice.currentDevice().orientation {
         case .Portrait:
-            self.rotateRotatableViewsWithTransform(CGAffineTransformIdentity)
+            rotateRotatableViewsWithTransform(CGAffineTransformIdentity)
             break
         case .LandscapeLeft:
-            self.rotateRotatableViewsWithTransform(CGAffineTransformMakeRotation(CGFloat(M_PI_2)))
+            rotateRotatableViewsWithTransform(CGAffineTransformMakeRotation(CGFloat(M_PI_2)))
             break
         case .LandscapeRight:
-            self.rotateRotatableViewsWithTransform(CGAffineTransformMakeRotation(-CGFloat(M_PI_2)))
+            rotateRotatableViewsWithTransform(CGAffineTransformMakeRotation(-CGFloat(M_PI_2)))
             break
         case .PortraitUpsideDown:
-            self.rotateRotatableViewsWithTransform(CGAffineTransformMakeRotation(CGFloat(M_PI)))
+            rotateRotatableViewsWithTransform(CGAffineTransformMakeRotation(CGFloat(M_PI)))
             break
         default:
             break
