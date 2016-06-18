@@ -47,12 +47,10 @@ class CameraViewController: UIViewController, GLViewControllerDelegate {
     }
     
     @IBAction func shareButtonTapped() {
-        if let blendedPhoto = self.glViewController.blendedPhoto {
-            let shareViewController = ShareViewController(nibName: "ShareViewController", bundle: nil)
-            self.presentViewController(shareViewController, animated: true) { () -> Void in
-                let rotatedUIImage = UIImage(CGImage: blendedPhoto.image!, scale: 1.0, orientation: blendedPhoto.imageOrientation!)
-                shareViewController.sharePhoto(rotatedUIImage)
-            }
+        let shareViewController = ShareViewController(nibName: "ShareViewController", bundle: nil)
+        self.presentViewController(shareViewController, animated: true) { () -> Void in
+//            let rotatedUIImage = UIImage(CGImage: blendedPhoto.image!, scale: 1.0, orientation: blendedPhoto.imageOrientation!)
+//            shareViewController.sharePhoto(rotatedUIImage)
         }
     }
     
@@ -73,8 +71,8 @@ class CameraViewController: UIViewController, GLViewControllerDelegate {
             UIView.animateWithDuration(0.3, delay: 1.0, options: .CurveEaseOut, animations: { () -> Void in
                 self.photoSavedWrapperView.alpha = 0.0
                 self.photoSavedWrapperView.transform = CGAffineTransformIdentity
-                }) { (Bool) -> Void in
-                    self.photoSavedWrapperView.hidden = true
+            }) { (Bool) -> Void in
+                self.photoSavedWrapperView.hidden = true
             }
         }
     }

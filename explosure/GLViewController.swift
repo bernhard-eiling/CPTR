@@ -45,8 +45,6 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     private let filterManager: FilterManager
     private var stillImageController: StillImageController?
     
-    var blendedPhoto: CompoundImage?
-    
     var glViewControllerDelegate: GLViewControllerDelegate?
     
     @IBOutlet var glView: GLKView!
@@ -160,6 +158,11 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     }
     
     func captureImage() {
+        guard stillImageController?.compoundImage.completed == false else {
+            videoBlendFilter.inputBackgroundImage = nil
+            stillImageController!.reset()
+            return
+        }
         self.ciImageFromStillImageOutput { (capturedCiImage) in
             guard capturedCiImage != nil else { return }
             self.stillImageController?.compoundStillImageFromImage(capturedCiImage!, completion: { (compoundImage) in
@@ -199,14 +202,18 @@ class GLViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDe
     private func drawVideoWithSampleBuffer(sampleBuffer: CMSampleBuffer!) {
         guard view != nil else { return }
         if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
-            videoBlendFilter.inputImage = CIImage(CVPixelBuffer: imageBuffer)
-            glView.bindDrawable()
-            ciContext.drawImage(videoBlendFilter.outputImage!, inRect: videoBlendFilter.outputImage!.extent, fromRect: videoBlendFilter.outputImage!.extent)
-            glView.display()
+            if stillImageController?.compoundImage.completed == false {
+                videoBlendFilter.inputImage = CIImage(CVPixelBuffer: imageBuffer)
+            }
+            if let outputImage = videoBlendFilter.outputImage {
+                glView.bindDrawable()
+                ciContext.drawImage(outputImage, inRect: outputImage.extent, fromRect: outputImage.extent)
+                
+                // check if drawable ?
+                glView.display()
+            }
         }
     }
-    
-    // AVCapture SETUP
     
     private func configureCaptureDevice(devicePosition: AVCaptureDevicePosition) {
         do {

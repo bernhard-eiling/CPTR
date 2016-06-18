@@ -12,10 +12,10 @@ import Photos
 class StillImageController {
     
     var captureDevice: AVCaptureDevice?
+    private(set) var compoundImage: CompoundImage
     
     private let ciContext: CIContext
     private let maxStillImageResolution: CGSize
-    private var compoundImage: CompoundImage
     private let stillImageBlendFilter: Filter
     
     init?(ciContext: CIContext, captureDevice: AVCaptureDevice) {
@@ -41,7 +41,8 @@ class StillImageController {
         completion(compoundImage: compoundImage)
     }
     
-    func resetCompoundImage() {
+    func reset() {
+        stillImageBlendFilter.inputBackgroundImage = nil
         compoundImage = CompoundImage()
     }
     
