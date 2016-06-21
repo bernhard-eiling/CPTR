@@ -64,7 +64,7 @@ class StillImageController {
         stillImageBlendFilter.inputImage = ciImage
         let blendedCGImage = ciContext.createCGImage(stillImageBlendFilter.outputImage!, fromRect:stillImageBlendFilter.outputImage!.extent)
         compoundImage.image = blendedCGImage
-        compoundImage.imageOrientation = captureDevice!.imageOrientation()
+        compoundImage.imageOrientation = UIImageOrientation.relationToDeviceOrientaton()
         stillImageBlendFilter.inputImage = nil // ciImage has to be set to nil in order to capture another ciImage
     }
     
@@ -72,7 +72,7 @@ class StillImageController {
         guard captureDevice != nil && compoundImage.image != nil && compoundImage.imageOrientation != nil else { return }
         GAHelper.trackCompletePhotocapture()
         PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
-            let rotatedUIImage = UIImage(CGImage: self.compoundImage.image!, scale: 1.0, orientation: self.compoundImage.imageOrientation!)
+            let rotatedUIImage = UIImage(CGImage: self.compoundImage.image!, scale: 1.0, orientation: self.compoundImage.imageOrientation!)            
             PHAssetCreationRequest.creationRequestForAssetFromImage(rotatedUIImage)
         }) { (success, error) -> Void in
             if (!success) {

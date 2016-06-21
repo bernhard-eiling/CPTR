@@ -209,8 +209,6 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
                     videoImage = videoImage.horizontalFlippedImage()
                 }
                 videoBlendFilter.inputImage = videoImage
-//                connection.videoMirrored = captureDevice?.position == .Front
-//                videoBlendFilter.inputImage = CIImage(CVPixelBuffer: imageBuffer)
             }
             if let outputImage = videoBlendFilter.outputImage {
                 glView.bindDrawable()
