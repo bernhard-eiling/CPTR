@@ -21,7 +21,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     private lazy var stillImageOutput: AVCaptureStillImageOutput = AVCaptureStillImageOutput.configuredOutput()
     
     private let glContext: EAGLContext
-    private let ciContext: CIContext
+    private var ciContext: CIContext
     private let captureSession: AVCaptureSession
     private var captureDevice: AVCaptureDevice? {
         didSet {
@@ -40,7 +40,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     private var stillImageBlendFilter: Filter
     private let filterManager: FilterManager
     private var stillImageController: StillImageController?
-
+    
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
@@ -134,8 +134,8 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     @IBAction func shareButtonTapped() {
         let shareViewController = ShareViewController(nibName: "ShareViewController", bundle: nil)
         self.presentViewController(shareViewController, animated: true) { () -> Void in
-//            let rotatedUIImage = UIImage(CGImage: blendedPhoto.image!, scale: 1.0, orientation: blendedPhoto.imageOrientation!)
-//            shareViewController.sharePhoto(rotatedUIImage)
+            //            let rotatedUIImage = UIImage(CGImage: blendedPhoto.image!, scale: 1.0, orientation: blendedPhoto.imageOrientation!)
+            //            shareViewController.sharePhoto(rotatedUIImage)
         }
     }
     
@@ -201,6 +201,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
         if glContext != EAGLContext.currentContext() {
             EAGLContext.setCurrentContext(glContext)
+            ciContext = CIContext(EAGLContext: glContext)
         }
         if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
             if stillImageController?.compoundImage.completed == false {
@@ -213,8 +214,6 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             if let outputImage = videoBlendFilter.outputImage {
                 glView.bindDrawable()
                 ciContext.drawImage(outputImage, inRect: outputImage.extent, fromRect: outputImage.extent)
-                
-                // check if drawable ?
                 glView.display()
             }
         }
