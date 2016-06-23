@@ -95,17 +95,14 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     private func setupCamera() {
         configureCaptureDevice(.Back)
-        
-        if let imageController = StillImageController(ciContext: ciContext, captureDevice: captureDevice!) {
+        if let imageController = StillImageController(captureDevice: captureDevice!) {
             stillImageController = imageController
         } else {
             NSLog("unable to init stillimage controller")
         }
-        
         if captureSession.canAddOutput(stillImageOutput) {
             captureSession.addOutput(stillImageOutput)
         }
-        
         dispatch_async(dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)) { () -> Void in
             self.captureSession.startRunning()
         }
@@ -147,7 +144,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             }
         }
     }
-
+    
     @IBAction func glViewTapped(tapRecognizer: UITapGestureRecognizer) {
         let focusPoint = tapRecognizer .locationInView(glView)
         let normalizedFocusPoint = CGPoint(x: focusPoint.y / view.frame.size.height, y: 1.0 - (focusPoint.x / view.frame.size.width)) // coordinates switch is necessarry due to 90 degree rotation of camera
@@ -190,7 +187,6 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
         if glContext != EAGLContext.currentContext() {
             EAGLContext.setCurrentContext(glContext)
-            ciContext = CIContext(EAGLContext: glContext)
         }
         if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
             if stillImageController?.compoundImage.completed == false {

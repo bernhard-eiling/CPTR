@@ -8,7 +8,7 @@
 
 import Foundation
 
-class FilterManager {
+class FilterCollection {
     
     var filters: [Filter]?
     let filterNames = ["CILightenBlendMode", "CIDifferenceBlendMode", "CIOverlayBlendMode"]

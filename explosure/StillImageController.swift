@@ -18,8 +18,8 @@ class StillImageController {
     private let maxStillImageResolution: CGSize
     private let stillImageBlendFilter: Filter
     
-    init?(ciContext: CIContext, captureDevice: AVCaptureDevice) {
-        self.ciContext = ciContext
+    init?(captureDevice: AVCaptureDevice) {
+        self.ciContext = CIContext(EAGLContext: EAGLContext(API: .OpenGLES2))
         self.captureDevice = captureDevice
         self.stillImageBlendFilter = Filter(name: "CILightenBlendMode")
         self.compoundImage = CompoundImage()
