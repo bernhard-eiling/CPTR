@@ -20,7 +20,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     private lazy var stillImageOutput: AVCaptureStillImageOutput = AVCaptureStillImageOutput.configuredOutput()
     
-    private let glContext: EAGLContext
+    private var glContext: EAGLContext
     private var ciContext: CIContext
     private let captureSession: AVCaptureSession
     private var captureDevice: AVCaptureDevice? {
@@ -37,8 +37,6 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     @IBOutlet var rotatableViews: [UIView]!
     
     private var videoBlendFilter: Filter
-    private var stillImageBlendFilter: Filter
-    private let filterManager: FilterManager
     private var stillImageController: StillImageController?
     
     deinit {
@@ -50,10 +48,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     required init(coder aCoder: NSCoder) {
-        self.filterManager = FilterManager()
-        self.videoBlendFilter = Filter(name: filterManager.filterNames[filterManager.currentIndex])
-        self.stillImageBlendFilter = Filter(name: filterManager.filterNames[filterManager.currentIndex])
-        self.filterManager.filters = [videoBlendFilter, stillImageBlendFilter]
+        self.videoBlendFilter = Filter(name: "CILightenBlendMode")
         self.glContext = EAGLContext(API: .OpenGLES2)
         self.ciContext = CIContext(EAGLContext: glContext)
         self.captureSession = AVCaptureSession()
@@ -134,7 +129,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     @IBAction func shareButtonTapped() {
         guard stillImageController?.compoundImage.completed == true else { return }
         let shareViewController = ShareViewController(nibName: "ShareViewController", bundle: nil)
-        self.presentViewController(shareViewController, animated: true) { () -> Void in
+        presentViewController(shareViewController, animated: true) { () -> Void in
             let rotatedUIImage = UIImage(CGImage:self.stillImageController!.compoundImage.image!, scale: 1.0, orientation:self.stillImageController!.compoundImage.imageOrientation!)
             shareViewController.sharePhoto(rotatedUIImage)
         }
@@ -152,16 +147,9 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             }
         }
     }
-    
-    @IBAction func filterSwipedLeft(sender: UISwipeGestureRecognizer) {
-        filterManager.last()
-    }
-    
-    @IBAction func filterSwipedRight(sender: UISwipeGestureRecognizer) {
-        filterManager.next()
-    }
-    
-    func focusCaptureDeviceWithPoint(focusPoint: CGPoint) {
+
+    @IBAction func glViewTapped(tapRecognizer: UITapGestureRecognizer) {
+        let focusPoint = tapRecognizer .locationInView(glView)
         let normalizedFocusPoint = CGPoint(x: focusPoint.y / view.frame.size.height, y: 1.0 - (focusPoint.x / view.frame.size.width)) // coordinates switch is necessarry due to 90 degree rotation of camera
         if let captureDevice = captureDevice {
             do {
@@ -193,7 +181,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         if let cgImage = compoundImage {
             let ciImage = CIImage(CGImage: cgImage)
             let rotatedImage = ciImage.rotated90DegreesRight()
-            let filterImageRect = self.videoBlendFilter.outputImage!.extent
+            let filterImageRect = videoBlendFilter.outputImage!.extent
             let scaledAndRotatedImage = rotatedImage.scaledToResolution(CGSize(width: filterImageRect.size.width, height: filterImageRect.size.height))
             videoBlendFilter.inputBackgroundImage = scaledAndRotatedImage
         }

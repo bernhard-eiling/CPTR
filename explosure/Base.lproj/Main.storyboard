@@ -20,9 +20,13 @@
                         <subviews>
                             <glkView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" enableSetNeedsDisplay="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v0Y-rc-poP">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="500"/>
+                                <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="v0Y-rc-poP" secondAttribute="height" multiplier="3:4" id="TOA-yN-yi8"/>
                                 </constraints>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="E7h-u7-oc4" appends="YES" id="xyD-Gg-YB2"/>
+                                </connections>
                             </glkView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lov-Cd-6c0" userLabel="controls wrapper">
                                 <rect key="frame" x="0.0" y="500" width="375" height="167"/>
@@ -85,7 +89,7 @@
                                             <constraint firstItem="1hP-Q2-VMB" firstAttribute="centerX" secondItem="2KK-mA-8Ab" secondAttribute="centerX" id="uzU-bI-snu"/>
                                         </constraints>
                                     </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ES3-CT-0iD" userLabel="spaver view 2">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ES3-CT-0iD" userLabel="spacer view 2">
                                         <rect key="frame" x="215" y="83" width="160" height="1"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -159,9 +163,9 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
-                <tapGestureRecognizer id="l6C-R0-Fqx">
+                <tapGestureRecognizer id="E7h-u7-oc4">
                     <connections>
-                        <action selector="focusGestureRecognizerTapped:" destination="BYZ-38-t0r" id="DnG-en-xly"/>
+                        <action selector="glViewTapped:" destination="BYZ-38-t0r" id="w27-VN-oXN"/>
                     </connections>
                 </tapGestureRecognizer>
             </objects>

@@ -13,7 +13,7 @@ class ShareViewController: UIViewController, UIDocumentInteractionControllerDele
     let documentInteractionController: UIDocumentInteractionController
     
     required override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
-        self.documentInteractionController = UIDocumentInteractionController()
+        documentInteractionController = UIDocumentInteractionController()
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
@@ -35,18 +35,18 @@ class ShareViewController: UIViewController, UIDocumentInteractionControllerDele
         } catch {
             NSLog("could not safe temp image")
         }
-        self.documentInteractionController.URL = homePathUrl
-        self.documentInteractionController.UTI = "com.instagram.photo"
-        self.documentInteractionController.delegate = self
-        self.documentInteractionController.presentOpenInMenuFromRect(CGRectZero, inView: self.view, animated: true)
+        documentInteractionController.URL = homePathUrl
+        documentInteractionController.UTI = "com.instagram.photo"
+        documentInteractionController.delegate = self
+        documentInteractionController.presentOpenInMenuFromRect(CGRectZero, inView: view, animated: true)
     }
     
     func documentInteractionControllerDidEndPreview(controller: UIDocumentInteractionController) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        dismissViewControllerAnimated(true, completion: nil)
     }
     
     func documentInteractionControllerDidDismissOpenInMenu(controller: UIDocumentInteractionController) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        dismissViewControllerAnimated(true, completion: nil)
     }
 
     override func shouldAutorotate() -> Bool {
