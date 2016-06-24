@@ -23,13 +23,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     private var glContext: EAGLContext
     private var ciContext: CIContext
     private let captureSession: AVCaptureSession
-    private var captureDevice: AVCaptureDevice? {
-        didSet {
-            if let stillImageController = self.stillImageController {
-                stillImageController.captureDevice = captureDevice
-            }
-        }
-    }
+    private var captureDevice: AVCaptureDevice?
     private var currentCaptureDeviceInput: AVCaptureDeviceInput?
     
     @IBOutlet weak var glView: GLKView!
@@ -63,6 +57,11 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         glView.context = glContext
         glView.enableSetNeedsDisplay = false
         authorizeCamera()
+        if let imageController = StillImageController() {
+            stillImageController = imageController
+        } else {
+            NSLog("unable to init stillimage controller")
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -95,11 +94,6 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     private func setupCamera() {
         configureCaptureDevice(.Back)
-        if let imageController = StillImageController(captureDevice: captureDevice!) {
-            stillImageController = imageController
-        } else {
-            NSLog("unable to init stillimage controller")
-        }
         if captureSession.canAddOutput(stillImageOutput) {
             captureSession.addOutput(stillImageOutput)
         }
@@ -107,7 +101,6 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             self.captureSession.startRunning()
         }
     }
-    
     
     @IBAction func captureButtonTapped() {
         guard stillImageController?.compoundImage.completed == false else {
@@ -117,7 +110,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         }
         self.ciImageFromStillImageOutput { (capturedCiImage) in
             guard capturedCiImage != nil else { return }
-            self.stillImageController?.compoundStillImageFromImage(capturedCiImage!, completion: { (compoundImage) in
+            self.stillImageController?.compoundStillImageFromImage(capturedCiImage!, devicePosition: self.captureDevice!.position, completion: { (compoundImage) in
                 self.setCompoundImageToFilter(compoundImage.image)
             })
         }

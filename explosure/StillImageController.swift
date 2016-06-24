@@ -11,19 +11,16 @@ import Photos
 
 class StillImageController {
     
-    var captureDevice: AVCaptureDevice?
     private(set) var compoundImage: CompoundImage
     
     private let ciContext: CIContext
     private let maxStillImageResolution: CGSize
     private let stillImageBlendFilter: Filter
     
-    init?(captureDevice: AVCaptureDevice) {
+    init?() {
         self.ciContext = CIContext(EAGLContext: EAGLContext(API: .OpenGLES2))
-        self.captureDevice = captureDevice
         self.stillImageBlendFilter = Filter(name: "CILightenBlendMode")
         self.compoundImage = CompoundImage()
-        
         if let backCamera = AVCaptureDevice.captureDevice(.Back) {
             let backCameraResolution = backCamera.activeFormat?.highResolutionStillImageDimensions
             self.maxStillImageResolution = CGSize(width: Int(backCameraResolution!.width), height: Int(backCameraResolution!.height))
@@ -33,8 +30,8 @@ class StillImageController {
         }
     }
     
-    func compoundStillImageFromImage(ciImage: CIImage, completion: (compoundImage: CompoundImage) -> ()) {
-        let normalizedImg = normalizedImage(ciImage)
+    func compoundStillImageFromImage(ciImage: CIImage, devicePosition: AVCaptureDevicePosition, completion: (compoundImage: CompoundImage) -> ()) {
+        let normalizedImg = normalizedImageFromImage(ciImage, devicePosition: devicePosition)
         addImageToCompoundImage(normalizedImg)
         if compoundImage.completed {
             saveCompoundImage()
@@ -47,8 +44,8 @@ class StillImageController {
         compoundImage = CompoundImage()
     }
     
-    private func normalizedImage(ciImage: CIImage) -> CIImage {
-        if captureDevice?.position == .Front {
+    private func normalizedImageFromImage(ciImage: CIImage, devicePosition: AVCaptureDevicePosition) -> CIImage {
+        if devicePosition == .Front {
             let flipppedCIImage = ciImage.verticalFlippedImage()
             let scaledFlippedCIImage = flipppedCIImage.scaledToResolution(maxStillImageResolution)
             return scaledFlippedCIImage
@@ -57,7 +54,7 @@ class StillImageController {
     }
     
     private func addImageToCompoundImage(ciImage: CIImage) {
-        guard !compoundImage.completed && captureDevice != nil else { return }
+        guard !compoundImage.completed else { return }
         if let image = compoundImage.image {
             stillImageBlendFilter.inputBackgroundImage = CIImage(CGImage: image)
         }
@@ -69,7 +66,7 @@ class StillImageController {
     }
     
     private func saveCompoundImage() {
-        guard captureDevice != nil && compoundImage.image != nil && compoundImage.imageOrientation != nil else { return }
+        guard compoundImage.completed else { return }
         GAHelper.trackCompletePhotocapture()
         PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
             let rotatedUIImage = UIImage(CGImage: self.compoundImage.image!, scale: 1.0, orientation: self.compoundImage.imageOrientation!)            
