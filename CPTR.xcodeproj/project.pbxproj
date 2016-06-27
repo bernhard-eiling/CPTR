@@ -18,7 +18,6 @@
 		6FDB51991C88F657002D77A1 /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDB51981C88F657002D77A1 /* Filter.swift */; };
 		6FDB519B1C89080C002D77A1 /* FilterCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDB519A1C89080C002D77A1 /* FilterCollection.swift */; };
 		6FEF7D991BF546000090EFF3 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEF7D971BF546000090EFF3 /* ShareViewController.swift */; };
-		6FEF7D9A1BF546000090EFF3 /* ShareViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6FEF7D981BF546000090EFF3 /* ShareViewController.xib */; };
 		6FEF7D9D1BF927040090EFF3 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEF7D9B1BF927040090EFF3 /* CameraViewController.swift */; };
 		90528A6E6AC51D29CDA2F030 /* libPods-CPTR.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DCBCCE86280C15141415B31F /* libPods-CPTR.a */; };
 		9E1AA2701D0D6EBF00190549 /* StillImageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1AA26F1D0D6EBF00190549 /* StillImageController.swift */; };
@@ -43,7 +42,6 @@
 		6FDB51981C88F657002D77A1 /* Filter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
 		6FDB519A1C89080C002D77A1 /* FilterCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterCollection.swift; sourceTree = "<group>"; };
 		6FEF7D971BF546000090EFF3 /* ShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
-		6FEF7D981BF546000090EFF3 /* ShareViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ShareViewController.xib; sourceTree = "<group>"; };
 		6FEF7D9B1BF927040090EFF3 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		890C16E5C4904FEF95171BCB /* Pods-CPTR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CPTR.release.xcconfig"; path = "Pods/Target Support Files/Pods-CPTR/Pods-CPTR.release.xcconfig"; sourceTree = "<group>"; };
 		9E1AA26F1D0D6EBF00190549 /* StillImageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StillImageController.swift; sourceTree = "<group>"; };
@@ -108,7 +106,6 @@
 			isa = PBXGroup;
 			children = (
 				6FEF7D971BF546000090EFF3 /* ShareViewController.swift */,
-				6FEF7D981BF546000090EFF3 /* ShareViewController.xib */,
 				6FEF7D9B1BF927040090EFF3 /* CameraViewController.swift */,
 				9E1AA26F1D0D6EBF00190549 /* StillImageController.swift */,
 			);
@@ -231,7 +228,6 @@
 			files = (
 				6F8B73A31BC07526008E41A4 /* LaunchScreen.storyboard in Resources */,
 				6F8B73A01BC07526008E41A4 /* Assets.xcassets in Resources */,
-				6FEF7D9A1BF546000090EFF3 /* ShareViewController.xib in Resources */,
 				6F8B739E1BC07526008E41A4 /* Main.storyboard in Resources */,
 				6F3B8C9E1C8228F000AEDD9B /* GoogleService-Info.plist in Resources */,
 			);

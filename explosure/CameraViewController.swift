@@ -118,7 +118,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     @IBAction func shareButtonTapped() {
         guard stillImageController?.compoundImage.completed == true else { return }
-        let shareViewController = ShareViewController(nibName: "ShareViewController", bundle: nil)
+        let shareViewController = ShareViewController()
         presentViewController(shareViewController, animated: true) { () -> Void in
             let rotatedUIImage = UIImage(CGImage:self.stillImageController!.compoundImage.image!, scale: 1.0, orientation:self.stillImageController!.compoundImage.imageOrientation!)
             shareViewController.sharePhoto(rotatedUIImage)
@@ -257,6 +257,10 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         }
         NSLog("Could not convert image buffer to CIImage")
         return nil
+    }
+    
+    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+        return .Portrait
     }
     
     override func shouldAutorotate() -> Bool {

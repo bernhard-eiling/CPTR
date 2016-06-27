@@ -49,7 +49,4 @@ class ShareViewController: UIViewController, UIDocumentInteractionControllerDele
         dismissViewControllerAnimated(true, completion: nil)
     }
 
-    override func shouldAutorotate() -> Bool {
-        return true
-    }
 }
