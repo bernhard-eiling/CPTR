@@ -34,6 +34,7 @@ class StillImageController {
         let normalizedImg = normalizedImageFromImage(ciImage, devicePosition: devicePosition)
         addImageToCompoundImage(normalizedImg)
         if compoundImage.completed {
+            GAHelper.trackCompletePhotocapture()
             saveCompoundImage()
         }
         completion(compoundImage: compoundImage)
@@ -67,7 +68,6 @@ class StillImageController {
     
     private func saveCompoundImage() {
         guard compoundImage.completed else { return }
-        GAHelper.trackCompletePhotocapture()
         PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
             let rotatedUIImage = UIImage(CGImage: self.compoundImage.image!, scale: 1.0, orientation: self.compoundImage.imageOrientation!)            
             PHAssetCreationRequest.creationRequestForAssetFromImage(rotatedUIImage)
