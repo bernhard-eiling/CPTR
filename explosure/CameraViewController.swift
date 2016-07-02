@@ -227,6 +227,9 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     private func configureCaptureDevice(devicePosition: AVCaptureDevicePosition) {
         glViewBlockerView.hidden = false
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(1.3 * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) {
+            self.glViewBlockerView.hidden = true
+        }
         do {
             captureDevice = AVCaptureDevice.captureDevice(devicePosition)
             captureSession.removeInput(currentCaptureDeviceInput)
@@ -235,7 +238,6 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
                 captureSession.addInput(currentCaptureDeviceInput)
             }
             setVideoOrientation(.Portrait)
-            glViewBlockerView.hidden = true
         } catch {
             NSLog("capture device could not be added to session");
         }
