@@ -28,7 +28,7 @@ class ShareViewController: UIViewController, UIDocumentInteractionControllerDele
     
     func sharePhoto(photo: UIImage) {
         let jpegImage = UIImageJPEGRepresentation(photo, 1.0)
-        let homePathString = NSTemporaryDirectory() + "/temp_photo.ig";
+        let homePathString = NSTemporaryDirectory() + "/temp_photo.jpeg";
         let homePathUrl = NSURL(fileURLWithPath: homePathString)
         do {
             try jpegImage!.writeToURL(homePathUrl, options: .DataWritingAtomic)
@@ -36,7 +36,6 @@ class ShareViewController: UIViewController, UIDocumentInteractionControllerDele
             NSLog("could not safe temp image")
         }
         documentInteractionController.URL = homePathUrl
-        documentInteractionController.UTI = "com.instagram.photo"
         documentInteractionController.delegate = self
         documentInteractionController.presentOpenInMenuFromRect(CGRectZero, inView: view, animated: true)
     }
