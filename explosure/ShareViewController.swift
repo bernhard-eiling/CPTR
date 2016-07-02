@@ -47,5 +47,13 @@ class ShareViewController: UIViewController, UIDocumentInteractionControllerDele
     func documentInteractionControllerDidDismissOpenInMenu(controller: UIDocumentInteractionController) {
         dismissViewControllerAnimated(true, completion: nil)
     }
+    
+    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+        return .Portrait
+    }
+    
+    override func shouldAutorotate() -> Bool {
+        return false
+    }
 
 }

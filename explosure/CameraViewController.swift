@@ -29,6 +29,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     @IBOutlet weak var glView: GLKView!
     @IBOutlet weak var captureButton: UIButton!
     @IBOutlet var rotatableViews: [UIView]!
+    @IBOutlet weak var glViewBlockerView: UIView!
     
     private var videoBlendFilter: Filter
     private var stillImageController: StillImageController?
@@ -225,6 +226,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     private func configureCaptureDevice(devicePosition: AVCaptureDevicePosition) {
+        glViewBlockerView.hidden = false
         do {
             captureDevice = AVCaptureDevice.captureDevice(devicePosition)
             captureSession.removeInput(currentCaptureDeviceInput)
@@ -233,6 +235,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
                 captureSession.addInput(currentCaptureDeviceInput)
             }
             setVideoOrientation(.Portrait)
+            glViewBlockerView.hidden = true
         } catch {
             NSLog("capture device could not be added to session");
         }
