@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11163.2" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11133"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Camera View Controller-->
@@ -14,45 +15,47 @@
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CU5-5c-C54" userLabel="Topbar">
-                                <rect key="frame" x="0.0" y="20" width="375" height="50"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Z0-dU-Ur7" userLabel="selfie wrapper">
-                                        <rect key="frame" x="325" y="10" width="30" height="30"/>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Z0-dU-Ur7" userLabel="Selfie Wrapper">
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1vl-9m-3Ep" userLabel="selfie Button">
-                                                <rect key="frame" x="0.0" y="0.0" width="30" height="30"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1vl-9m-3Ep" userLabel="Selfie Button">
                                                 <state key="normal" image="rotate_camera">
-                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
                                                 <connections>
                                                     <action selector="toggleCameraButtonTapped" destination="BYZ-38-t0r" eventType="touchUpInside" id="fch-N8-MrF"/>
                                                 </connections>
                                             </button>
                                         </subviews>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstItem="1vl-9m-3Ep" firstAttribute="centerY" secondItem="9Z0-dU-Ur7" secondAttribute="centerY" id="3Ds-UQ-oie"/>
-                                            <constraint firstAttribute="height" constant="30" id="7zY-y0-bWf"/>
+                                            <constraint firstAttribute="height" constant="40" id="7zY-y0-bWf"/>
                                             <constraint firstItem="1vl-9m-3Ep" firstAttribute="centerX" secondItem="9Z0-dU-Ur7" secondAttribute="centerX" id="BWA-xN-quq"/>
                                             <constraint firstItem="1vl-9m-3Ep" firstAttribute="height" secondItem="9Z0-dU-Ur7" secondAttribute="height" id="FZA-OH-J5Q"/>
                                             <constraint firstItem="1vl-9m-3Ep" firstAttribute="width" secondItem="9Z0-dU-Ur7" secondAttribute="width" id="JM2-pE-GK0"/>
-                                            <constraint firstAttribute="width" constant="30" id="ZeK-rP-WtC"/>
+                                            <constraint firstAttribute="width" constant="40" id="ZeK-rP-WtC"/>
                                         </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="20"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                        </userDefinedRuntimeAttributes>
                                     </view>
                                 </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="9Z0-dU-Ur7" firstAttribute="centerY" secondItem="CU5-5c-C54" secondAttribute="centerY" id="9aH-eH-BMY"/>
-                                    <constraint firstAttribute="height" constant="50" id="Qh2-qf-7hG"/>
-                                    <constraint firstAttribute="trailing" secondItem="9Z0-dU-Ur7" secondAttribute="trailing" constant="20" id="zPy-Mg-MG2"/>
+                                    <constraint firstAttribute="height" constant="55" id="Qh2-qf-7hG"/>
+                                    <constraint firstAttribute="trailing" secondItem="9Z0-dU-Ur7" secondAttribute="trailing" constant="10" id="zPy-Mg-MG2"/>
                                 </constraints>
                             </view>
                             <glkView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" enableSetNeedsDisplay="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v0Y-rc-poP">
-                                <rect key="frame" x="0.0" y="70" width="375" height="500"/>
                                 <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="v0Y-rc-poP" secondAttribute="height" multiplier="3:4" id="TOA-yN-yi8"/>
@@ -62,41 +65,41 @@
                                 </connections>
                             </glkView>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bsw-Wr-OO7" userLabel="gl view blocker">
-                                <rect key="frame" x="0.0" y="70" width="375" height="500"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lov-Cd-6c0" userLabel="controls wrapper">
-                                <rect key="frame" x="0.0" y="570" width="375" height="97"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lov-Cd-6c0" userLabel="Controls Wrapper">
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Mnh-Z5-Xw4" userLabel="SHA">
-                                        <rect key="frame" x="40" y="34" width="30" height="30"/>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Mnh-Z5-Xw4" userLabel="Share Wrapper">
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p0z-4W-mBf" userLabel="SHA Button">
-                                                <rect key="frame" x="0.0" y="0.0" width="30" height="30"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p0z-4W-mBf" userLabel="Share Button">
                                                 <state key="normal" image="share-small">
-                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
                                                 <connections>
                                                     <action selector="shareButtonTapped" destination="BYZ-38-t0r" eventType="touchUpInside" id="aNT-E9-egd"/>
                                                 </connections>
                                             </button>
                                         </subviews>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstItem="p0z-4W-mBf" firstAttribute="width" secondItem="Mnh-Z5-Xw4" secondAttribute="width" id="8DO-rG-xn9"/>
                                             <constraint firstItem="p0z-4W-mBf" firstAttribute="height" secondItem="Mnh-Z5-Xw4" secondAttribute="height" id="KQd-oa-aOB"/>
                                             <constraint firstItem="p0z-4W-mBf" firstAttribute="centerY" secondItem="Mnh-Z5-Xw4" secondAttribute="centerY" id="Nxl-kG-ht2"/>
                                             <constraint firstItem="p0z-4W-mBf" firstAttribute="centerX" secondItem="Mnh-Z5-Xw4" secondAttribute="centerX" id="ZVP-yR-wZD"/>
-                                            <constraint firstAttribute="height" constant="30" id="nlP-6x-bvE"/>
-                                            <constraint firstAttribute="width" constant="30" id="nyP-XL-dXj"/>
+                                            <constraint firstAttribute="height" constant="40" id="nlP-6x-bvE"/>
+                                            <constraint firstAttribute="width" constant="40" id="nyP-XL-dXj"/>
                                         </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="20"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                        </userDefinedRuntimeAttributes>
                                     </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2KK-mA-8Ab" userLabel="CAP">
-                                        <rect key="frame" x="157" y="19" width="60" height="60"/>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2KK-mA-8Ab" userLabel="Capture Button Wrapper">
                                         <subviews>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ePa-Vb-PIo">
-                                                <rect key="frame" x="10" y="10" width="40" height="40"/>
-                                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ePa-Vb-PIo" userLabel="Inner Circle">
+                                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="40" id="TeH-Ql-OnQ"/>
                                                     <constraint firstAttribute="height" constant="40" id="XFi-ac-yEJ"/>
@@ -109,17 +112,16 @@
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1hP-Q2-VMB" userLabel="cap Button">
-                                                <rect key="frame" x="0.0" y="0.0" width="60" height="60"/>
                                                 <fontDescription key="fontDescription" name="BodoniSvtyTwoITCTT-Book" family="Bodoni 72" pointSize="18"/>
                                                 <state key="normal">
-                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
                                                 <connections>
                                                     <action selector="captureButtonTapped" destination="BYZ-38-t0r" eventType="touchUpInside" id="u9R-Qw-w7e"/>
                                                 </connections>
                                             </button>
                                         </subviews>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="60" id="7I8-PS-6yn"/>
                                             <constraint firstItem="1hP-Q2-VMB" firstAttribute="height" secondItem="2KK-mA-8Ab" secondAttribute="height" id="Gvk-X2-Isn"/>
@@ -130,9 +132,15 @@
                                             <constraint firstItem="ePa-Vb-PIo" firstAttribute="centerY" secondItem="2KK-mA-8Ab" secondAttribute="centerY" id="jA6-Gt-w4j"/>
                                             <constraint firstItem="1hP-Q2-VMB" firstAttribute="centerX" secondItem="2KK-mA-8Ab" secondAttribute="centerX" id="uzU-bI-snu"/>
                                         </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="30"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                        </userDefinedRuntimeAttributes>
                                     </view>
                                 </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="Mnh-Z5-Xw4" firstAttribute="leading" secondItem="lov-Cd-6c0" secondAttribute="leading" constant="40" id="FaO-GL-l1B"/>
                                     <constraint firstItem="Mnh-Z5-Xw4" firstAttribute="centerY" secondItem="lov-Cd-6c0" secondAttribute="centerY" id="I0g-ME-ILF"/>
@@ -141,7 +149,7 @@
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="CU5-5c-C54" secondAttribute="trailing" id="1NH-Tb-mxB"/>
@@ -160,7 +168,6 @@
                             <constraint firstItem="v0Y-rc-poP" firstAttribute="top" secondItem="CU5-5c-C54" secondAttribute="bottom" id="zw0-Pc-JP1"/>
                         </constraints>
                     </view>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="captureButton" destination="1hP-Q2-VMB" id="WON-Qr-Lhl"/>
                         <outlet property="glView" destination="v0Y-rc-poP" id="101-Mb-K7b"/>
@@ -181,7 +188,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="rotate_camera" width="18" height="18"/>
-        <image name="share-small" width="13" height="18"/>
+        <image name="rotate_camera" width="26" height="26"/>
+        <image name="share-small" width="26" height="26"/>
     </resources>
 </document>

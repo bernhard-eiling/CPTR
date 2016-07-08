@@ -200,6 +200,7 @@
 					6F8B73941BC07526008E41A4 = {
 						CreatedOnToolsVersion = 7.0.1;
 						DevelopmentTeam = CPHH7NLCHQ;
+						LastSwiftMigration = 0800;
 					};
 				};
 			};
@@ -437,6 +438,7 @@
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "explosure/CPTR-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -456,6 +458,7 @@
 				PRODUCT_NAME = CPTR;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "explosure/CPTR-Bridging-Header.h";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};

@@ -12,25 +12,25 @@ class Filter {
     
     var inputImage: CIImage? {
         didSet {
-            self.filter.setValue(self.inputImage, forKey: "inputImage")
+            filter.setValue(self.inputImage, forKey: "inputImage")
         }
     }
     var inputBackgroundImage: CIImage? {
         didSet {
-            self.filter.setValue(self.inputBackgroundImage, forKey: "inputBackgroundImage")
+            filter.setValue(inputBackgroundImage, forKey: "inputBackgroundImage")
         }
     }
     var outputImage: CIImage? {
-        return self.filter.outputImage
+        return filter.outputImage
     }
     var name: String {
         didSet {
-            self.filter = CIFilter(name: self.name)!
-            if let inputImage = self.inputImage {
-                self.filter.setValue(inputImage, forKey: "inputImage")
+            filter = CIFilter(name: name)!
+            if let inputImage = inputImage {
+                filter.setValue(inputImage, forKey: "inputImage")
             }
-            if let inputBackgroundImage = self.inputBackgroundImage {
-                self.filter.setValue(inputBackgroundImage, forKey: "inputBackgroundImage")
+            if let inputBackgroundImage = inputBackgroundImage {
+                filter.setValue(inputBackgroundImage, forKey: "inputBackgroundImage")
             }
         }
     }
