@@ -13,7 +13,6 @@
 		6F8B73991BC07526008E41A4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F8B73981BC07526008E41A4 /* AppDelegate.swift */; };
 		6F8B739E1BC07526008E41A4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F8B739C1BC07526008E41A4 /* Main.storyboard */; };
 		6F8B73A01BC07526008E41A4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6F8B739F1BC07526008E41A4 /* Assets.xcassets */; };
-		6F8B73A31BC07526008E41A4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F8B73A11BC07526008E41A4 /* LaunchScreen.storyboard */; };
 		6FD200EF1C832D38002F746D /* CompoundImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD200EE1C832D38002F746D /* CompoundImage.swift */; };
 		6FDB51991C88F657002D77A1 /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDB51981C88F657002D77A1 /* Filter.swift */; };
 		6FDB519B1C89080C002D77A1 /* FilterCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDB519A1C89080C002D77A1 /* FilterCollection.swift */; };
@@ -36,7 +35,6 @@
 		6F8B73981BC07526008E41A4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6F8B739D1BC07526008E41A4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		6F8B739F1BC07526008E41A4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		6F8B73A21BC07526008E41A4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6F8B73A41BC07526008E41A4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6FD200EE1C832D38002F746D /* CompoundImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompoundImage.swift; sourceTree = "<group>"; };
 		6FDB51981C88F657002D77A1 /* Filter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
@@ -140,7 +138,6 @@
 				6F8B739F1BC07526008E41A4 /* Assets.xcassets */,
 				6F4F9C5F1C810617000EE53D /* extensions */,
 				6F8930021C82233400BAF19A /* helper */,
-				6F8B73A11BC07526008E41A4 /* LaunchScreen.storyboard */,
 				6F8B739C1BC07526008E41A4 /* Main.storyboard */,
 			);
 			path = explosure;
@@ -199,7 +196,7 @@
 				TargetAttributes = {
 					6F8B73941BC07526008E41A4 = {
 						CreatedOnToolsVersion = 7.0.1;
-						DevelopmentTeam = CPHH7NLCHQ;
+						DevelopmentTeam = 6AD266UVVD;
 						LastSwiftMigration = 0800;
 					};
 				};
@@ -227,7 +224,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6F8B73A31BC07526008E41A4 /* LaunchScreen.storyboard in Resources */,
 				6F8B73A01BC07526008E41A4 /* Assets.xcassets in Resources */,
 				6F8B739E1BC07526008E41A4 /* Main.storyboard in Resources */,
 				6F3B8C9E1C8228F000AEDD9B /* GoogleService-Info.plist in Resources */,
@@ -329,14 +325,6 @@
 			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
-		6F8B73A11BC07526008E41A4 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				6F8B73A21BC07526008E41A4 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -426,6 +414,7 @@
 			baseConfigurationReference = 0D348F83D0638F98020ED707 /* Pods-CPTR.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Launch-screen";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -447,6 +436,7 @@
 			baseConfigurationReference = 890C16E5C4904FEF95171BCB /* Pods-CPTR.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Launch-screen";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
