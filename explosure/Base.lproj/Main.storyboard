@@ -109,8 +109,8 @@
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ePa-Vb-PIo" userLabel="Inner Circle">
                                                 <rect key="frame" x="15" y="14" width="40" height="40"/>
                                                 <subviews>
-                                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1hP-Q2-VMB" userLabel="cap Button">
-                                                        <rect key="frame" x="-168" y="-601" width="30" height="34"/>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1hP-Q2-VMB" userLabel="cap Button">
+                                                        <rect key="frame" x="-15" y="-14" width="69" height="69"/>
                                                         <fontDescription key="fontDescription" name="BodoniSvtyTwoITCTT-Book" family="Bodoni 72" pointSize="18"/>
                                                         <state key="normal">
                                                             <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -135,10 +135,14 @@
                                         </subviews>
                                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
+                                            <constraint firstItem="1hP-Q2-VMB" firstAttribute="centerY" secondItem="2KK-mA-8Ab" secondAttribute="centerY" id="1X6-DD-Lj0"/>
+                                            <constraint firstItem="1hP-Q2-VMB" firstAttribute="centerX" secondItem="2KK-mA-8Ab" secondAttribute="centerX" id="4Ef-6y-Vqr"/>
                                             <constraint firstAttribute="height" constant="69" id="7I8-PS-6yn"/>
                                             <constraint firstItem="ePa-Vb-PIo" firstAttribute="centerX" secondItem="2KK-mA-8Ab" secondAttribute="centerX" id="KAD-5t-CbG"/>
                                             <constraint firstAttribute="width" constant="69" id="LUy-65-bpT"/>
+                                            <constraint firstItem="1hP-Q2-VMB" firstAttribute="height" secondItem="2KK-mA-8Ab" secondAttribute="height" id="WkT-4N-E2v"/>
                                             <constraint firstItem="ePa-Vb-PIo" firstAttribute="centerY" secondItem="2KK-mA-8Ab" secondAttribute="centerY" id="jA6-Gt-w4j"/>
+                                            <constraint firstItem="1hP-Q2-VMB" firstAttribute="width" secondItem="2KK-mA-8Ab" secondAttribute="width" id="pW3-Lb-An4"/>
                                         </constraints>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
@@ -178,7 +182,6 @@
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
-                        <outlet property="captureButton" destination="1hP-Q2-VMB" id="WON-Qr-Lhl"/>
                         <outlet property="glView" destination="v0Y-rc-poP" id="101-Mb-K7b"/>
                         <outlet property="glViewBlockerView" destination="Bsw-Wr-OO7" id="h7c-jx-OIO"/>
                         <outletCollection property="rotatableViews" destination="p0z-4W-mBf" collectionClass="NSMutableArray" id="UrY-vh-cb2"/>
