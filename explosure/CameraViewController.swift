@@ -98,9 +98,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         if captureSession.canAddOutput(stillImageOutput) {
             captureSession.addOutput(stillImageOutput)
         }
-        dispatch_async(dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)) { () -> Void in
-            self.captureSession.startRunning()
-        }
+        self.captureSession.startRunning()
     }
     
     @IBAction func captureButtonTapped() {
