@@ -412,7 +412,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bernhardeiling.capture;
 				PRODUCT_NAME = CPTR;
-				PROVISIONING_PROFILE = "15cffbf8-2aec-4a01-b705-363df84b3024";
+				PROVISIONING_PROFILE = "f416d5d7-3481-45e5-8fa3-36f8b64f46a6";
+				PROVISIONING_PROFILE_SPECIFIER = "6AD266UVVD/CPTR-dev";
 				SWIFT_OBJC_BRIDGING_HEADER = "explosure/CPTR-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 2.3;
@@ -434,7 +435,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bernhardeiling.capture;
 				PRODUCT_NAME = CPTR;
-				PROVISIONING_PROFILE = "15cffbf8-2aec-4a01-b705-363df84b3024";
+				PROVISIONING_PROFILE = "29c4daf1-c357-49e1-9932-5097a3762b6a";
+				PROVISIONING_PROFILE_SPECIFIER = 6AD266UVVD/CPTR;
 				SWIFT_OBJC_BRIDGING_HEADER = "explosure/CPTR-Bridging-Header.h";
 				SWIFT_VERSION = 2.3;
 			};
