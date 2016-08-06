@@ -103,16 +103,63 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     @IBAction func captureButtonTapped() {
         guard stillImageController?.compoundImage.completed == false else {
-            videoBlendFilter.inputBackgroundImage = nil
-            stillImageController!.reset()
+            resetCapture()
             return
         }
         self.ciImageFromStillImageOutput { (capturedCiImage) in
             guard capturedCiImage != nil else { return }
             self.stillImageController?.compoundStillImageFromImage(capturedCiImage!, devicePosition: self.captureDevice!.position, completion: { (compoundImage) in
-                self.setCompoundImageToFilter(compoundImage.image)
+                if compoundImage.completed {
+                    self.showStaticCompoundImage(compoundImage.image)
+                } else {
+                    self.setCompoundImageToFilter(compoundImage.image)
+                }
             })
         }
+    }
+    
+    private func showStaticCompoundImage(compoundImage: CGImage?) {
+        captureSession.stopRunning()
+        videoBlendFilter.inputImage = nil
+        setCompoundImageToFilter(compoundImage)
+        drawFilterImage()
+    }
+    
+    private func resetCapture() {
+        videoBlendFilter.inputBackgroundImage = nil
+        stillImageController!.reset()
+        captureSession.startRunning()
+    }
+   
+    private func setCompoundImageToFilter(compoundImage: CGImage?) {
+        guard let cgImage = compoundImage else { return }
+        let ciImage = CIImage(CGImage: cgImage)
+        let rotatedImage = ciImage.rotated90DegreesRight()
+        let filterImageRect = videoBlendFilter.outputImage!.extent
+        let scaledAndRotatedImage = rotatedImage.scaledToResolution(CGSize(width: filterImageRect.size.width, height: filterImageRect.size.height))
+        videoBlendFilter.inputBackgroundImage = scaledAndRotatedImage
+    }
+    
+    func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
+        if glContext != EAGLContext.currentContext() {
+            EAGLContext.setCurrentContext(glContext)
+        }
+        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        if stillImageController?.compoundImage.completed == false {
+            var videoImage = CIImage(CVPixelBuffer: imageBuffer)
+            if captureDevice?.position == .Front {
+                videoImage = videoImage.horizontalFlippedImage()
+            }
+            videoBlendFilter.inputImage = videoImage
+        }
+        drawFilterImage()
+    }
+    
+    func drawFilterImage() {
+        guard let outputImage = videoBlendFilter.outputImage else { return }
+        glView.bindDrawable()
+        ciContext.drawImage(outputImage, inRect: outputImage.extent, fromRect: outputImage.extent)
+        glView.display()
     }
     
     @IBAction func shareButtonTapped() {
@@ -125,34 +172,32 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     @IBAction func toggleCameraButtonTapped() {
-        if let captureDevice = captureDevice {
-            switch captureDevice.position {
-            case .Back:
-                configureCaptureDevice(.Front)
-            case .Front:
-                configureCaptureDevice(.Back)
-            default:
-                configureCaptureDevice(.Front)
-            }
+        guard let captureDevice = captureDevice else { return }
+        switch captureDevice.position {
+        case .Back:
+            configureCaptureDevice(.Front)
+        case .Front:
+            configureCaptureDevice(.Back)
+        default:
+            configureCaptureDevice(.Front)
         }
     }
     
     @IBAction func glViewTapped(tapRecognizer: UITapGestureRecognizer) {
         let focusPoint = tapRecognizer .locationInView(glView)
         let normalizedFocusPoint = CGPoint(x: focusPoint.y / view.frame.size.height, y: 1.0 - (focusPoint.x / view.frame.size.width)) // coordinates switch is necessarry due to 90 degree rotation of camera
-        if let captureDevice = captureDevice {
-            do {
-                try captureDevice.lockForConfiguration()
-            } catch {
-                NSLog("focus capture device failed")
-                return
-            }
-            if captureDevice.focusPointOfInterestSupported {
-                captureDevice.focusPointOfInterest = normalizedFocusPoint
-                captureDevice.focusMode = .AutoFocus
-            }
-            captureDevice.unlockForConfiguration()
+        guard let captureDevice = captureDevice else { return }
+        do {
+            try captureDevice.lockForConfiguration()
+        } catch {
+            NSLog("focus capture device failed")
+            return
         }
+        if captureDevice.focusPointOfInterestSupported {
+            captureDevice.focusPointOfInterest = normalizedFocusPoint
+            captureDevice.focusMode = .AutoFocus
+        }
+        captureDevice.unlockForConfiguration()
     }
     
     private func ciImageFromStillImageOutput(completion: ((capturedCiImage: CIImage?) -> ())) {
@@ -163,36 +208,6 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
                     completion(capturedCiImage: self.ciImageFromImageBuffer(imageDataSampleBuffer))
                 })
             })
-        }
-    }
-    
-    private func setCompoundImageToFilter(compoundImage: CGImage?) {
-        if let cgImage = compoundImage {
-            let ciImage = CIImage(CGImage: cgImage)
-            let rotatedImage = ciImage.rotated90DegreesRight()
-            let filterImageRect = videoBlendFilter.outputImage!.extent
-            let scaledAndRotatedImage = rotatedImage.scaledToResolution(CGSize(width: filterImageRect.size.width, height: filterImageRect.size.height))
-            videoBlendFilter.inputBackgroundImage = scaledAndRotatedImage
-        }
-    }
-    
-    func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
-        if glContext != EAGLContext.currentContext() {
-            EAGLContext.setCurrentContext(glContext)
-        }
-        if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
-            if stillImageController?.compoundImage.completed == false {
-                var videoImage = CIImage(CVPixelBuffer: imageBuffer)
-                if captureDevice?.position == .Front {
-                    videoImage = videoImage.horizontalFlippedImage()
-                }
-                videoBlendFilter.inputImage = videoImage
-            }
-            if let outputImage = videoBlendFilter.outputImage {
-                glView.bindDrawable()
-                ciContext.drawImage(outputImage, inRect: outputImage.extent, fromRect: outputImage.extent)
-                glView.display()
-            }
         }
     }
     
