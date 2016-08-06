@@ -80,12 +80,11 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         switch authorizationStatus {
         case .NotDetermined:
             AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, completionHandler: { (granted:Bool) -> Void in
-                if granted {
-                    self.setupCamera()
-                }
-                else {
+                guard granted else {
                     NSLog("camera authorization denied")
+                    return
                 }
+                self.setupCamera()
             })
         case .Authorized:
             setupCamera()
@@ -96,9 +95,8 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     private func setupCamera() {
         configureCaptureDevice(.Back)
-        if captureSession.canAddOutput(stillImageOutput) {
-            captureSession.addOutput(stillImageOutput)
-        }
+        guard captureSession.canAddOutput(stillImageOutput) else { return }
+        captureSession.addOutput(stillImageOutput)
         captureSession.startRunning()
     }
     
@@ -188,9 +186,9 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     @IBAction func glViewTapped(tapRecognizer: UITapGestureRecognizer) {
+        guard let captureDevice = captureDevice else { return }
         let focusPoint = tapRecognizer .locationInView(glView)
         let normalizedFocusPoint = CGPoint(x: focusPoint.y / view.frame.size.height, y: 1.0 - (focusPoint.x / view.frame.size.width)) // coordinates switch is necessarry due to 90 degree rotation of camera
-        guard let captureDevice = captureDevice else { return }
         do {
             try captureDevice.lockForConfiguration()
         } catch {

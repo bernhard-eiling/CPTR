@@ -35,9 +35,7 @@ extension CIImage {
     }
     
     func scaledToResolution(resolution: CGSize) -> CIImage {
-        if extent.size == resolution {
-            return self;
-        }
+        guard extent.size != resolution else { return self }
         let xScale = resolution.width / extent.size.width
         let yScale = resolution.height / extent.size.height
         let transformScale = CGAffineTransformMakeScale(xScale, yScale)

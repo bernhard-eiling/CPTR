@@ -18,16 +18,15 @@ class StillImageController {
     private let stillImageBlendFilter: Filter
     
     init?() {
-        self.ciContext = CIContext(EAGLContext: EAGLContext(API: .OpenGLES2))
-        self.stillImageBlendFilter = Filter(name: "CILightenBlendMode")
-        self.compoundImage = CompoundImage()
-        if let backCamera = AVCaptureDevice.captureDevice(.Back) {
-            let backCameraResolution = backCamera.activeFormat?.highResolutionStillImageDimensions
-            self.maxStillImageResolution = CGSize(width: Int(backCameraResolution!.width), height: Int(backCameraResolution!.height))
-        } else {
+        guard let backCamera = AVCaptureDevice.captureDevice(.Back) else {
             NSLog("StillImageController init failed - back captureDevice couldn't be found")
             return nil
         }
+        self.ciContext = CIContext(EAGLContext: EAGLContext(API: .OpenGLES2))
+        self.stillImageBlendFilter = Filter(name: "CILightenBlendMode")
+        self.compoundImage = CompoundImage()
+        let backCameraResolution = backCamera.activeFormat?.highResolutionStillImageDimensions
+        self.maxStillImageResolution = CGSize(width: Int(backCameraResolution!.width), height: Int(backCameraResolution!.height))
     }
     
     func compoundStillImageFromImage(ciImage: CIImage, devicePosition: AVCaptureDevicePosition, completion: (compoundImage: CompoundImage) -> ()) {
@@ -69,7 +68,7 @@ class StillImageController {
     private func saveCompoundImage() {
         guard compoundImage.completed else { return }
         PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
-            let rotatedUIImage = UIImage(CGImage: self.compoundImage.image!, scale: 1.0, orientation: self.compoundImage.imageOrientation!)            
+            let rotatedUIImage = UIImage(CGImage: self.compoundImage.image!, scale: 1.0, orientation: self.compoundImage.imageOrientation!)
             PHAssetCreationRequest.creationRequestForAssetFromImage(rotatedUIImage)
         }) { (success, error) -> Void in
             if (!success) {
