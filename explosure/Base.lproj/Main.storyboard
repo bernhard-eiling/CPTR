@@ -20,8 +20,7 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CU5-5c-C54" userLabel="Topbar">
                                 <subviews>
-                                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9Z0-dU-Ur7" userLabel="Selfie Wrapper">
-                                        <frame key="frameInset" minX="281" minY="8" width="40" height="40"/>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Z0-dU-Ur7" userLabel="Selfie Wrapper">
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1vl-9m-3Ep" userLabel="Selfie Button">
                                                 <state key="normal" image="rotate_camera">
@@ -56,8 +55,7 @@
                                     <constraint firstAttribute="height" constant="55" id="Qh2-qf-7hG"/>
                                 </constraints>
                             </view>
-                            <glkView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" enableSetNeedsDisplay="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v0Y-rc-poP">
-                                <frame key="frameInset" minY="75"/>
+                            <glkView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" enableSetNeedsDisplay="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v0Y-rc-poP">
                                 <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="v0Y-rc-poP" secondAttribute="height" multiplier="3:4" id="TOA-yN-yi8"/>
@@ -66,15 +64,13 @@
                                     <outletCollection property="gestureRecognizers" destination="E7h-u7-oc4" appends="YES" id="xyD-Gg-YB2"/>
                                 </connections>
                             </glkView>
-                            <view hidden="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Bsw-Wr-OO7" userLabel="gl view blocker">
-                                <frame key="frameInset" minY="75"/>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bsw-Wr-OO7" userLabel="gl view blocker">
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lov-Cd-6c0" userLabel="Controls Wrapper">
-                                <frame key="frameInset" minY="75" width="375" height="525"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lov-Cd-6c0" userLabel="Controls Wrapper">
                                 <subviews>
-                                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Mnh-Z5-Xw4" userLabel="Share Wrapper">
-                                        <frame key="frameInset" minX="305" minY="243" width="40" height="40"/>
+                                    <view hidden="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Mnh-Z5-Xw4" userLabel="Share Wrapper">
+                                        <frame key="frameInset" minX="305" minY="27" width="40" height="40"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p0z-4W-mBf" userLabel="Share Button">
                                                 <state key="normal" image="share-small">
@@ -100,8 +96,7 @@
                                             <constraint firstAttribute="width" constant="40" id="nyP-XL-dXj"/>
                                         </constraints>
                                     </view>
-                                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2KK-mA-8Ab" userLabel="Capture Button Wrapper">
-                                        <frame key="frameInset" minX="154" minY="229" width="69" height="69"/>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2KK-mA-8Ab" userLabel="Capture Button Wrapper">
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ePa-Vb-PIo" userLabel="Inner Circle">
                                                 <subviews>
@@ -178,6 +173,7 @@
                     <connections>
                         <outlet property="glView" destination="v0Y-rc-poP" id="101-Mb-K7b"/>
                         <outlet property="glViewBlockerView" destination="Bsw-Wr-OO7" id="h7c-jx-OIO"/>
+                        <outlet property="shareButtonWrapper" destination="Mnh-Z5-Xw4" id="NUZ-BD-Luh"/>
                         <outletCollection property="rotatableViews" destination="p0z-4W-mBf" collectionClass="NSMutableArray" id="UrY-vh-cb2"/>
                         <outletCollection property="rotatableViews" destination="1vl-9m-3Ep" collectionClass="NSMutableArray" id="9US-OK-c5y"/>
                     </connections>

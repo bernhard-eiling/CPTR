@@ -27,9 +27,10 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     private var currentCaptureDeviceInput: AVCaptureDeviceInput?
     
     @IBOutlet weak var glView: GLKView!
-    @IBOutlet weak var captureButton: UIButton!
     @IBOutlet var rotatableViews: [UIView]!
     @IBOutlet weak var glViewBlockerView: UIView!
+    @IBOutlet weak var shareButtonWrapper: UIView!
+    
     
     private var videoBlendFilter: Filter
     private var stillImageController: StillImageController?
@@ -98,7 +99,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         if captureSession.canAddOutput(stillImageOutput) {
             captureSession.addOutput(stillImageOutput)
         }
-        self.captureSession.startRunning()
+        captureSession.startRunning()
     }
     
     @IBAction func captureButtonTapped() {
@@ -110,7 +111,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             guard capturedCiImage != nil else { return }
             self.stillImageController?.compoundStillImageFromImage(capturedCiImage!, devicePosition: self.captureDevice!.position, completion: { (compoundImage) in
                 if compoundImage.completed {
-                    self.showStaticCompoundImage(compoundImage.image)
+                    self.haltCapture()
                 } else {
                     self.setCompoundImageToFilter(compoundImage.image)
                 }
@@ -118,7 +119,9 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         }
     }
     
-    private func showStaticCompoundImage(compoundImage: CGImage?) {
+    private func haltCapture() {
+        guard let compoundImage = stillImageController?.compoundImage.image else { return }
+        shareButtonWrapper.hidden = false
         captureSession.stopRunning()
         videoBlendFilter.inputImage = nil
         setCompoundImageToFilter(compoundImage)
@@ -129,6 +132,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         videoBlendFilter.inputBackgroundImage = nil
         stillImageController!.reset()
         captureSession.startRunning()
+        shareButtonWrapper.hidden = true
     }
    
     private func setCompoundImageToFilter(compoundImage: CGImage?) {
@@ -156,7 +160,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     func drawFilterImage() {
-        guard let outputImage = videoBlendFilter.outputImage else { return }
+        guard let outputImage = videoBlendFilter.outputImage where glView.frame != CGRectZero else { return }
         glView.bindDrawable()
         ciContext.drawImage(outputImage, inRect: outputImage.extent, fromRect: outputImage.extent)
         glView.display()
