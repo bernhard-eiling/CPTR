@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11173.2" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11191" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11143.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11156"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -64,9 +64,6 @@
                                     <outletCollection property="gestureRecognizers" destination="E7h-u7-oc4" appends="YES" id="xyD-Gg-YB2"/>
                                 </connections>
                             </glkView>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bsw-Wr-OO7" userLabel="gl view blocker">
-                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lov-Cd-6c0" userLabel="Controls Wrapper">
                                 <subviews>
                                     <view hidden="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Mnh-Z5-Xw4" userLabel="Share Wrapper">
@@ -157,14 +154,10 @@
                             <constraint firstAttribute="trailing" secondItem="CU5-5c-C54" secondAttribute="trailing" id="1NH-Tb-mxB"/>
                             <constraint firstItem="CU5-5c-C54" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="6ge-oA-dap"/>
                             <constraint firstItem="lov-Cd-6c0" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="9h4-FC-URl"/>
-                            <constraint firstItem="Bsw-Wr-OO7" firstAttribute="bottom" secondItem="v0Y-rc-poP" secondAttribute="bottom" id="Fyr-59-iWb"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="lov-Cd-6c0" secondAttribute="bottom" id="I6a-9H-o6B"/>
                             <constraint firstAttribute="trailing" secondItem="lov-Cd-6c0" secondAttribute="trailing" id="JYT-iQ-1So"/>
-                            <constraint firstItem="Bsw-Wr-OO7" firstAttribute="trailing" secondItem="v0Y-rc-poP" secondAttribute="trailing" id="LhS-bA-RJb"/>
                             <constraint firstItem="CU5-5c-C54" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="ULL-3t-OzI"/>
                             <constraint firstAttribute="trailing" secondItem="v0Y-rc-poP" secondAttribute="trailing" id="fpO-xC-TBZ"/>
-                            <constraint firstItem="Bsw-Wr-OO7" firstAttribute="top" secondItem="v0Y-rc-poP" secondAttribute="top" id="i40-fK-VMw"/>
-                            <constraint firstItem="Bsw-Wr-OO7" firstAttribute="leading" secondItem="v0Y-rc-poP" secondAttribute="leading" id="o3e-RR-7h6"/>
                             <constraint firstItem="lov-Cd-6c0" firstAttribute="top" secondItem="v0Y-rc-poP" secondAttribute="bottom" id="pVT-Bb-bl3"/>
                             <constraint firstItem="v0Y-rc-poP" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="vwx-4P-jo3"/>
                             <constraint firstItem="v0Y-rc-poP" firstAttribute="top" secondItem="CU5-5c-C54" secondAttribute="bottom" id="zw0-Pc-JP1"/>
@@ -172,7 +165,6 @@
                     </view>
                     <connections>
                         <outlet property="glView" destination="v0Y-rc-poP" id="101-Mb-K7b"/>
-                        <outlet property="glViewBlockerView" destination="Bsw-Wr-OO7" id="h7c-jx-OIO"/>
                         <outlet property="shareButtonWrapper" destination="Mnh-Z5-Xw4" id="NUZ-BD-Luh"/>
                         <outletCollection property="rotatableViews" destination="p0z-4W-mBf" collectionClass="NSMutableArray" id="UrY-vh-cb2"/>
                         <outletCollection property="rotatableViews" destination="1vl-9m-3Ep" collectionClass="NSMutableArray" id="9US-OK-c5y"/>

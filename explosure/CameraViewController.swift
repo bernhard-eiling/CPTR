@@ -28,9 +28,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     @IBOutlet weak var glView: GLKView!
     @IBOutlet var rotatableViews: [UIView]!
-    @IBOutlet weak var glViewBlockerView: UIView!
     @IBOutlet weak var shareButtonWrapper: UIView!
-    
     
     private var videoBlendFilter: Filter
     private var stillImageController: StillImageController?
@@ -95,8 +93,9 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     private func setupCamera() {
         configureCaptureDevice(.Back)
-        guard captureSession.canAddOutput(stillImageOutput) else { return }
-        captureSession.addOutput(stillImageOutput)
+        if captureSession.canAddOutput(stillImageOutput) {
+            captureSession.addOutput(stillImageOutput)
+        }
         captureSession.startRunning()
     }
     
@@ -109,7 +108,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             guard capturedCiImage != nil else { return }
             self.stillImageController?.compoundStillImageFromImage(capturedCiImage!, devicePosition: self.captureDevice!.position, completion: { (compoundImage) in
                 if compoundImage.completed {
-                    self.haltCapture()
+                    self.showCompoundImage()
                 } else {
                     self.setCompoundImageToFilter(compoundImage.image)
                 }
@@ -117,7 +116,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         }
     }
     
-    private func haltCapture() {
+    private func showCompoundImage() {
         guard let compoundImage = stillImageController?.compoundImage.image else { return }
         shareButtonWrapper.hidden = false
         captureSession.stopRunning()
@@ -128,11 +127,11 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     private func resetCapture() {
         videoBlendFilter.inputBackgroundImage = nil
-        stillImageController!.reset()
+        stillImageController?.reset()
         captureSession.startRunning()
         shareButtonWrapper.hidden = true
     }
-   
+    
     private func setCompoundImageToFilter(compoundImage: CGImage?) {
         guard let cgImage = compoundImage else { return }
         let ciImage = CIImage(CGImage: cgImage)
@@ -187,7 +186,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     @IBAction func glViewTapped(tapRecognizer: UITapGestureRecognizer) {
         guard let captureDevice = captureDevice else { return }
-        let focusPoint = tapRecognizer .locationInView(glView)
+        let focusPoint = tapRecognizer.locationInView(glView)
         let normalizedFocusPoint = CGPoint(x: focusPoint.y / view.frame.size.height, y: 1.0 - (focusPoint.x / view.frame.size.width)) // coordinates switch is necessarry due to 90 degree rotation of camera
         do {
             try captureDevice.lockForConfiguration()
@@ -241,11 +240,8 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     private func configureCaptureDevice(devicePosition: AVCaptureDevicePosition) {
-        glViewBlockerView.hidden = false
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(1.3 * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) {
-            self.glViewBlockerView.hidden = true
-        }
         do {
+            captureSession.stopRunning()
             captureDevice = AVCaptureDevice.captureDevice(devicePosition)
             captureSession.removeInput(currentCaptureDeviceInput)
             currentCaptureDeviceInput = try AVCaptureDeviceInput(device: captureDevice)
@@ -253,6 +249,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
                 captureSession.addInput(currentCaptureDeviceInput)
             }
             setVideoOrientation(.Portrait)
+            captureSession.startRunning()
         } catch {
             NSLog("capture device could not be added to session");
         }
