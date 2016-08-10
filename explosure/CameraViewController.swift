@@ -29,6 +29,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     @IBOutlet weak var glView: GLKView!
     @IBOutlet var rotatableViews: [UIView]!
     @IBOutlet weak var shareButtonWrapper: UIView!
+    @IBOutlet weak var missingPermissionsLabel: UILabel!
     
     private var videoBlendFilter: Filter
     private var stillImageController: StillImageController?
@@ -53,15 +54,11 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     override func viewDidLoad() {
         super.viewDidLoad()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(deviceOrientationDidChange), name: UIDeviceOrientationDidChangeNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(applicationDidBecomeActive), name: UIApplicationDidBecomeActiveNotification, object: nil)
         glView.context = glContext
         glView.enableSetNeedsDisplay = false
         authorizeCamera()
-        if let imageController = StillImageController() {
-            stillImageController = imageController
-        } else {
-            NSLog("unable to init stillimage controller")
-        }
+        guard let imageController = StillImageController() else { fatalError("unable to init stillimage controller") }
+        stillImageController = imageController
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -69,34 +66,33 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         GAHelper.trackCameraView()
     }
     
-    func applicationDidBecomeActive() {
-        authorizeCamera()
-    }
-    
     private func authorizeCamera() {
+        self.missingPermissionsLabel.hidden = true
         let authorizationStatus = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
         switch authorizationStatus {
         case .NotDetermined:
             AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, completionHandler: { (granted:Bool) -> Void in
                 guard granted else {
+                    self.missingPermissionsLabel.hidden = false
                     NSLog("camera authorization denied")
                     return
                 }
-                self.setupCamera()
+                self.setupSession()
             })
         case .Authorized:
-            setupCamera()
+            setupSession()
         case .Denied, .Restricted:
+            missingPermissionsLabel.hidden = false
             NSLog("camera authorization denied")
         }
     }
     
-    private func setupCamera() {
-        configureCaptureDevice(.Back)
-        if captureSession.canAddOutput(stillImageOutput) {
-            captureSession.addOutput(stillImageOutput)
-        }
-        captureSession.startRunning()
+    private func setupSession() {
+        guard captureSession.canAddOutput(videoDataOutput) else { fatalError() }
+        guard captureSession.canAddOutput(stillImageOutput) else { fatalError() }
+        captureSession.addOutput(videoDataOutput)
+        captureSession.addOutput(stillImageOutput)
+        toggle(toDevicePosition: .Back)
     }
     
     @IBAction func captureButtonTapped() {
@@ -104,6 +100,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             resetCapture()
             return
         }
+        guard captureSession.running else { return }
         self.ciImageFromStillImageOutput { (capturedCiImage) in
             guard capturedCiImage != nil else { return }
             self.stillImageController?.compoundStillImageFromImage(capturedCiImage!, devicePosition: self.captureDevice!.position, completion: { (compoundImage) in
@@ -176,11 +173,11 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         guard let captureDevice = captureDevice else { return }
         switch captureDevice.position {
         case .Back:
-            configureCaptureDevice(.Front)
+            toggle(toDevicePosition: .Front)
         case .Front:
-            configureCaptureDevice(.Back)
+            toggle(toDevicePosition: .Back)
         default:
-            configureCaptureDevice(.Front)
+            toggle(toDevicePosition: .Front)
         }
     }
     
@@ -239,7 +236,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         }
     }
     
-    private func configureCaptureDevice(devicePosition: AVCaptureDevicePosition) {
+    private func toggle(toDevicePosition devicePosition: AVCaptureDevicePosition) {
         do {
             captureSession.stopRunning()
             captureDevice = AVCaptureDevice.captureDevice(devicePosition)
@@ -256,24 +253,16 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     private func setVideoOrientation(orientation: AVCaptureVideoOrientation) {
-        if captureSession.canAddOutput(videoDataOutput) {
-            captureSession.addOutput(videoDataOutput)
-        }
-        let videoOutputConnection = videoDataOutput.connectionWithMediaType(AVMediaTypeVideo)
+        guard let videoOutputConnection = videoDataOutput.connectionWithMediaType(AVMediaTypeVideo) else { return }
         if videoOutputConnection.supportsVideoOrientation {
             videoOutputConnection.videoOrientation = orientation
         }
     }
     
     private func ciImageFromImageBuffer(imageSampleBuffer: CMSampleBuffer?) -> CIImage? {
-        if let sampleBuffer = imageSampleBuffer {
-            if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
-                let ciImage = CIImage(CVPixelBuffer: imageBuffer)
-                return ciImage
-            }
-        }
-        NSLog("Could not convert image buffer to CIImage")
-        return nil
+        guard   let sampleBuffer = imageSampleBuffer,
+                let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return nil }
+        return CIImage(CVPixelBuffer: imageBuffer)
     }
     
     override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {

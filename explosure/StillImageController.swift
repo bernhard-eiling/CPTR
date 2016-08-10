@@ -71,12 +71,12 @@ class StillImageController {
             let rotatedUIImage = UIImage(CGImage: self.compoundImage.image!, scale: 1.0, orientation: self.compoundImage.imageOrientation!)
             PHAssetCreationRequest.creationRequestForAssetFromImage(rotatedUIImage)
         }) { (success, error) -> Void in
-            if (!success) {
+            if !success {
                 NSLog("could not save image to photo library")
-            } else {
-                GAHelper.trackPhotoSaved()
-                NSLog("image saved to photo library")
+                return
             }
+            GAHelper.trackPhotoSaved()
+            NSLog("image saved to photo library")
         }
     }
     

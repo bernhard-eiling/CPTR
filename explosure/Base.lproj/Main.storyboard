@@ -56,8 +56,18 @@
                                 </constraints>
                             </view>
                             <glkView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" enableSetNeedsDisplay="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v0Y-rc-poP">
+                                <subviews>
+                                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="missing permission in settings" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1PD-bN-ndF">
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
                                 <gestureRecognizers/>
                                 <constraints>
+                                    <constraint firstItem="1PD-bN-ndF" firstAttribute="centerY" secondItem="v0Y-rc-poP" secondAttribute="centerY" id="4m5-hK-2Ut"/>
+                                    <constraint firstItem="1PD-bN-ndF" firstAttribute="leading" secondItem="v0Y-rc-poP" secondAttribute="leading" constant="20" id="HIX-rL-ZHy"/>
+                                    <constraint firstAttribute="trailing" secondItem="1PD-bN-ndF" secondAttribute="trailing" constant="20" id="Ibf-d2-WIv"/>
                                     <constraint firstAttribute="width" secondItem="v0Y-rc-poP" secondAttribute="height" multiplier="3:4" id="TOA-yN-yi8"/>
                                 </constraints>
                                 <connections>
@@ -165,6 +175,7 @@
                     </view>
                     <connections>
                         <outlet property="glView" destination="v0Y-rc-poP" id="101-Mb-K7b"/>
+                        <outlet property="missingPermissionsLabel" destination="1PD-bN-ndF" id="6eK-gH-kbj"/>
                         <outlet property="shareButtonWrapper" destination="Mnh-Z5-Xw4" id="NUZ-BD-Luh"/>
                         <outletCollection property="rotatableViews" destination="p0z-4W-mBf" collectionClass="NSMutableArray" id="UrY-vh-cb2"/>
                         <outletCollection property="rotatableViews" destination="1vl-9m-3Ep" collectionClass="NSMutableArray" id="9US-OK-c5y"/>
