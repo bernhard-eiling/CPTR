@@ -32,7 +32,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     @IBOutlet weak var missingPermissionsLabel: UILabel!
     
     private var videoBlendFilter: Filter
-    private var stillImageController: StillImageController?
+    private let stillImageController = StillImageController()
     
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
@@ -57,8 +57,6 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         glView.context = glContext
         glView.enableSetNeedsDisplay = false
         authorizeCamera()
-        guard let imageController = StillImageController() else { fatalError("unable to init stillimage controller") }
-        stillImageController = imageController
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -96,14 +94,14 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     @IBAction func captureButtonTapped() {
-        guard stillImageController?.compoundImage.completed == false else {
+        guard !stillImageController.compoundImage.completed else {
             resetCapture()
             return
         }
         guard captureSession.running else { return }
         self.ciImageFromStillImageOutput { (capturedCiImage) in
             guard capturedCiImage != nil else { return }
-            self.stillImageController?.compoundStillImageFromImage(capturedCiImage!, devicePosition: self.captureDevice!.position, completion: { (compoundImage) in
+            self.stillImageController.compoundStillImageFromImage(capturedCiImage!, devicePosition: self.captureDevice!.position, completion: { (compoundImage) in
                 if compoundImage.completed {
                     self.showCompoundImage()
                 } else {
@@ -114,7 +112,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     private func showCompoundImage() {
-        guard let compoundImage = stillImageController?.compoundImage.image else { return }
+        guard let compoundImage = stillImageController.compoundImage.image else { return }
         shareButtonWrapper.hidden = false
         captureSession.stopRunning()
         videoBlendFilter.inputImage = nil
@@ -124,7 +122,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     private func resetCapture() {
         videoBlendFilter.inputBackgroundImage = nil
-        stillImageController?.reset()
+        stillImageController.reset()
         captureSession.startRunning()
         shareButtonWrapper.hidden = true
     }
@@ -143,7 +141,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             EAGLContext.setCurrentContext(glContext)
         }
         guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
-        if stillImageController?.compoundImage.completed == false {
+        if !stillImageController.compoundImage.completed {
             var videoImage = CIImage(CVPixelBuffer: imageBuffer)
             if captureDevice?.position == .Front {
                 videoImage = videoImage.horizontalFlippedImage()
@@ -161,10 +159,10 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     @IBAction func shareButtonTapped() {
-        guard stillImageController?.compoundImage.completed == true else { return }
+        guard stillImageController.compoundImage.completed == true else { return }
         let shareViewController = ShareViewController()
         presentViewController(shareViewController, animated: true) { () -> Void in
-            let rotatedUIImage = UIImage(CGImage:self.stillImageController!.compoundImage.image!, scale: 1.0, orientation:self.stillImageController!.compoundImage.imageOrientation!)
+            let rotatedUIImage = UIImage(CGImage:self.stillImageController.compoundImage.image!, scale: 1.0, orientation:self.stillImageController.compoundImage.imageOrientation!)
             shareViewController.sharePhoto(rotatedUIImage)
         }
     }

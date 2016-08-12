@@ -14,19 +14,18 @@ class StillImageController {
     private(set) var compoundImage: CompoundImage
     
     private let ciContext: CIContext
-    private let maxStillImageResolution: CGSize
+    private var maxStillImageResolution: CGSize? {
+        guard let backCamera = AVCaptureDevice.captureDevice(.Back) else { return nil }
+        let backCameraResolution = backCamera.activeFormat?.highResolutionStillImageDimensions
+        return CGSize(width: Int(backCameraResolution!.width), height: Int(backCameraResolution!.height))
+    }
     private let stillImageBlendFilter: Filter
     
-    init?() {
-        guard let backCamera = AVCaptureDevice.captureDevice(.Back) else {
-            NSLog("StillImageController init failed - back captureDevice couldn't be found")
-            return nil
-        }
+    init() {
+        
         self.ciContext = CIContext(EAGLContext: EAGLContext(API: .OpenGLES2))
         self.stillImageBlendFilter = Filter(name: "CILightenBlendMode")
         self.compoundImage = CompoundImage()
-        let backCameraResolution = backCamera.activeFormat?.highResolutionStillImageDimensions
-        self.maxStillImageResolution = CGSize(width: Int(backCameraResolution!.width), height: Int(backCameraResolution!.height))
     }
     
     func compoundStillImageFromImage(ciImage: CIImage, devicePosition: AVCaptureDevicePosition, completion: (compoundImage: CompoundImage) -> ()) {
@@ -47,7 +46,7 @@ class StillImageController {
     private func normalizedImageFromImage(ciImage: CIImage, devicePosition: AVCaptureDevicePosition) -> CIImage {
         if devicePosition == .Front {
             let flipppedCIImage = ciImage.verticalFlippedImage()
-            let scaledFlippedCIImage = flipppedCIImage.scaledToResolution(maxStillImageResolution)
+            let scaledFlippedCIImage = flipppedCIImage.scaledToResolution(maxStillImageResolution!)
             return scaledFlippedCIImage
         }
         return ciImage
@@ -67,16 +66,22 @@ class StillImageController {
     
     private func saveCompoundImage() {
         guard compoundImage.completed else { return }
-        PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
-            let rotatedUIImage = UIImage(CGImage: self.compoundImage.image!, scale: 1.0, orientation: self.compoundImage.imageOrientation!)
-            PHAssetCreationRequest.creationRequestForAssetFromImage(rotatedUIImage)
-        }) { (success, error) -> Void in
-            if !success {
-                NSLog("could not save image to photo library")
+        PHPhotoLibrary.requestAuthorization { (status) in
+            guard status == .Authorized else {
+                NSLog("photo permission not given")
                 return
             }
-            GAHelper.trackPhotoSaved()
-            NSLog("image saved to photo library")
+            PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
+                let rotatedUIImage = UIImage(CGImage: self.compoundImage.image!, scale: 1.0, orientation: self.compoundImage.imageOrientation!)
+                PHAssetCreationRequest.creationRequestForAssetFromImage(rotatedUIImage)
+            }) { (success, error) -> Void in
+                if !success {
+                    NSLog("could not save image to photo library")
+                    return
+                }
+                GAHelper.trackPhotoSaved()
+                NSLog("image saved to photo library")
+            }
         }
     }
     
