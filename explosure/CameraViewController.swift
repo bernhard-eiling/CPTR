@@ -71,7 +71,9 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         case .NotDetermined:
             AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, completionHandler: { (granted:Bool) -> Void in
                 guard granted else {
-                    self.missingPermissionsLabel.hidden = false
+                    dispatch_async(dispatch_get_main_queue(), { 
+                        self.missingPermissionsLabel.hidden = false
+                    })
                     NSLog("camera authorization denied")
                     return
                 }
@@ -159,7 +161,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     @IBAction func shareButtonTapped() {
-        guard stillImageController.compoundImage.completed == true else { return }
+        guard stillImageController.compoundImage.completed else { return }
         let shareViewController = ShareViewController()
         presentViewController(shareViewController, animated: true) { () -> Void in
             let rotatedUIImage = UIImage(CGImage:self.stillImageController.compoundImage.image!, scale: 1.0, orientation:self.stillImageController.compoundImage.imageOrientation!)

@@ -28,7 +28,7 @@ class ShareViewController: UIViewController, UIDocumentInteractionControllerDele
     
     func sharePhoto(photo: UIImage) {
         let jpegImage = UIImageJPEGRepresentation(photo, 1.0)
-        let homePathString = NSTemporaryDirectory() + "/temp_photo.jpeg";
+        let homePathString = NSTemporaryDirectory() + "/captr.jpeg";
         let homePathUrl = NSURL(fileURLWithPath: homePathString)
         do {
             try jpegImage!.writeToURL(homePathUrl, options: .DataWritingAtomic)
