@@ -12,7 +12,7 @@ import CoreGraphics
 class CompoundImage {
     
     var completed: Bool {
-        return imageCounter >= 2
+        return imageCounter >= 2 && image != nil
     }
     var image: CGImage? {
         didSet {

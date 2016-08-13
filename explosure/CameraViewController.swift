@@ -33,6 +33,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     private var videoBlendFilter: Filter
     private let stillImageController = StillImageController()
+    private var documentInteractionController: UIDocumentInteractionController?
     
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
@@ -161,12 +162,9 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     @IBAction func shareButtonTapped() {
-        guard stillImageController.compoundImage.completed else { return }
-        let shareViewController = ShareViewController()
-        presentViewController(shareViewController, animated: true) { () -> Void in
-            let rotatedUIImage = UIImage(CGImage:self.stillImageController.compoundImage.image!, scale: 1.0, orientation:self.stillImageController.compoundImage.imageOrientation!)
-            shareViewController.sharePhoto(rotatedUIImage)
-        }
+        documentInteractionController = UIDocumentInteractionController.documentInteractionController(withCompoundImage: stillImageController.compoundImage)
+        guard let documentInteractionController = documentInteractionController where stillImageController.compoundImage.completed else { return }
+        documentInteractionController.presentOpenInMenuFromRect(CGRectZero, inView: view, animated: true)
     }
     
     @IBAction func toggleCameraButtonTapped() {
