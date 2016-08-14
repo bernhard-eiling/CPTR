@@ -70,9 +70,9 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         let authorizationStatus = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
         switch authorizationStatus {
         case .NotDetermined:
-            AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, completionHandler: { (granted:Bool) -> Void in
+            AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, completionHandler: { (granted: Bool) -> () in
                 guard granted else {
-                    dispatch_async(dispatch_get_main_queue(), { 
+                    dispatch_async(dispatch_get_main_queue(), {
                         self.missingPermissionsLabel.hidden = false
                     })
                     NSLog("camera authorization denied")
@@ -102,14 +102,18 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             return
         }
         guard captureSession.running else { return }
-        self.ciImageFromStillImageOutput { (capturedCiImage) in
-            guard capturedCiImage != nil else { return }
-            self.stillImageController.compoundStillImageFromImage(capturedCiImage!, devicePosition: self.captureDevice!.position, completion: { (compoundImage) in
-                if compoundImage.completed {
-                    self.showCompoundImage()
-                } else {
-                    self.setCompoundImageToFilter(compoundImage.image)
-                }
+        ciImageFromStillImageOutput { (capturedCiImage) in
+            dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), {
+                guard capturedCiImage != nil else { return }
+                self.stillImageController.compoundStillImageFromImage(capturedCiImage!, devicePosition: self.captureDevice!.position, completion: { (compoundImage) in
+                    dispatch_async(dispatch_get_main_queue(), {
+                        if compoundImage.completed {
+                            self.showCompoundImage()
+                        } else {
+                            self.setCompoundImageToFilter(compoundImage.image)
+                        }
+                    })
+                })
             })
         }
     }
@@ -131,11 +135,11 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     private func setCompoundImageToFilter(compoundImage: CGImage?) {
-        guard let cgImage = compoundImage else { return }
+        guard   let cgImage = compoundImage,
+                let outputImage = videoBlendFilter.outputImage else { return }
         let ciImage = CIImage(CGImage: cgImage)
         let rotatedImage = ciImage.rotated90DegreesRight()
-        let filterImageRect = videoBlendFilter.outputImage!.extent
-        let scaledAndRotatedImage = rotatedImage.scaledToResolution(CGSize(width: filterImageRect.size.width, height: filterImageRect.size.height))
+        let scaledAndRotatedImage = rotatedImage.scaledToResolution(CGSize(width: outputImage.extent.size.width, height: outputImage.extent.size.height))
         videoBlendFilter.inputBackgroundImage = scaledAndRotatedImage
     }
     
@@ -197,14 +201,10 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     private func ciImageFromStillImageOutput(completion: ((capturedCiImage: CIImage?) -> ())) {
-        dispatch_async(dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)) { () -> Void in
             let stillImageConnection = self.stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)
             self.stillImageOutput.captureStillImageAsynchronouslyFromConnection(stillImageConnection, completionHandler: { (imageDataSampleBuffer: CMSampleBuffer?, error: NSError?) -> Void in
-                dispatch_async(dispatch_get_main_queue(), {
-                    completion(capturedCiImage: self.ciImageFromImageBuffer(imageDataSampleBuffer))
-                })
+                completion(capturedCiImage: self.ciImageFromImageBuffer(imageDataSampleBuffer))
             })
-        }
     }
     
     func deviceOrientationDidChange() {
@@ -259,7 +259,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     private func ciImageFromImageBuffer(imageSampleBuffer: CMSampleBuffer?) -> CIImage? {
         guard   let sampleBuffer = imageSampleBuffer,
-                let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return nil }
+            let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return nil }
         return CIImage(CVPixelBuffer: imageBuffer)
     }
     

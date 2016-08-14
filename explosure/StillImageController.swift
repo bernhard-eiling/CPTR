@@ -72,6 +72,7 @@ class StillImageController {
                 return
             }
             PHPhotoLibrary.sharedPhotoLibrary().performChanges({ () -> Void in
+                guard self.compoundImage.completed else { return }
                 let rotatedUIImage = UIImage(CGImage: self.compoundImage.image!, scale: 1.0, orientation: self.compoundImage.imageOrientation!)
                 PHAssetCreationRequest.creationRequestForAssetFromImage(rotatedUIImage)
             }) { (success, error) -> Void in
