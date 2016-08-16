@@ -28,14 +28,18 @@ class StillImageController {
         self.compoundImage = CompoundImage()
     }
     
-    func compoundStillImageFromImage(ciImage: CIImage, devicePosition: AVCaptureDevicePosition, completion: (compoundImage: CompoundImage) -> ()) {
-        let normalizedImg = normalizedImageFromImage(ciImage, devicePosition: devicePosition)
-        addImageToCompoundImage(normalizedImg)
-        if compoundImage.completed {
-            GAHelper.trackCompletePhotocapture()
-            saveCompoundImage()
-        }
-        completion(compoundImage: compoundImage)
+    func compoundStillImage(fromCIImage ciImage: CIImage, devicePosition: AVCaptureDevicePosition, completion: (compoundImage: CompoundImage) -> ()) {
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), {
+            let normalizedImg = self.normalizedImageFromImage(ciImage, devicePosition: devicePosition)
+            self.addImageToCompoundImage(normalizedImg)
+            if self.compoundImage.completed {
+                GAHelper.trackCompletePhotocapture()
+                self.saveCompoundImage()
+            }
+            dispatch_async(dispatch_get_main_queue(), {
+                completion(compoundImage: self.compoundImage)
+            })
+        })
     }
     
     func reset() {

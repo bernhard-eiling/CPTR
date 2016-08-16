@@ -100,19 +100,19 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         }
         guard captureSession.running else { return }
         ciImageFromStillImageOutput { (capturedCiImage) in
-            dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), {
-                guard capturedCiImage != nil else { return }
-                self.stillImageController.compoundStillImageFromImage(capturedCiImage!, devicePosition: self.captureDevice!.position, completion: { (compoundImage) in
-                    dispatch_async(dispatch_get_main_queue(), {
-                        if compoundImage.completed {
-                            self.showCompoundImage()
-                        } else {
-                            self.setCompoundImageToFilter(compoundImage.image)
-                        }
-                    })
-                })
-            })
+            guard let capturedCiImage = capturedCiImage else { return }
+            self.addCIImageToCompoundImage(capturedCiImage)
         }
+    }
+    
+    private func addCIImageToCompoundImage(ciImage: CIImage) {
+        stillImageController.compoundStillImage(fromCIImage: ciImage, devicePosition: captureDevice!.position, completion: { (compoundImage) in
+            if compoundImage.completed {
+                self.showCompoundImage()
+            } else {
+                self.setCompoundImageToFilter(compoundImage.image)
+            }
+        })
     }
     
     private func showCompoundImage() {
@@ -133,7 +133,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     private func setCompoundImageToFilter(compoundImage: CGImage?) {
         guard   let cgImage = compoundImage,
-                let outputImage = videoBlendFilter.outputImage else { return }
+            let outputImage = videoBlendFilter.outputImage else { return }
         let ciImage = CIImage(CGImage: cgImage)
         let rotatedImage = ciImage.rotated90DegreesRight()
         let scaledAndRotatedImage = rotatedImage.scaledToResolution(CGSize(width: outputImage.extent.size.width, height: outputImage.extent.size.height))
@@ -158,7 +158,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         }
         drawFilterImage()
     }
-
+    
     func drawFilterImage() {
         guard let outputImage = videoBlendFilter.outputImage where glView.frame != CGRectZero else { return }
         glView.bindDrawable()
@@ -202,10 +202,10 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     private func ciImageFromStillImageOutput(completion: ((capturedCiImage: CIImage?) -> ())) {
-            let stillImageConnection = self.stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)
-            self.stillImageOutput.captureStillImageAsynchronouslyFromConnection(stillImageConnection, completionHandler: { (imageDataSampleBuffer: CMSampleBuffer?, error: NSError?) -> Void in
-                completion(capturedCiImage: self.ciImageFromImageBuffer(imageDataSampleBuffer))
-            })
+        let stillImageConnection = self.stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)
+        stillImageOutput.captureStillImageAsynchronouslyFromConnection(stillImageConnection, completionHandler: { (imageDataSampleBuffer: CMSampleBuffer?, error: NSError?) -> Void in
+            completion(capturedCiImage: self.ciImageFromImageBuffer(imageDataSampleBuffer))
+        })
     }
     
     private func toggle(toDevicePosition devicePosition: AVCaptureDevicePosition) {
