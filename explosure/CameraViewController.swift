@@ -34,10 +34,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     private var videoBlendFilter: Filter
     private let stillImageController = StillImageController()
     private var documentInteractionController: UIDocumentInteractionController?
-    
-    deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-    }
+    private var upsideRotationViewsHandler: UpsideRotationViewsHandler?
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         fatalError("its not possible to init the CameraViewController with a nib")
@@ -54,7 +51,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(deviceOrientationDidChange), name: UIDeviceOrientationDidChangeNotification, object: nil)
+        upsideRotationViewsHandler = UpsideRotationViewsHandler(withViews: rotatableViews)
         glView.context = glContext
         glView.enableSetNeedsDisplay = false
         authorizeCamera()
@@ -209,33 +206,6 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             self.stillImageOutput.captureStillImageAsynchronouslyFromConnection(stillImageConnection, completionHandler: { (imageDataSampleBuffer: CMSampleBuffer?, error: NSError?) -> Void in
                 completion(capturedCiImage: self.ciImageFromImageBuffer(imageDataSampleBuffer))
             })
-    }
-    
-    func deviceOrientationDidChange() {
-        switch UIDevice.currentDevice().orientation {
-        case .Portrait:
-            rotateRotatableViewsWithTransform(CGAffineTransformIdentity)
-            break
-        case .LandscapeLeft:
-            rotateRotatableViewsWithTransform(CGAffineTransformMakeRotation(CGFloat(M_PI_2)))
-            break
-        case .LandscapeRight:
-            rotateRotatableViewsWithTransform(CGAffineTransformMakeRotation(-CGFloat(M_PI_2)))
-            break
-        case .PortraitUpsideDown:
-            rotateRotatableViewsWithTransform(CGAffineTransformMakeRotation(CGFloat(M_PI)))
-            break
-        default:
-            break
-        }
-    }
-    
-    func rotateRotatableViewsWithTransform(transform: CGAffineTransform) {
-        UIView.animateWithDuration(0.3) { () -> Void in
-            for rotatableView in self.rotatableViews {
-                rotatableView.transform = transform
-            }
-        }
     }
     
     private func toggle(toDevicePosition devicePosition: AVCaptureDevicePosition) {
