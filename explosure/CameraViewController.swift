@@ -66,7 +66,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     private func authorizeCamera() {
-        self.missingPermissionsLabel.hidden = true
+        missingPermissionsLabel.hidden = true
         let authorizationStatus = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
         switch authorizationStatus {
         case .NotDetermined:
@@ -153,11 +153,15 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             if captureDevice?.position == .Front {
                 videoImage = videoImage.horizontalFlippedImage()
             }
+            let videoFitsGLView = glView.bounds.width * glView.contentScaleFactor == videoImage.extent.width
+            if !videoFitsGLView {
+                videoImage = videoImage.scaledToResolution(glView.bounds.size.pixelSize)
+            }
             videoBlendFilter.inputImage = videoImage
         }
         drawFilterImage()
     }
-    
+
     func drawFilterImage() {
         guard let outputImage = videoBlendFilter.outputImage where glView.frame != CGRectZero else { return }
         glView.bindDrawable()

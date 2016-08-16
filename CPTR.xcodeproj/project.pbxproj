@@ -22,6 +22,7 @@
 		9E57708F1D14A21A0026689A /* AVCaptureOutputExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E57708E1D14A21A0026689A /* AVCaptureOutputExtensions.swift */; };
 		9E5DE72F1D5E98FB004D4BE6 /* UIDocumentInteractionControllerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E5DE72E1D5E98FB004D4BE6 /* UIDocumentInteractionControllerExtensions.swift */; };
 		9E6645761D0D89F200ED76C3 /* AVCaptureDeviceExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6645751D0D89F200ED76C3 /* AVCaptureDeviceExtension.swift */; };
+		9E78DC001D6390C200EEBA87 /* CGRectExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E78DBFF1D6390C200EEBA87 /* CGRectExtensions.swift */; };
 		9E9BEE911D19BC6500DDC347 /* UIImageOrientationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9BEE901D19BC6500DDC347 /* UIImageOrientationExtension.swift */; };
 /* End PBXBuildFile section */
 
@@ -45,6 +46,7 @@
 		9E57708E1D14A21A0026689A /* AVCaptureOutputExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCaptureOutputExtensions.swift; sourceTree = "<group>"; };
 		9E5DE72E1D5E98FB004D4BE6 /* UIDocumentInteractionControllerExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIDocumentInteractionControllerExtensions.swift; sourceTree = "<group>"; };
 		9E6645751D0D89F200ED76C3 /* AVCaptureDeviceExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCaptureDeviceExtension.swift; sourceTree = "<group>"; };
+		9E78DBFF1D6390C200EEBA87 /* CGRectExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGRectExtensions.swift; sourceTree = "<group>"; };
 		9E9BEE901D19BC6500DDC347 /* UIImageOrientationExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImageOrientationExtension.swift; sourceTree = "<group>"; };
 		DCBCCE86280C15141415B31F /* libPods-CPTR.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CPTR.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -88,6 +90,7 @@
 				9E57708E1D14A21A0026689A /* AVCaptureOutputExtensions.swift */,
 				9E9BEE901D19BC6500DDC347 /* UIImageOrientationExtension.swift */,
 				9E5DE72E1D5E98FB004D4BE6 /* UIDocumentInteractionControllerExtensions.swift */,
+				9E78DBFF1D6390C200EEBA87 /* CGRectExtensions.swift */,
 			);
 			name = extensions;
 			sourceTree = "<group>";
@@ -290,6 +293,7 @@
 				9E6645761D0D89F200ED76C3 /* AVCaptureDeviceExtension.swift in Sources */,
 				9E1AA2701D0D6EBF00190549 /* StillImageController.swift in Sources */,
 				9E9BEE911D19BC6500DDC347 /* UIImageOrientationExtension.swift in Sources */,
+				9E78DC001D6390C200EEBA87 /* CGRectExtensions.swift in Sources */,
 				6F8B73991BC07526008E41A4 /* AppDelegate.swift in Sources */,
 				6FDB519B1C89080C002D77A1 /* FilterCollection.swift in Sources */,
 				9E5DE72F1D5E98FB004D4BE6 /* UIDocumentInteractionControllerExtensions.swift in Sources */,

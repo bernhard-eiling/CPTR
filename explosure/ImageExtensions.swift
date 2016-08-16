@@ -24,13 +24,13 @@ extension CIImage {
     
     func horizontalFlippedImage() -> CIImage {
         let scaleTransform = CGAffineTransformMakeScale(-1.0, 1.0)
-        let translateTransform = CGAffineTransformMakeTranslation(self.extent.size.width, 0.0)
+        let translateTransform = CGAffineTransformMakeTranslation(extent.size.width, 0.0)
         return imageByApplyingTransform(CGAffineTransformConcat(scaleTransform, translateTransform))
     }
     
     func verticalFlippedImage() -> CIImage {
         let scaleTransform = CGAffineTransformMakeScale(1.0, -1.0)
-        let translateTransform = CGAffineTransformMakeTranslation(0.0, self.extent.size.height)
+        let translateTransform = CGAffineTransformMakeTranslation(0.0, extent.size.height)
         return imageByApplyingTransform(CGAffineTransformConcat(scaleTransform, translateTransform))
     }
     
@@ -43,7 +43,7 @@ extension CIImage {
     }
     
     func rotated90DegreesRight() -> CIImage {
-        let translateTransform = CGAffineTransformMakeTranslation(-self.extent.size.width, 0.0)
+        let translateTransform = CGAffineTransformMakeTranslation(-extent.size.width, 0.0)
         let rotateTransform = CGAffineTransformMakeRotation(CGFloat(-M_PI_2))
         return imageByApplyingTransform(CGAffineTransformConcat(translateTransform, rotateTransform))
     }
