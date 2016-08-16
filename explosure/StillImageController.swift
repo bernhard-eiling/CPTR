@@ -22,7 +22,6 @@ class StillImageController {
     private let stillImageBlendFilter: Filter
     
     init() {
-        
         self.ciContext = CIContext(EAGLContext: EAGLContext(API: .OpenGLES2))
         self.stillImageBlendFilter = Filter(name: "CILightenBlendMode")
         self.compoundImage = CompoundImage()
@@ -30,11 +29,11 @@ class StillImageController {
     
     func compoundStillImage(fromCIImage ciImage: CIImage, devicePosition: AVCaptureDevicePosition, completion: (compoundImage: CompoundImage) -> ()) {
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), {
-            let normalizedImg = self.normalizedImageFromImage(ciImage, devicePosition: devicePosition)
-            self.addImageToCompoundImage(normalizedImg)
+            let normalizedImg = self.normalizedCIImage(fromCIImage: ciImage, devicePosition: devicePosition)
+            self.add(normalizedImg, toCompoundImage: self.compoundImage)
             if self.compoundImage.completed {
                 GAHelper.trackCompletePhotocapture()
-                self.saveCompoundImage()
+                self.finalize(self.compoundImage)
             }
             dispatch_async(dispatch_get_main_queue(), {
                 completion(compoundImage: self.compoundImage)
@@ -46,8 +45,8 @@ class StillImageController {
         stillImageBlendFilter.inputBackgroundImage = nil
         compoundImage = CompoundImage()
     }
-    
-    private func normalizedImageFromImage(ciImage: CIImage, devicePosition: AVCaptureDevicePosition) -> CIImage {
+
+    private func normalizedCIImage(fromCIImage ciImage: CIImage, devicePosition: AVCaptureDevicePosition) -> CIImage {
         if devicePosition == .Front {
             let flipppedCIImage = ciImage.verticalFlippedImage()
             let scaledFlippedCIImage = flipppedCIImage.scaledToResolution(maxStillImageResolution!)
@@ -56,7 +55,7 @@ class StillImageController {
         return ciImage
     }
     
-    private func addImageToCompoundImage(ciImage: CIImage) {
+    private func add(ciImage: CIImage, toCompoundImage compoundImage: CompoundImage) {
         guard !compoundImage.completed else { return }
         if let image = compoundImage.image {
             stillImageBlendFilter.inputBackgroundImage = CIImage(CGImage: image)
@@ -68,7 +67,27 @@ class StillImageController {
         stillImageBlendFilter.inputImage = nil // ciImage has to be set to nil in order to capture another ciImage
     }
     
-    private func saveCompoundImage() {
+    private func addJpegUrl(toCompoundImage compoundImage: CompoundImage) {
+        let rotatedUIImage = UIImage(CGImage:compoundImage.image!, scale: 1.0, orientation:compoundImage.imageOrientation!)
+        let jpegImage = UIImageJPEGRepresentation(rotatedUIImage, 1.0)
+        let homePathString = NSTemporaryDirectory() + "/captr.jpeg";
+        let homePathUrl = NSURL(fileURLWithPath: homePathString)
+        do {
+            try jpegImage!.writeToURL(homePathUrl, options: .DataWritingAtomic)
+        } catch {
+            NSLog("could not safe temp image")
+        }
+        compoundImage.jpegUrl = homePathUrl
+    }
+    
+    private func finalize(compoundImage: CompoundImage) {
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), {
+            self.addJpegUrl(toCompoundImage: self.compoundImage)
+            self.save(self.compoundImage)
+        })
+    }
+    
+    private func save(compoundImage: CompoundImage) {
         guard compoundImage.completed else { return }
         PHPhotoLibrary.requestAuthorization { (status) in
             guard status == .Authorized else {

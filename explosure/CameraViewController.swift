@@ -167,9 +167,10 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     @IBAction func shareButtonTapped() {
-        documentInteractionController = UIDocumentInteractionController.documentInteractionController(withCompoundImage: stillImageController.compoundImage)
-        guard let documentInteractionController = documentInteractionController where stillImageController.compoundImage.completed else { return }
-        documentInteractionController.presentOpenInMenuFromRect(CGRectZero, inView: view, animated: true)
+        guard let jpegUrl = stillImageController.compoundImage.jpegUrl else { return }
+        documentInteractionController = UIDocumentInteractionController()
+        documentInteractionController!.URL = jpegUrl
+        documentInteractionController!.presentOpenInMenuFromRect(CGRectZero, inView: view, animated: true)
     }
     
     @IBAction func toggleCameraButtonTapped() {
