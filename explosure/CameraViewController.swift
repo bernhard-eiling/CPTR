@@ -110,7 +110,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             if compoundImage.completed {
                 self.showCompoundImage()
             } else {
-                self.setCompoundImageToFilter(compoundImage.image)
+                self.setCompoundImageToVideoFilter(compoundImage.image)
             }
         })
     }
@@ -120,7 +120,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         shareButtonWrapper.hidden = false
         captureSession.stopRunning()
         videoBlendFilter.inputImage = nil
-        setCompoundImageToFilter(compoundImage)
+        setCompoundImageToVideoFilter(compoundImage)
         drawFilterImage()
     }
     
@@ -131,12 +131,11 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         shareButtonWrapper.hidden = true
     }
     
-    private func setCompoundImageToFilter(compoundImage: CGImage?) {
-        guard   let cgImage = compoundImage,
-            let outputImage = videoBlendFilter.outputImage else { return }
+    private func setCompoundImageToVideoFilter(compoundImage: CGImage?) {
+        guard let cgImage = compoundImage else { return }
         let ciImage = CIImage(CGImage: cgImage)
         let rotatedImage = ciImage.rotated90DegreesRight()
-        let scaledAndRotatedImage = rotatedImage.scaledToResolution(CGSize(width: outputImage.extent.size.width, height: outputImage.extent.size.height))
+        let scaledAndRotatedImage = rotatedImage.scale(toView: glView)
         videoBlendFilter.inputBackgroundImage = scaledAndRotatedImage
     }
     
@@ -150,10 +149,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             if captureDevice?.position == .Front {
                 videoImage = videoImage.horizontalFlippedImage()
             }
-            let videoFitsGLView = glView.bounds.width * glView.contentScaleFactor == videoImage.extent.width
-            if !videoFitsGLView {
-                videoImage = videoImage.scaledToResolution(glView.bounds.size.pixelSize)
-            }
+            videoImage = videoImage.scale(toView: glView)
             videoBlendFilter.inputImage = videoImage
         }
         drawFilterImage()

@@ -34,7 +34,7 @@ extension CIImage {
         return imageByApplyingTransform(CGAffineTransformConcat(scaleTransform, translateTransform))
     }
     
-    func scaledToResolution(resolution: CGSize) -> CIImage {
+    func scale(toResolution resolution: CGSize) -> CIImage {
         guard extent.size != resolution else { return self }
         let xScale = resolution.width / extent.size.width
         let yScale = resolution.height / extent.size.height
@@ -46,6 +46,14 @@ extension CIImage {
         let translateTransform = CGAffineTransformMakeTranslation(-extent.size.width, 0.0)
         let rotateTransform = CGAffineTransformMakeRotation(CGFloat(-M_PI_2))
         return imageByApplyingTransform(CGAffineTransformConcat(translateTransform, rotateTransform))
+    }
+    
+    func scale(toView view: UIView) -> CIImage {
+        let imageFitsGLView = view.bounds.width * view.contentScaleFactor == extent.width
+        if !imageFitsGLView {
+            return scale(toResolution: CGSize(width: view.bounds.width * view.contentScaleFactor, height: view.bounds.height * view.contentScaleFactor))
+        }
+        return self;
     }
     
 }

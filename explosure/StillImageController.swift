@@ -49,7 +49,7 @@ class StillImageController {
     private func normalizedCIImage(fromCIImage ciImage: CIImage, devicePosition: AVCaptureDevicePosition) -> CIImage {
         if devicePosition == .Front {
             let flipppedCIImage = ciImage.verticalFlippedImage()
-            let scaledFlippedCIImage = flipppedCIImage.scaledToResolution(maxStillImageResolution!)
+            let scaledFlippedCIImage = flipppedCIImage.scale(toResolution: maxStillImageResolution!)
             return scaledFlippedCIImage
         }
         return ciImage
