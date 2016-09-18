@@ -49,7 +49,7 @@ extension CIImage {
     }
     
     func scale(toView view: UIView) -> CIImage {
-        let imageFitsGLView = view.bounds.width * view.contentScaleFactor == extent.width
+        let imageFitsGLView = view.bounds.width * view.contentScaleFactor == extent.width && view.bounds.height * view.contentScaleFactor == extent.height
         if !imageFitsGLView {
             return scale(toResolution: CGSize(width: view.bounds.width * view.contentScaleFactor, height: view.bounds.height * view.contentScaleFactor))
         }
