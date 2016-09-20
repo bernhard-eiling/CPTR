@@ -30,6 +30,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     @IBOutlet var rotatableViews: [UIView]!
     @IBOutlet weak var shareButtonWrapper: UIView!
     @IBOutlet weak var missingPermissionsLabel: UILabel!
+    @IBOutlet weak var blurView: UIVisualEffectView!
     
     private var videoBlendFilter: Filter
     private let stillImageController = StillImageController()
@@ -99,6 +100,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             return
         }
         guard captureSession.running else { return }
+        blurView.hidden = false
         ciImageFromStillImageOutput { (capturedCiImage) in
             guard let capturedCiImage = capturedCiImage else { return }
             self.addCIImageToCompoundImage(capturedCiImage)
@@ -107,6 +109,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     private func addCIImageToCompoundImage(ciImage: CIImage) {
         stillImageController.compoundStillImage(fromCIImage: ciImage, devicePosition: captureDevice!.position, completion: { (compoundImage) in
+            self.blurView.hidden = true
             if compoundImage.completed {
                 self.showCompoundImage()
             } else {
@@ -136,7 +139,8 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         let ciImage = CIImage(CGImage: cgImage)
         let rotatedImage = ciImage.rotated90DegreesRight()
         let scaledAndRotatedImage = rotatedImage.scale(toView: glView)
-        videoBlendFilter.inputBackgroundImage = scaledAndRotatedImage
+        let renderedCGImage = ciContext.createCGImage(scaledAndRotatedImage, fromRect: scaledAndRotatedImage.extent)!
+        videoBlendFilter.inputBackgroundImage = CIImage(CGImage: renderedCGImage)
     }
     
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {

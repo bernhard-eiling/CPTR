@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11191" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11156"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Camera View Controller-->
@@ -73,10 +74,16 @@
                                     <outletCollection property="gestureRecognizers" destination="E7h-u7-oc4" appends="YES" id="xyD-Gg-YB2"/>
                                 </connections>
                             </glkView>
+                            <visualEffectView hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gL9-Gh-RBS">
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="BOI-Vg-MuC">
+                                    <frame key="frameInset"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                </view>
+                                <blurEffect style="light"/>
+                            </visualEffectView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lov-Cd-6c0" userLabel="Controls Wrapper">
                                 <subviews>
-                                    <view hidden="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Mnh-Z5-Xw4" userLabel="Share Wrapper">
-                                        <frame key="frameInset" minX="305" minY="27" width="40" height="40"/>
+                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Mnh-Z5-Xw4" userLabel="Share Wrapper">
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p0z-4W-mBf" userLabel="Share Button">
                                                 <state key="normal" image="share-small">
@@ -162,17 +169,22 @@
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="CU5-5c-C54" secondAttribute="trailing" id="1NH-Tb-mxB"/>
                             <constraint firstItem="CU5-5c-C54" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="6ge-oA-dap"/>
+                            <constraint firstItem="gL9-Gh-RBS" firstAttribute="top" secondItem="v0Y-rc-poP" secondAttribute="top" id="7e0-Hx-ikE"/>
+                            <constraint firstItem="gL9-Gh-RBS" firstAttribute="bottom" secondItem="v0Y-rc-poP" secondAttribute="bottom" id="8XM-Eh-k8T"/>
                             <constraint firstItem="lov-Cd-6c0" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="9h4-FC-URl"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="lov-Cd-6c0" secondAttribute="bottom" id="I6a-9H-o6B"/>
                             <constraint firstAttribute="trailing" secondItem="lov-Cd-6c0" secondAttribute="trailing" id="JYT-iQ-1So"/>
+                            <constraint firstItem="gL9-Gh-RBS" firstAttribute="trailing" secondItem="v0Y-rc-poP" secondAttribute="trailing" id="QZY-AI-WHd"/>
                             <constraint firstItem="CU5-5c-C54" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="ULL-3t-OzI"/>
                             <constraint firstAttribute="trailing" secondItem="v0Y-rc-poP" secondAttribute="trailing" id="fpO-xC-TBZ"/>
+                            <constraint firstItem="gL9-Gh-RBS" firstAttribute="leading" secondItem="v0Y-rc-poP" secondAttribute="leading" id="l1V-rk-LBh"/>
                             <constraint firstItem="lov-Cd-6c0" firstAttribute="top" secondItem="v0Y-rc-poP" secondAttribute="bottom" id="pVT-Bb-bl3"/>
                             <constraint firstItem="v0Y-rc-poP" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="vwx-4P-jo3"/>
                             <constraint firstItem="v0Y-rc-poP" firstAttribute="top" secondItem="CU5-5c-C54" secondAttribute="bottom" id="zw0-Pc-JP1"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="blurView" destination="gL9-Gh-RBS" id="fOR-mh-tcT"/>
                         <outlet property="glView" destination="v0Y-rc-poP" id="101-Mb-K7b"/>
                         <outlet property="missingPermissionsLabel" destination="1PD-bN-ndF" id="6eK-gH-kbj"/>
                         <outlet property="shareButtonWrapper" destination="Mnh-Z5-Xw4" id="NUZ-BD-Luh"/>
