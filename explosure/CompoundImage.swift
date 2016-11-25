@@ -20,7 +20,7 @@ class CompoundImage {
         }
     }
     var imageOrientation: UIImageOrientation?
-    var jpegUrl: NSURL?
+    var jpegUrl: URL?
     
     private var imageCounter: UInt
     

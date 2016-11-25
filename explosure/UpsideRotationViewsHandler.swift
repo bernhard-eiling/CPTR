@@ -13,39 +13,39 @@ class UpsideRotationViewsHandler {
     private let upsideRotationViews: [UIView]
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     init(withViews upsideRotationViews: [UIView]) {
         self.upsideRotationViews = upsideRotationViews
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(deviceOrientationDidChange), name: UIDeviceOrientationDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(deviceOrientationDidChange), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     }
     
-    @objc private func deviceOrientationDidChange() {
-        switch UIDevice.currentDevice().orientation {
-        case .Portrait:
-            rotateRotatableViewsWithTransform(CGAffineTransformIdentity)
+    @objc fileprivate func deviceOrientationDidChange() {
+        switch UIDevice.current.orientation {
+        case .portrait:
+            rotateRotatableViewsWithTransform(CGAffineTransform.identity)
             break
-        case .LandscapeLeft:
-            rotateRotatableViewsWithTransform(CGAffineTransformMakeRotation(CGFloat(M_PI_2)))
+        case .landscapeLeft:
+            rotateRotatableViewsWithTransform(CGAffineTransform(rotationAngle: CGFloat(M_PI_2)))
             break
-        case .LandscapeRight:
-            rotateRotatableViewsWithTransform(CGAffineTransformMakeRotation(-CGFloat(M_PI_2)))
+        case .landscapeRight:
+            rotateRotatableViewsWithTransform(CGAffineTransform(rotationAngle: -CGFloat(M_PI_2)))
             break
-        case .PortraitUpsideDown:
-            rotateRotatableViewsWithTransform(CGAffineTransformMakeRotation(CGFloat(M_PI)))
+        case .portraitUpsideDown:
+            rotateRotatableViewsWithTransform(CGAffineTransform(rotationAngle: CGFloat(M_PI)))
             break
         default:
             break
         }
     }
     
-    private func rotateRotatableViewsWithTransform(transform: CGAffineTransform) {
-        UIView.animateWithDuration(0.3) { () -> Void in
+    private func rotateRotatableViewsWithTransform(_ transform: CGAffineTransform) {
+        UIView.animate(withDuration: 0.3, animations: { () -> Void in
             for rotatableView in self.upsideRotationViews {
                 rotatableView.transform = transform
             }
-        }
+        }) 
     }
     
 }

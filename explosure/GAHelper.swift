@@ -31,9 +31,10 @@ class GAHelper {
         GAHelper.trackEventWithCategory(eventCategoryUserInteraction, action: "photo-saved")
     }
     
-    private class func trackEventWithCategory(category: String, action: String) {
-        let eventbuilder = GAIDictionaryBuilder.createEventWithCategory(category, action: action, label: nil, value: nil)
-        GAI.sharedInstance().defaultTracker.send(eventbuilder.build() as [NSObject : AnyObject])
+    private class func trackEventWithCategory(_ category: String, action: String) {
+        let eventbuilder = GAIDictionaryBuilder.createEvent(withCategory: category, action: action, label: nil, value: nil)!
+        guard let eventDictionary = (eventbuilder.build() as NSDictionary) as? [AnyHashable: Any] else { return }
+        GAI.sharedInstance().defaultTracker.send(eventDictionary)
     }
     
     
@@ -47,9 +48,10 @@ class GAHelper {
         GAHelper.trackView("share-view")
     }
 
-    private class func trackView(viewName: String) {
+    private class func trackView(_ viewName: String) {
         GAI.sharedInstance().defaultTracker.set(kGAIScreenName, value: viewName)
-        let builder = GAIDictionaryBuilder.createScreenView()
-        GAI.sharedInstance().defaultTracker.send(builder.build() as [NSObject : AnyObject])
+        let builder = GAIDictionaryBuilder.createScreenView()!
+        guard let builderDictionary = (builder.build() as NSDictionary) as? [AnyHashable: Any] else { return }
+        GAI.sharedInstance().defaultTracker.send(builderDictionary)
     }
 }

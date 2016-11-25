@@ -11,11 +11,11 @@ import UIKit
 extension CGImage {
 
     func size() -> CGSize {
-        return CGSize(width: CGImageGetWidth(self), height: CGImageGetHeight(self))
+        return CGSize(width: self.width, height: self.height)
     }
     
     func rect() -> CGRect {
-        return CGRect(origin: CGPointZero, size: self.size())
+        return CGRect(origin: CGPoint.zero, size: self.size())
     }
     
 }
@@ -23,29 +23,29 @@ extension CGImage {
 extension CIImage {
     
     func horizontalFlippedImage() -> CIImage {
-        let scaleTransform = CGAffineTransformMakeScale(-1.0, 1.0)
-        let translateTransform = CGAffineTransformMakeTranslation(extent.size.width, 0.0)
-        return imageByApplyingTransform(CGAffineTransformConcat(scaleTransform, translateTransform))
+        let scaleTransform = CGAffineTransform(scaleX: -1.0, y: 1.0)
+        let translateTransform = CGAffineTransform(translationX: extent.size.width, y: 0.0)
+        return applying(scaleTransform.concatenating(translateTransform))
     }
     
     func verticalFlippedImage() -> CIImage {
-        let scaleTransform = CGAffineTransformMakeScale(1.0, -1.0)
-        let translateTransform = CGAffineTransformMakeTranslation(0.0, extent.size.height)
-        return imageByApplyingTransform(CGAffineTransformConcat(scaleTransform, translateTransform))
+        let scaleTransform = CGAffineTransform(scaleX: 1.0, y: -1.0)
+        let translateTransform = CGAffineTransform(translationX: 0.0, y: extent.size.height)
+        return applying(scaleTransform.concatenating(translateTransform))
     }
     
     func scale(toResolution resolution: CGSize) -> CIImage {
         guard extent.size != resolution else { return self }
         let xScale = resolution.width / extent.size.width
         let yScale = resolution.height / extent.size.height
-        let transformScale = CGAffineTransformMakeScale(xScale, yScale)
-        return imageByApplyingTransform(transformScale)
+        let transformScale = CGAffineTransform(scaleX: xScale, y: yScale)
+        return applying(transformScale)
     }
     
     func rotated90DegreesRight() -> CIImage {
-        let translateTransform = CGAffineTransformMakeTranslation(-extent.size.width, 0.0)
-        let rotateTransform = CGAffineTransformMakeRotation(CGFloat(-M_PI_2))
-        return imageByApplyingTransform(CGAffineTransformConcat(translateTransform, rotateTransform))
+        let translateTransform = CGAffineTransform(translationX: -extent.size.width, y: 0.0)
+        let rotateTransform = CGAffineTransform(rotationAngle: CGFloat(-M_PI_2))
+        return applying(translateTransform.concatenating(rotateTransform))
     }
     
     func scale(toView view: UIView) -> CIImage {

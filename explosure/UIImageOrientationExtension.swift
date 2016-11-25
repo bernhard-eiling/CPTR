@@ -11,17 +11,17 @@ import UIKit
 extension UIImageOrientation {
     
     static func relationToDeviceOrientaton() -> UIImageOrientation {
-        switch UIDevice.currentDevice().orientation {
-        case .Portrait:
-            return .Right
-        case .LandscapeLeft:
-            return .Up
-        case .LandscapeRight:
-            return .Down
-        case .PortraitUpsideDown:
-            return .Left
+        switch UIDevice.current.orientation {
+        case .portrait:
+            return .right
+        case .landscapeLeft:
+            return .up
+        case .landscapeRight:
+            return .down
+        case .portraitUpsideDown:
+            return .left
         default:
-            return .Right
+            return .right
         }
     }
     

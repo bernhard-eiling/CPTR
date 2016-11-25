@@ -14,7 +14,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     private lazy var videoDataOutput: AVCaptureVideoDataOutput = {
         let videoDataOutput = AVCaptureVideoDataOutput.configuredOutput()
-        videoDataOutput.setSampleBufferDelegate(self, queue: dispatch_queue_create("VideoDataOutputQueue", DISPATCH_QUEUE_SERIAL))
+        videoDataOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "VideoDataOutputQueue"))
         return videoDataOutput
     }()
     
@@ -37,14 +37,14 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     private var documentInteractionController: UIDocumentInteractionController?
     private var upsideRotationViewsHandler: UpsideRotationViewsHandler?
     
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         fatalError("its not possible to init the CameraViewController with a nib")
     }
     
     required init(coder aCoder: NSCoder) {
         self.videoBlendFilter = Filter(name: "CILightenBlendMode")
-        self.glContext = EAGLContext(API: .OpenGLES2)
-        self.ciContext = CIContext(EAGLContext: glContext)
+        self.glContext = EAGLContext(api: .openGLES2)
+        self.ciContext = CIContext(eaglContext: glContext)
         self.captureSession = AVCaptureSession()
         self.captureSession.sessionPreset = AVCaptureSessionPresetPhoto
         super.init(coder: aCoder)!
@@ -58,30 +58,30 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         authorizeCamera()
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         GAHelper.trackCameraView()
     }
     
     private func authorizeCamera() {
-        missingPermissionsLabel.hidden = true
-        let authorizationStatus = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
+        missingPermissionsLabel.isHidden = true
+        let authorizationStatus = AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo)
         switch authorizationStatus {
-        case .NotDetermined:
-            AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, completionHandler: { (granted: Bool) -> () in
+        case .notDetermined:
+            AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo, completionHandler: { (granted: Bool) -> () in
                 guard granted else {
-                    dispatch_async(dispatch_get_main_queue(), {
-                        self.missingPermissionsLabel.hidden = false
+                    DispatchQueue.main.async(execute: {
+                        self.missingPermissionsLabel.isHidden = false
                     })
                     NSLog("camera authorization denied")
                     return
                 }
                 self.setupSession()
             })
-        case .Authorized:
+        case .authorized:
             setupSession()
-        case .Denied, .Restricted:
-            missingPermissionsLabel.hidden = false
+        case .denied, .restricted:
+            missingPermissionsLabel.isHidden = false
             NSLog("camera authorization denied")
         }
     }
@@ -91,7 +91,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         guard captureSession.canAddOutput(stillImageOutput) else { fatalError() }
         captureSession.addOutput(videoDataOutput)
         captureSession.addOutput(stillImageOutput)
-        toggle(toDevicePosition: .Back)
+        toggle(toDevicePosition: .back)
     }
     
     @IBAction func captureButtonTapped() {
@@ -99,17 +99,17 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             resetCapture()
             return
         }
-        guard captureSession.running else { return }
-        blurView.hidden = false
+        guard captureSession.isRunning else { return }
+        blurView.isHidden = false
         ciImageFromStillImageOutput { (capturedCiImage) in
             guard let capturedCiImage = capturedCiImage else { return }
-            self.addCIImageToCompoundImage(capturedCiImage)
+            self.addCIImageToCompoundImage(ciImage: capturedCiImage)
         }
     }
     
     private func addCIImageToCompoundImage(ciImage: CIImage) {
         stillImageController.compoundStillImage(fromCIImage: ciImage, devicePosition: captureDevice!.position, completion: { (compoundImage) in
-            self.blurView.hidden = true
+            self.blurView.isHidden = true
             if compoundImage.completed {
                 self.showCompoundImage()
             } else {
@@ -120,7 +120,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     private func showCompoundImage() {
         guard let compoundImage = stillImageController.compoundImage.image else { return }
-        shareButtonWrapper.hidden = false
+        shareButtonWrapper.isHidden = false
         captureSession.stopRunning()
         videoBlendFilter.inputImage = nil
         setCompoundImageToVideoFilter(compoundImage)
@@ -131,26 +131,26 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         videoBlendFilter.inputBackgroundImage = nil
         stillImageController.reset()
         captureSession.startRunning()
-        shareButtonWrapper.hidden = true
+        shareButtonWrapper.isHidden = true
     }
     
-    private func setCompoundImageToVideoFilter(compoundImage: CGImage?) {
+    private func setCompoundImageToVideoFilter(_ compoundImage: CGImage?) {
         guard let cgImage = compoundImage else { return }
-        let ciImage = CIImage(CGImage: cgImage)
+        let ciImage = CIImage(cgImage: cgImage)
         let rotatedImage = ciImage.rotated90DegreesRight()
         let scaledAndRotatedImage = rotatedImage.scale(toView: glView)
-        let renderedCGImage = ciContext.createCGImage(scaledAndRotatedImage, fromRect: scaledAndRotatedImage.extent)!
-        videoBlendFilter.inputBackgroundImage = CIImage(CGImage: renderedCGImage)
+        let renderedCGImage = ciContext.createCGImage(scaledAndRotatedImage, from: scaledAndRotatedImage.extent)!
+        videoBlendFilter.inputBackgroundImage = CIImage(cgImage: renderedCGImage)
     }
     
-    func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
-        if glContext != EAGLContext.currentContext() {
-            EAGLContext.setCurrentContext(glContext)
+    func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
+        if glContext != EAGLContext.current() {
+            EAGLContext.setCurrent(glContext)
         }
         guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         if !stillImageController.compoundImage.completed {
-            var videoImage = CIImage(CVPixelBuffer: imageBuffer)
-            if captureDevice?.position == .Front {
+            var videoImage = CIImage(cvPixelBuffer: imageBuffer)
+            if captureDevice?.position == .front {
                 videoImage = videoImage.horizontalFlippedImage()
             }
             videoImage = videoImage.scale(toView: glView)
@@ -160,34 +160,34 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     func drawFilterImage() {
-        guard let outputImage = videoBlendFilter.outputImage where glView.frame != CGRectZero else { return }
+        guard let outputImage = videoBlendFilter.outputImage, glView.frame != CGRect.zero else { return }
         glView.bindDrawable()
-        ciContext.drawImage(outputImage, inRect: outputImage.extent, fromRect: outputImage.extent)
+        ciContext.draw(outputImage, in: outputImage.extent, from: outputImage.extent)
         glView.display()
     }
     
     @IBAction func shareButtonTapped() {
         guard let jpegUrl = stillImageController.compoundImage.jpegUrl else { return }
         documentInteractionController = UIDocumentInteractionController()
-        documentInteractionController!.URL = jpegUrl
-        documentInteractionController!.presentOpenInMenuFromRect(CGRectZero, inView: view, animated: true)
+        documentInteractionController!.url = jpegUrl as URL
+        documentInteractionController!.presentOpenInMenu(from: CGRect.zero, in: view, animated: true)
     }
     
     @IBAction func toggleCameraButtonTapped() {
         guard let captureDevice = captureDevice else { return }
         switch captureDevice.position {
-        case .Back:
-            toggle(toDevicePosition: .Front)
-        case .Front:
-            toggle(toDevicePosition: .Back)
+        case .back:
+            toggle(toDevicePosition: .front)
+        case .front:
+            toggle(toDevicePosition: .back)
         default:
-            toggle(toDevicePosition: .Front)
+            toggle(toDevicePosition: .front)
         }
     }
     
-    @IBAction func glViewTapped(tapRecognizer: UITapGestureRecognizer) {
+    @IBAction func glViewTapped(_ tapRecognizer: UITapGestureRecognizer) {
         guard let captureDevice = captureDevice else { return }
-        let focusPoint = tapRecognizer.locationInView(glView)
+        let focusPoint = tapRecognizer.location(in: glView)
         let normalizedFocusPoint = CGPoint(x: focusPoint.y / view.frame.size.height, y: 1.0 - (focusPoint.x / view.frame.size.width)) // coordinates switch is necessarry due to 90 degree rotation of camera
         do {
             try captureDevice.lockForConfiguration()
@@ -195,18 +195,19 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             NSLog("focus capture device failed")
             return
         }
-        if captureDevice.focusPointOfInterestSupported {
+        if captureDevice.isFocusPointOfInterestSupported {
             captureDevice.focusPointOfInterest = normalizedFocusPoint
-            captureDevice.focusMode = .AutoFocus
+            captureDevice.focusMode = .autoFocus
         }
         captureDevice.unlockForConfiguration()
     }
     
-    private func ciImageFromStillImageOutput(completion: ((capturedCiImage: CIImage?) -> ())) {
-        let stillImageConnection = self.stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)
-        stillImageOutput.captureStillImageAsynchronouslyFromConnection(stillImageConnection, completionHandler: { (imageDataSampleBuffer: CMSampleBuffer?, error: NSError?) -> Void in
-            completion(capturedCiImage: self.ciImageFromImageBuffer(imageDataSampleBuffer))
+    private func ciImageFromStillImageOutput(_ completion: @escaping ((_ capturedCiImage: CIImage?) -> ())) {
+        let stillImageConnection = self.stillImageOutput.connection(withMediaType: AVMediaTypeVideo)        
+        stillImageOutput.captureStillImageAsynchronously(from: stillImageConnection, completionHandler: { imageDataSampleBuffer, error in
+            completion(self.ciImageFromImageBuffer(imageDataSampleBuffer))
         })
+        
     }
     
     private func toggle(toDevicePosition devicePosition: AVCaptureDevicePosition) {
@@ -218,31 +219,31 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             if captureSession.canAddInput(currentCaptureDeviceInput) {
                 captureSession.addInput(currentCaptureDeviceInput)
             }
-            setVideoOrientation(.Portrait)
+            setVideoOrientation(.portrait)
             captureSession.startRunning()
         } catch {
             NSLog("capture device could not be added to session");
         }
     }
     
-    private func setVideoOrientation(orientation: AVCaptureVideoOrientation) {
-        guard let videoOutputConnection = videoDataOutput.connectionWithMediaType(AVMediaTypeVideo) else { return }
-        if videoOutputConnection.supportsVideoOrientation {
+    private func setVideoOrientation(_ orientation: AVCaptureVideoOrientation) {
+        guard let videoOutputConnection = videoDataOutput.connection(withMediaType: AVMediaTypeVideo) else { return }
+        if videoOutputConnection.isVideoOrientationSupported {
             videoOutputConnection.videoOrientation = orientation
         }
     }
     
-    private func ciImageFromImageBuffer(imageSampleBuffer: CMSampleBuffer?) -> CIImage? {
+    private func ciImageFromImageBuffer(_ imageSampleBuffer: CMSampleBuffer?) -> CIImage? {
         guard   let sampleBuffer = imageSampleBuffer,
             let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return nil }
-        return CIImage(CVPixelBuffer: imageBuffer)
+        return CIImage(cvPixelBuffer: imageBuffer)
     }
     
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        return .Portrait
+    override var supportedInterfaceOrientations : UIInterfaceOrientationMask {
+        return .portrait
     }
     
-    override func shouldAutorotate() -> Bool {
+    override var shouldAutorotate : Bool {
         return false
     }
     

@@ -10,8 +10,8 @@ import AVFoundation
 
 extension AVCaptureDevice {
     
-    class func captureDevice(devicePosition: AVCaptureDevicePosition) -> AVCaptureDevice? {
-        let captureDevices = AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo)
+    class func captureDevice(_ devicePosition: AVCaptureDevicePosition) -> AVCaptureDevice? {
+        let captureDevices = AVCaptureDevice.devices(withMediaType: AVMediaTypeVideo)
         for captureDevice in captureDevices as! [AVCaptureDevice] {
             if captureDevice.position == devicePosition {
                 return captureDevice;
