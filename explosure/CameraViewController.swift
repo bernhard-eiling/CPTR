@@ -9,6 +9,7 @@
 import UIKit
 import AVFoundation
 import GLKit
+import RxSwift
 
 class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     
@@ -36,6 +37,8 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     private let stillImageController = StillImageController()
     private var documentInteractionController: UIDocumentInteractionController?
     private var upsideRotationViewsHandler: UpsideRotationViewsHandler?
+    
+    var disposeBag = DisposeBag()
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         fatalError("its not possible to init the CameraViewController with a nib")

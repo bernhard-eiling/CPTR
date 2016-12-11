@@ -15,9 +15,11 @@ PODS:
   - GoogleSymbolUtilities (1.0.3)
   - GoogleUtilities (1.1.0):
     - GoogleSymbolUtilities (~> 1.0.0)
+  - RxSwift (3.0.1)
 
 DEPENDENCIES:
   - Google/Analytics
+  - RxSwift (~> 3.0)
 
 SPEC CHECKSUMS:
   Google: 97618e118111b998cce1d8dd1bd98b82301d72db
@@ -26,5 +28,8 @@ SPEC CHECKSUMS:
   GoogleNetworkingUtilities: 292992ab31b7b4ba32809a0e8b40e324cdfb2c0c
   GoogleSymbolUtilities: 82ad9f93d3615244b3f4ce440f5ab2515e8b4f56
   GoogleUtilities: 8ed9134debe11719097881711464752900668f10
+  RxSwift: af5680055c4ad04480189c52d28385b1029493a6
 
-COCOAPODS: 0.39.0
+PODFILE CHECKSUM: 5fb352cd2daa7233c7b6dda7282d7ae2d68e4a9b
+
+COCOAPODS: 1.1.1
