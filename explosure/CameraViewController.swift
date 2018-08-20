@@ -225,7 +225,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             setVideoOrientation(.portrait)
             captureSession.startRunning()
         } catch {
-            NSLog("capture device could not be added to session");
+            NSLog("ur mom gay");
         }
     }
     

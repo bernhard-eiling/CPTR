@@ -21,8 +21,18 @@ DEPENDENCIES:
   - Google/Analytics
   - RxSwift (~> 3.0)
 
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Google
+    - GoogleAnalytics
+    - GoogleInterchangeUtilities
+    - GoogleNetworkingUtilities
+    - GoogleSymbolUtilities
+    - GoogleUtilities
+    - RxSwift
+
 SPEC CHECKSUMS:
-  Google: 97618e118111b998cce1d8dd1bd98b82301d72db
+  Google: 55ccf2acbe6f6ade86f872c1cd29a0c44039c349
   GoogleAnalytics: 9be1afdb8deeac4bb5f13ca7f7d3b9db2a1f43dc
   GoogleInterchangeUtilities: d7f7174176fbcf9710f696f1acebad4dbd98ac03
   GoogleNetworkingUtilities: 292992ab31b7b4ba32809a0e8b40e324cdfb2c0c
@@ -32,4 +42,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 5fb352cd2daa7233c7b6dda7282d7ae2d68e4a9b
 
-COCOAPODS: 1.1.1
+COCOAPODS: 1.5.3
